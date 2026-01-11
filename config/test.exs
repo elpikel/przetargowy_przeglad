@@ -20,6 +20,8 @@ config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
   secret_key_base: "9nt4g6NNzN74ANt8dPxrjhW79sNVSIYJAeydkMD4tE9EY75fAQUk6ltfDguIYxy3",
   server: false
 
+config :przetargowy_przeglad, Oban, testing: :manual
+
 # In test we don't send emails
 config :przetargowy_przeglad, PrzetargowyPrzeglad.Mailer, adapter: Swoosh.Adapters.Test
 

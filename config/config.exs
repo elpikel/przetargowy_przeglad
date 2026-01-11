@@ -22,6 +22,11 @@ config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
   pubsub_server: PrzetargowyPrzeglad.PubSub,
   live_view: [signing_salt: "wITUalJC"]
 
+config :przetargowy_przeglad, Oban,
+  engine: Oban.Engines.Basic,
+  queues: [default: 10],
+  repo: PrzetargowyPrzeglad.Repo
+
 # Configure the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
