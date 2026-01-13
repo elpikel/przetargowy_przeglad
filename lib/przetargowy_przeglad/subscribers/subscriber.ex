@@ -23,10 +23,10 @@ defmodule PrzetargowyPrzeglad.Subscribers.Subscriber do
   def signup_changeset(subscriber, attrs) do
     subscriber
     |> cast(attrs, [:email, :name, :company_name, :industry, :regions])
-    |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "incorrect format")
+    |> validate_required([:email], message: "To pole jest wymagane.")
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "Niepoprawny format.")
     |> validate_inclusion(:industry, @industries ++ [nil])
-    |> unique_constraint(:email, message: "this email is already registered")
+    |> unique_constraint(:email, message: "Ten email jest już zarejestrowany.")
     |> put_confirmation_token()
   end
 

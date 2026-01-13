@@ -14,7 +14,7 @@ defmodule PrzetargowyPrzeglad.SubscribersTest do
     test "returns error for duplicate email" do
       Subscribers.subscribe(%{email: "test@example.com"})
       assert {:error, changeset} = Subscribers.subscribe(%{email: "test@example.com"})
-      assert "this email is already registered" in errors_on(changeset).email
+      assert "Ten email jest już zarejestrowany." in errors_on(changeset).email
     end
   end
 

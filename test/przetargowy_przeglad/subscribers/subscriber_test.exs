@@ -13,13 +13,13 @@ defmodule PrzetargowyPrzeglad.Subscribers.SubscriberTest do
     test "invalid email returns error" do
       changeset = Subscriber.signup_changeset(%Subscriber{}, %{email: "invalid"})
       refute changeset.valid?
-      assert "incorrect format" in errors_on(changeset).email
+      assert "Niepoprawny format." in errors_on(changeset).email
     end
 
     test "empty email returns error" do
       changeset = Subscriber.signup_changeset(%Subscriber{}, %{})
       refute changeset.valid?
-      assert "can't be blank" in errors_on(changeset).email
+      assert "To pole jest wymagane." in errors_on(changeset).email
     end
 
     test "valid industry is accepted" do
