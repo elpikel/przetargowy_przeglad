@@ -17,7 +17,7 @@ defmodule PrzetargowyPrzegladWeb.Router do
   scope "/", PrzetargowyPrzegladWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", LandingLive, :index
   end
 
   # Other scopes may use custom stacks.
