@@ -9,6 +9,14 @@ defmodule PrzetargowyPrzeglad.Subscribers do
     %Subscriber{}
     |> Subscriber.signup_changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, subscriber} ->
+        send_confirmation_email(subscriber)
+        {:ok, subscriber}
+
+      error ->
+        error
+    end
   end
 
   def confirm_subscription(token) do
@@ -59,5 +67,11 @@ defmodule PrzetargowyPrzeglad.Subscribers do
     |> select([s], {s.status, count(s.id)})
     |> Repo.all()
     |> Map.new()
+  end
+
+  defp send_confirmation_email(subscriber) do
+    subscriber
+    |> PrzetargowyPrzeglad.Email.ConfirmationEmail.build()
+    |> PrzetargowyPrzeglad.Mailer.deliver()
   end
 end
