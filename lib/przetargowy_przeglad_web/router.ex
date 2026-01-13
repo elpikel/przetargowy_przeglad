@@ -18,6 +18,7 @@ defmodule PrzetargowyPrzegladWeb.Router do
     pipe_through :browser
 
     live "/", LandingLive, :index
+    live "/confirm/:token", ConfirmLive, :index
   end
 
   # Other scopes may use custom stacks.

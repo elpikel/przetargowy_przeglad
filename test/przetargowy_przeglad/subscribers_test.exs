@@ -35,8 +35,7 @@ defmodule PrzetargowyPrzeglad.SubscribersTest do
       {:ok, subscriber} = Subscribers.subscribe(%{email: "test@example.com"})
       {:ok, _} = Subscribers.confirm_subscription(subscriber.confirmation_token)
 
-      # Token jest już nil, więc zwróci invalid_token
-      assert {:error, :invalid_token} =
+      assert {:error, :already_confirmed} =
                Subscribers.confirm_subscription(subscriber.confirmation_token)
     end
   end

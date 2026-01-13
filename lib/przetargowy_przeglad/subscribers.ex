@@ -20,7 +20,16 @@ defmodule PrzetargowyPrzeglad.Subscribers do
   end
 
   def confirm_subscription(token) do
-    case get_by_token(token) do
+    subscription =
+      Subscriber
+      |> from(as: :subscriber)
+      |> where(
+        [subscriber: s],
+        s.confirmation_token == ^token
+      )
+      |> Repo.one()
+
+    case subscription do
       nil ->
         {:error, :invalid_token}
 
@@ -51,7 +60,7 @@ defmodule PrzetargowyPrzeglad.Subscribers do
   end
 
   def get_by_token(token) do
-    Repo.get_by(Subscriber, confirmation_token: token)
+    Repo.get_by(Subscriber, confirmation_token: token) |> IO.inspect()
   end
 
   def list_confirmed do

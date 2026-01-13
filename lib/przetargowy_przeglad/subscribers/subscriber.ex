@@ -3,8 +3,9 @@ defmodule PrzetargowyPrzeglad.Subscribers.Subscriber do
   import Ecto.Changeset
 
   @confirmed "confirmed"
+  @pending "pending"
   @industries ~w(it budowlana medyczna transportowa uslugi dostawy inne)
-  @statuses ~w(pending #{@confirmed} unsubscribed)
+  @statuses ~w(#{@pending} #{@confirmed} unsubscribed)
 
   schema "subscribers" do
     field :email, :string
@@ -12,7 +13,7 @@ defmodule PrzetargowyPrzeglad.Subscribers.Subscriber do
     field :company_name, :string
     field :industry, :string
     field :regions, {:array, :string}, default: []
-    field :status, :string, default: "pending"
+    field :status, :string, default: @pending
     field :confirmation_token, :string
     field :confirmed_at, :utc_datetime
     field :unsubscribed_at, :utc_datetime
@@ -35,7 +36,6 @@ defmodule PrzetargowyPrzeglad.Subscribers.Subscriber do
     |> change()
     |> put_change(:status, "confirmed")
     |> put_change(:confirmed_at, DateTime.utc_now() |> DateTime.truncate(:second))
-    |> put_change(:confirmation_token, nil)
   end
 
   def unsubscribe_changeset(subscriber) do
@@ -57,4 +57,5 @@ defmodule PrzetargowyPrzeglad.Subscribers.Subscriber do
   def industries, do: @industries
   def statuses, do: @statuses
   def confirmed, do: @confirmed
+  def pending, do: @pending
 end
