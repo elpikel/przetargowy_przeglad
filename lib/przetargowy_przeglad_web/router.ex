@@ -19,6 +19,7 @@ defmodule PrzetargowyPrzegladWeb.Router do
 
     live "/", LandingLive, :index
     live "/confirm/:token", ConfirmLive, :index
+    live "/unsubscribe/:token", UnsubscribeLive, :index
   end
 
   # Other scopes may use custom stacks.
