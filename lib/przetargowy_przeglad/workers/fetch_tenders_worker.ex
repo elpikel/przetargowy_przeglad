@@ -57,7 +57,7 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersWorker do
       "max_pages" => opts[:max_pages] || 5
     }
 
-    %{args: args}
+    args
     |> new()
     |> Oban.insert()
   end
