@@ -74,7 +74,7 @@ defmodule PrzetargowyPrzeglad.Tenders.Tender do
   end
 
   @doc """
-  Mapuje kody CPV na branże.
+  Maps CPV codes to industries.
   """
   def map_cpv_to_industry(cpv_codes) when is_list(cpv_codes) do
     cpv_codes

@@ -1,8 +1,8 @@
 defmodule PrzetargowyPrzeglad.Api.BzpClient do
   @moduledoc """
-  Klient do pobierania przetargów z API BZP (ezamowienia.gov.pl).
+  Client for fetching tenders from the BZP API (ezamowienia.gov.pl).
 
-  ## Użycie
+  ## Usage
 
       BzpClient.fetch_tenders()
       BzpClient.fetch_tenders(cpv_code: "45000000-7", notice_type: "ContractNotice")
@@ -18,15 +18,15 @@ defmodule PrzetargowyPrzeglad.Api.BzpClient do
   @retry_delay 1_000
 
   @doc """
-  Pobiera pojedynczą stronę przetargów.
+  Fetches a single page of tenders.
 
-  ## Opcje
-  - `:page` - numer strony (od 0)
-  - `:page_size` - liczba wyników na stronę (max 100)
-  - `:publication_date_from` - data od (YYYY-MM-DD)
-  - `:publication_date_to` - data do (YYYY-MM-DD)
-  - `:cpv_code` - filtr po kodzie CPV (np. "45000000-7")
-  - `:notice_type` - typ ogłoszenia (ContractNotice, TenderResultNotice, etc.)
+  ## Options
+  - `:page` - page number (from 0)
+  - `:page_size` - number of results per page (max 100)
+  - `:publication_date_from` - date from (YYYY-MM-DD)
+  - `:publication_date_to` - date to (YYYY-MM-DD)
+  - `:cpv_code` - filter by CPV code (e.g., "45000000-7")
+  - `:notice_type` - notice type (ContractNotice, TenderResultNotice, etc.)
   """
   def fetch_tenders(opts \\ []) do
     params = build_query_params(opts)
@@ -40,7 +40,7 @@ defmodule PrzetargowyPrzeglad.Api.BzpClient do
   end
 
   @doc """
-  Pobiera wszystkie strony do limitu.
+  Fetches all pages up to the limit.
   """
   def fetch_all_tenders(opts \\ []) do
     max_pages = opts[:max_pages] || 10
@@ -69,7 +69,7 @@ defmodule PrzetargowyPrzeglad.Api.BzpClient do
   end
 
   @doc """
-  Pobiera przetargi z ostatnich N dni.
+  Fetches tenders from the last N days.
   """
   def fetch_recent(days \\ 7, opts \\ []) do
     date_from = Date.utc_today() |> Date.add(-days) |> Date.to_iso8601()

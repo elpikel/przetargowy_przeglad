@@ -30,7 +30,7 @@ defmodule PrzetargowyPrzegladWeb.LandingLive do
   def handle_event("subscribe", %{"subscriber" => params}, socket) do
     case Subscribers.subscribe(params) do
       {:ok, _subscriber} ->
-        # TODO: Wysłać email potwierdzający
+        # TODO: Send confirmation email
         {:noreply, assign(socket, submitted: true)}
 
       {:error, changeset} ->

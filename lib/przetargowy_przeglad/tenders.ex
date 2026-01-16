@@ -4,7 +4,7 @@ defmodule PrzetargowyPrzeglad.Tenders do
   alias PrzetargowyPrzeglad.Tenders.Tender
 
   @doc """
-  Upsert pojedynczego przetargu.
+  Upsert a single tender.
   """
   def upsert_tender(attrs) do
     %Tender{}
@@ -16,7 +16,7 @@ defmodule PrzetargowyPrzeglad.Tenders do
   end
 
   @doc """
-  Bulk upsert przetargów.
+  Bulk upsert tenders.
   """
   def upsert_tenders(tenders_list) do
     results = Enum.map(tenders_list, &upsert_tender/1)
@@ -35,19 +35,19 @@ defmodule PrzetargowyPrzeglad.Tenders do
   end
 
   @doc """
-  Pobiera przetarg po ID.
+  Gets a tender by ID.
   """
   def get_tender(id), do: Repo.get(Tender, id)
 
   @doc """
-  Pobiera przetarg po external_id i source.
+  Gets a tender by external_id and source.
   """
   def get_by_external(external_id, source) do
     Repo.get_by(Tender, external_id: external_id, source: source)
   end
 
   @doc """
-  Lista przetargów z filtrami.
+  Lists tenders with filters.
   """
   def list_tenders(opts \\ []) do
     Tender
@@ -58,7 +58,7 @@ defmodule PrzetargowyPrzeglad.Tenders do
   end
 
   @doc """
-  Przetargi z ostatnich N dni.
+  Tenders from the last N days.
   """
   def list_recent(days \\ 7) do
     cutoff = DateTime.utc_now() |> DateTime.add(-days * 24 * 60 * 60, :second)
@@ -70,7 +70,7 @@ defmodule PrzetargowyPrzeglad.Tenders do
   end
 
   @doc """
-  Top przetargi do newslettera.
+  Top tenders for newsletter.
   """
   def get_top_for_newsletter(limit \\ 5) do
     week_ago = DateTime.utc_now() |> DateTime.add(-7 * 24 * 60 * 60, :second)
@@ -86,7 +86,7 @@ defmodule PrzetargowyPrzeglad.Tenders do
   end
 
   @doc """
-  Statystyki tygodniowe.
+  Weekly statistics.
   """
   def get_weekly_stats do
     week_ago = DateTime.utc_now() |> DateTime.add(-7 * 24 * 60 * 60, :second)
@@ -107,14 +107,14 @@ defmodule PrzetargowyPrzeglad.Tenders do
   end
 
   @doc """
-  Liczba przetargów w bazie.
+  Number of tenders in the database.
   """
   def count_all do
     Repo.aggregate(Tender, :count)
   end
 
   @doc """
-  Data ostatniego pobrania.
+  Date of last fetch.
   """
   def last_fetched_at do
     Tender

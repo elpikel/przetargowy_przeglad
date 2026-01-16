@@ -1,8 +1,8 @@
 defmodule PrzetargowyPrzeglad.Workers.FetchTendersWorker do
   @moduledoc """
-  Worker Oban do cyklicznego pobierania przetargów z BZP.
+  Oban worker for periodically fetching tenders from BZP.
 
-  Uruchamiany co godzinę przez Oban Cron plugin.
+  Runs hourly via the Oban Cron plugin.
   """
 
   use Oban.Worker,
@@ -17,7 +17,7 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersWorker do
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: args}) do
-    # Domyślnie ostatnie 24h
+    # Default to last 24h
     days = args["days"] || 1
     max_pages = args["max_pages"] || 5
 
@@ -49,7 +49,7 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersWorker do
   end
 
   @doc """
-  Ręczne uruchomienie workera.
+  Manually enqueue the worker.
   """
   def enqueue(opts \\ []) do
     args = %{
@@ -63,7 +63,7 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersWorker do
   end
 
   @doc """
-  Pełne pobranie (np. przy pierwszym uruchomieniu).
+  Full fetch (e.g., for initial run).
   """
   def enqueue_full_fetch(days \\ 30) do
     enqueue(days: days, max_pages: 50)
