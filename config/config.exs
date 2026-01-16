@@ -73,7 +73,11 @@ config :przetargowy_przeglad, Oban,
      crontab: [
        # Co godzinę pobieraj nowe przetargi
        {"0 * * * *", PrzetargowyPrzeglad.Workers.FetchTendersWorker,
-        args: %{"days" => 1, "max_pages" => 5}}
+        args: %{"days" => 1, "max_pages" => 5}},
+       # Niedziela 20:00
+       {"0 20 * * 0", PrzetargowyPrzeglad.Workers.GenerateNewsletterWorker},
+       # Poniedziałek 8:00
+       {"0 8 * * 1", PrzetargowyPrzeglad.Workers.SendNewsletterWorker}
      ]}
   ],
   queues: [default: 10, mailers: 20, tenders: 5]
