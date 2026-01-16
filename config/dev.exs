@@ -88,5 +88,10 @@ config :phoenix_live_view,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
 
+config :przetargowy_przeglad, Oban,
+  # Bez Cron
+  plugins: [Oban.Plugins.Pruner],
+  queues: [default: 10, mailers: 20, tenders: 5]
+
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
