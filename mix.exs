@@ -66,7 +66,8 @@ defmodule PrzetargowyPrzeglad.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:oban, "~> 2.20"}
+      {:oban, "~> 2.20"},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 
