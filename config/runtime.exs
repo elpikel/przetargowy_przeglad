@@ -68,6 +68,10 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  config :przetargowy_przeglad, :admin_auth,
+    username: System.get_env("ADMIN_USERNAME") || "admin",
+    password: System.get_env("ADMIN_PASSWORD") || raise("ADMIN_PASSWORD not set")
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key

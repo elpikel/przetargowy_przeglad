@@ -22,6 +22,25 @@ defmodule PrzetargowyPrzegladWeb.Router do
     live "/unsubscribe/:token", UnsubscribeLive, :index
   end
 
+  pipeline :admin do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, html: {PrzetargowyPrzegladWeb.Layouts, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug PrzetargowyPrzegladWeb.Plugs.AdminAuth
+  end
+
+  scope "/admin", PrzetargowyPrzegladWeb.Admin do
+    pipe_through :admin
+
+    # live "/", DashboardLive, :index
+    # live "/subscribers", SubscribersLive, :index
+    # live "/newsletters", NewslettersLive, :index
+    # live "/newsletters/:id", NewsletterShowLive, :show
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", PrzetargowyPrzegladWeb do
   #   pipe_through :api

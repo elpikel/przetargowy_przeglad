@@ -1,6 +1,5 @@
 defmodule PrzetargowyPrzeglad.Api.BzpClientTest do
   use ExUnit.Case, async: true
-  alias PrzetargowyPrzeglad.Api.BzpClient
 
   # Test parsing functions directly (no HTTP)
 

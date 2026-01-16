@@ -3,7 +3,6 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersWorkerTest do
   use Oban.Testing, repo: PrzetargowyPrzeglad.Repo
 
   alias PrzetargowyPrzeglad.Workers.FetchTendersWorker
-  alias PrzetargowyPrzeglad.Tenders
 
   describe "enqueue/1" do
     test "creates job with correct args" do

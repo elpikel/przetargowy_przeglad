@@ -7,6 +7,10 @@
 # General application configuration
 import Config
 
+config :przetargowy_przeglad, :admin_auth,
+  username: "admin",
+  password: "admin"
+
 config :przetargowy_przeglad,
   ecto_repos: [PrzetargowyPrzeglad.Repo],
   generators: [timestamp_type: :utc_datetime]
