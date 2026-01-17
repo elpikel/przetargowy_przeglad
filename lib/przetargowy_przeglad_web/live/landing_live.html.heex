@@ -23,47 +23,141 @@
     <% else %>
       <div class="bg-white/5 backdrop-blur-sm rounded-xl p-8 max-w-md mx-auto">
         <.form
-          for={@form}
-          id="subscribe-form"
+          for={@changeset}
           phx-change="validate"
           phx-submit="subscribe"
           class="space-y-4"
         >
+          <!-- Email (wymagany) -->
           <div>
             <label class="block text-sm font-medium text-slate-300 mb-1">
               Email *
             </label>
-            <.input
-              field={@form[:email]}
+            <input
               type="email"
+              name="subscriber[email]"
+              value={Ecto.Changeset.get_field(@changeset, :email)}
               placeholder="twoj@email.pl"
               class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
               required
             />
+            <%= for error <- Keyword.get_values(@changeset.errors, :email) do %>
+              <p class="text-red-400 text-sm mt-1">{translate_error(error)}</p>
+            <% end %>
           </div>
-
+          
+<!-- Imię (opcjonalne) -->
           <div>
             <label class="block text-sm font-medium text-slate-300 mb-1">
-              Imię (opcjonalne)
+              Imię <span class="text-slate-500">(opcjonalne)</span>
             </label>
-            <.input
-              field={@form[:name]}
+            <input
               type="text"
+              name="subscriber[name]"
+              value={Ecto.Changeset.get_field(@changeset, :name)}
               placeholder="Jan"
               class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
             />
           </div>
+          
+<!-- Rozwijane preferencje -->
+          <div>
+            <button
+              type="button"
+              phx-click="toggle_preferences"
+              class="text-sm text-blue-400 hover:text-blue-300 flex items-center"
+            >
+              <%= if @show_preferences do %>
+                ▼ Ukryj preferencje
+              <% else %>
+                ▶ Pokaż preferencje branży i regionu
+              <% end %>
+            </button>
+          </div>
 
+          <%= if @show_preferences do %>
+            <div class="space-y-4 pt-2 border-t border-slate-700">
+              <!-- Firma -->
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1">
+                  Firma
+                </label>
+                <input
+                  type="text"
+                  name="subscriber[company_name]"
+                  value={Ecto.Changeset.get_field(@changeset, :company_name)}
+                  placeholder="Nazwa firmy"
+                  class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                />
+              </div>
+              
+<!-- Branża -->
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1">
+                  Branża
+                </label>
+                <select
+                  name="subscriber[industry]"
+                  class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                >
+                  <option value="">Wybierz branżę...</option>
+                  <%= for industry <- Subscriber.industries() do %>
+                    <option
+                      value={industry}
+                      selected={Ecto.Changeset.get_field(@changeset, :industry) == industry}
+                    >
+                      {industry_label(industry)}
+                    </option>
+                  <% end %>
+                </select>
+              </div>
+              
+<!-- Województwa (multi-select jako checkboxy) -->
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">
+                  Województwa zainteresowania
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                  <%= for region <- regions_list() do %>
+                    <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        phx-click="toggle_region"
+                        phx-value-region={region.value}
+                        checked={
+                          region.value in (Ecto.Changeset.get_field(@changeset, :regions) || [])
+                        }
+                        class="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500"
+                      />
+                      <span>{region.label}</span>
+                    </label>
+                  <% end %>
+                </div>
+                <!-- Hidden input dla regionów -->
+                <%= for region <- Ecto.Changeset.get_field(@changeset, :regions) || [] do %>
+                  <input type="hidden" name="subscriber[regions][]" value={region} />
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          
+<!-- Referral code (hidden) -->
+          <%= if @referred_by do %>
+            <input type="hidden" name="subscriber[referred_by]" value={@referred_by} />
+          <% end %>
+          
+<!-- Submit -->
           <button
             type="submit"
-            class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+            class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={not @changeset.valid?}
           >
             Zapisz się za darmo →
           </button>
         </.form>
 
         <p class="text-xs text-slate-500 text-center mt-4">
-          Dołącz do 30 czytelników. Wypisz się w każdej chwili.
+          Dołącz do {subscriber_count()} czytelników. Wypisz się w każdej chwili.
         </p>
       </div>
     <% end %>

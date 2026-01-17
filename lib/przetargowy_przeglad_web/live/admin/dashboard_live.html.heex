@@ -1,0 +1,174 @@
+<div>
+  <div class="md:flex md:items-center md:justify-between mb-8">
+    <div class="min-w-0 flex-1">
+      <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl">
+        Dashboard
+      </h2>
+      <p class="mt-1 text-sm text-gray-500">
+        Ostatnia aktualizacja: {Calendar.strftime(@last_updated, "%H:%M:%S")}
+      </p>
+    </div>
+    <div class="mt-4 flex md:ml-4 md:mt-0">
+      <button
+        phx-click="refresh"
+        class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+      >
+        🔄 Odśwież
+      </button>
+    </div>
+  </div>
+  
+<!-- Główne statystyki -->
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+    <.stat_card
+      title="Subskrybenci"
+      value={@subscriber_stats.confirmed}
+      subtitle="potwierdzonych"
+      color="green"
+    />
+    <.stat_card
+      title="Oczekujących"
+      value={@subscriber_stats.pending}
+      subtitle="do potwierdzenia"
+      color="yellow"
+    />
+    <.stat_card
+      title="Przetargi (tydzień)"
+      value={@tender_stats.total_count}
+      subtitle={format_value(@tender_stats.total_value)}
+      color="blue"
+    />
+    <.stat_card
+      title="Wysłane newslettery"
+      value={@newsletter_stats.sent}
+      subtitle="łącznie"
+      color="blue"
+    />
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Top branże -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">
+        📊 Top branże (ostatni tydzień)
+      </h3>
+      <div class="space-y-3">
+        <%= for %{name: name, count: count} <- @tender_stats.top_industries do %>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600 capitalize">{name}</span>
+            <div class="flex items-center">
+              <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                <div
+                  class="bg-blue-600 h-2 rounded-full"
+                  style={"width: #{min(count / max_industry_count(@tender_stats.top_industries) * 100, 100)}%"}
+                >
+                </div>
+              </div>
+              <span class="text-sm font-medium text-gray-900 w-12 text-right">
+                {count}
+              </span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    
+<!-- Ostatnie zapisy -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">
+        👥 Ostatnie zapisy
+      </h3>
+      <div class="flow-root">
+        <ul role="list" class="-mb-8">
+          <%= for {subscriber, idx} <- Enum.with_index(@recent_subscribers) do %>
+            <li>
+              <div class="relative pb-8">
+                <%= if idx < length(@recent_subscribers) - 1 do %>
+                  <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                <% end %>
+                <div class="relative flex space-x-3">
+                  <div>
+                    <span class={[
+                      "h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white",
+                      subscriber.status == "confirmed" && "bg-green-500",
+                      subscriber.status == "pending" && "bg-yellow-500",
+                      subscriber.status == "unsubscribed" && "bg-gray-400"
+                    ]}>
+                      <span class="text-white text-xs">
+                        {String.first(subscriber.email) |> String.upcase()}
+                      </span>
+                    </span>
+                  </div>
+                  <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+                    <div>
+                      <p class="text-sm text-gray-900">
+                        {subscriber.email}
+                      </p>
+                      <p class="text-xs text-gray-500">
+                        {subscriber.industry || "brak branży"}
+                      </p>
+                    </div>
+                    <div class="whitespace-nowrap text-right text-xs text-gray-500">
+                      {format_relative_time(subscriber.inserted_at)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <div class="mt-4">
+        <a
+          href={~p"/admin/subscribers"}
+          class="text-sm font-medium text-blue-600 hover:text-blue-500"
+        >
+          Zobacz wszystkich →
+        </a>
+      </div>
+    </div>
+  </div>
+  
+<!-- Status newslettera -->
+  <div class="mt-8 bg-white shadow rounded-lg p-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-4">
+      📬 Status newslettera
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div>
+        <p class="text-sm text-gray-500">Ostatnio wysłany</p>
+        <p class="mt-1 text-lg font-semibold">
+          <%= if @newsletter_stats.last_sent do %>
+            #{@newsletter_stats.last_sent.issue_number}
+            <span class="text-sm font-normal text-gray-500">
+              ({format_date(@newsletter_stats.last_sent.sent_at)})
+            </span>
+          <% else %>
+            Brak
+          <% end %>
+        </p>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500">Następny zaplanowany</p>
+        <p class="mt-1 text-lg font-semibold">
+          <%= if @newsletter_stats.next_scheduled do %>
+            #{@newsletter_stats.next_scheduled.issue_number}
+            <span class="text-sm font-normal text-gray-500">
+              ({format_date(@newsletter_stats.next_scheduled.scheduled_at)})
+            </span>
+          <% else %>
+            Nie zaplanowano
+          <% end %>
+        </p>
+      </div>
+      <div class="flex items-end">
+        <a
+          href={~p"/admin/newsletters"}
+          class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500"
+        >
+          Zarządzaj newsletterami →
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

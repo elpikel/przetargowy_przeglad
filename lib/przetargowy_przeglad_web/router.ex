@@ -20,6 +20,7 @@ defmodule PrzetargowyPrzegladWeb.Router do
     live "/", LandingLive, :index
     live "/confirm/:token", ConfirmLive, :index
     live "/unsubscribe/:token", UnsubscribeLive, :index
+    live "/preferences", PreferencesLive, :index
   end
 
   pipeline :admin do
@@ -35,10 +36,10 @@ defmodule PrzetargowyPrzegladWeb.Router do
   scope "/admin", PrzetargowyPrzegladWeb.Admin do
     pipe_through :admin
 
-    # live "/", DashboardLive, :index
-    # live "/subscribers", SubscribersLive, :index
-    # live "/newsletters", NewslettersLive, :index
-    # live "/newsletters/:id", NewsletterShowLive, :show
+    live "/", DashboardLive, :index
+    live "/subscribers", SubscribersLive, :index
+    live "/newsletters", NewslettersLive, :index
+    live "/newsletters/:id", NewsletterShowLive, :show
   end
 
   # Other scopes may use custom stacks.

@@ -48,6 +48,33 @@ defmodule PrzetargowyPrzeglad.Newsletters do
     |> Repo.update()
   end
 
+  def count_all do
+    Repo.aggregate(Newsletter, :count)
+  end
+
+  def count_by_status(status) do
+    Newsletter
+    |> where([n], n.status == ^status)
+    |> Repo.aggregate(:count)
+  end
+
+  def get_last_sent do
+    Newsletter
+    |> where([n], n.status == "sent")
+    |> order_by([n], desc: n.sent_at)
+    |> limit(1)
+    |> Repo.one()
+  end
+
+  def get_next_scheduled do
+    Newsletter
+    |> where([n], n.status == "generated")
+    |> where([n], not is_nil(n.scheduled_at))
+    |> order_by([n], asc: n.scheduled_at)
+    |> limit(1)
+    |> Repo.one()
+  end
+
   defp maybe_filter_status(query, nil), do: query
 
   defp maybe_filter_status(query, status) do

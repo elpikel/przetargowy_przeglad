@@ -45,6 +45,32 @@ defmodule PrzetargowyPrzeglad.Subscribers.Subscriber do
     |> put_change(:unsubscribed_at, DateTime.utc_now() |> DateTime.truncate(:second))
   end
 
+  def preferences_changeset(subscriber, attrs) do
+    subscriber
+    |> cast(attrs, [:name, :company_name, :industry, :regions])
+    |> validate_inclusion(:industry, @industries ++ [nil, ""])
+    |> validate_regions()
+  end
+
+  defp validate_regions(changeset) do
+    case get_change(changeset, :regions) do
+      nil ->
+        changeset
+
+      regions ->
+        valid_regions = ~w(dolnoslaskie kujawsko-pomorskie lubelskie lubuskie lodzkie
+                           malopolskie mazowieckie opolskie podkarpackie podlaskie
+                           pomorskie slaskie swietokrzyskie warminsko-mazurskie
+                           wielkopolskie zachodniopomorskie)
+
+        if Enum.all?(regions, &(&1 in valid_regions)) do
+          changeset
+        else
+          add_error(changeset, :regions, "zawiera nieprawidłowe województwa")
+        end
+    end
+  end
+
   defp put_confirmation_token(changeset) do
     if get_change(changeset, :email) do
       token = :crypto.strong_rand_bytes(32) |> Base.url_encode64(padding: false)
