@@ -51,8 +51,12 @@ if config_env() == :prod do
 
   port = String.to_integer(System.get_env("PORT") || "4000")
 
+  # Use HTTPS scheme when PHX_SCHEME is "https", otherwise default to HTTP
+  scheme = System.get_env("PHX_SCHEME", "http")
+  url_port = if scheme == "https", do: 443, else: 80
+
   config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
-    url: [host: host, port: 443, scheme: "https"],
+    url: [host: host, port: url_port, scheme: scheme],
     http: [
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
       port: port
