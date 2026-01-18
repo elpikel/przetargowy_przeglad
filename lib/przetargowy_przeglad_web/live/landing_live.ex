@@ -5,22 +5,18 @@ defmodule PrzetargowyPrzegladWeb.LandingLive do
   alias PrzetargowyPrzeglad.Subscribers.Subscriber
 
   @impl true
-  def mount(params, _session, socket) do
-    referred_by = params["ref"]
-    changeset = Subscriber.signup_changeset(%Subscriber{}, %{referred_by: referred_by})
+  def mount(_params, _session, socket) do
+    changeset = Subscriber.signup_changeset(%Subscriber{}, %{})
 
     {:ok,
      socket
      |> assign(:form, to_form(changeset))
-     |> assign(:referred_by, referred_by)
      |> assign(:submitted, false)
      |> assign(:show_preferences, false)}
   end
 
   @impl true
   def handle_event("validate", %{"subscriber" => params}, socket) do
-    params = Map.put(params, "referred_by", socket.assigns.referred_by)
-
     form =
       %Subscriber{}
       |> Subscriber.signup_changeset(params)
@@ -56,8 +52,6 @@ defmodule PrzetargowyPrzegladWeb.LandingLive do
 
   @impl true
   def handle_event("subscribe", %{"subscriber" => params}, socket) do
-    params = Map.put(params, "referred_by", socket.assigns.referred_by)
-
     case Subscribers.subscribe(params) do
       {:ok, _subscriber} ->
         {:noreply, assign(socket, :submitted, true)}

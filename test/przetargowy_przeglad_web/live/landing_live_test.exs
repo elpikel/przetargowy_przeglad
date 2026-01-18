@@ -27,12 +27,6 @@ defmodule PrzetargowyPrzegladWeb.LandingLiveTest do
       assert html =~ "Praktyczne tipy"
     end
 
-    test "captures referral code from URL", %{conn: conn} do
-      {:ok, view, _html} = live(conn, ~p"/?ref=ABC123")
-
-      assert view |> element("input[name='subscriber[referred_by]']") |> has_element?()
-    end
-
     test "shows subscriber count", %{conn: conn} do
       {:ok, _view, html} = live(conn, ~p"/")
 
@@ -248,22 +242,6 @@ defmodule PrzetargowyPrzegladWeb.LandingLiveTest do
 
       subscriber = Subscribers.get_by_email("token-test@example.com")
       assert subscriber.confirmation_token != nil
-    end
-
-    test "subscription with referral code includes hidden input", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/?ref=REFCODE123")
-
-      # Referral code should be in hidden input
-      assert html =~ "REFCODE123"
-      assert view |> element("input[name='subscriber[referred_by]']") |> has_element?()
-
-      # Subscription should still work
-      html =
-        view
-        |> form("form", %{subscriber: %{email: "referred@example.com"}})
-        |> render_submit()
-
-      assert html =~ "Sprawdź swoją skrzynkę!"
     end
 
     test "subscription with preferences", %{conn: conn} do

@@ -141,11 +141,6 @@
             </div>
           <% end %>
           
-<!-- Referral code (hidden) -->
-          <%= if @referred_by do %>
-            <input type="hidden" name="subscriber[referred_by]" value={@referred_by} />
-          <% end %>
-          
 <!-- Submit -->
           <button
             type="submit"
