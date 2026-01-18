@@ -52,7 +52,7 @@ if config_env() == :prod do
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
-    url: [host: host, port: 443, scheme: "https"],
+    url: [host: host, port: 80, scheme: "http"],
     http: [
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
       port: port
