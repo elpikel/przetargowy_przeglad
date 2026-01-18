@@ -69,16 +69,10 @@ if config_env() == :prod do
       "//*.sslip.io"
     ]
 
-  # Email configuration
+  # Email configuration - Brevo (formerly Sendinblue)
   config :przetargowy_przeglad, PrzetargowyPrzeglad.Mailer,
-    adapter: Swoosh.Adapters.SMTP,
-    relay: System.get_env("SMTP_HOST") || raise("SMTP_HOST missing"),
-    port: String.to_integer(System.get_env("SMTP_PORT") || "587"),
-    username: System.get_env("SMTP_USERNAME") || raise("SMTP_USERNAME missing"),
-    password: System.get_env("SMTP_PASSWORD") || raise("SMTP_PASSWORD missing"),
-    ssl: false,
-    tls: :always,
-    auth: :always
+    adapter: Swoosh.Adapters.Brevo,
+    api_key: System.get_env("BREVO_API_KEY") || raise("BREVO_API_KEY missing")
 
   # Admin auth
   config :przetargowy_przeglad, :admin_auth,
