@@ -3,7 +3,7 @@ defmodule PrzetargowyPrzeglad.Email.NewsletterEmail do
 
   alias PrzetargowyPrzegladWeb.Endpoint
 
-  @from {"Przetargowy Przegląd", "newsletter@przetargi.pl"}
+  @from {"Przetargowy Przegląd", "el.pikel@gmail.com"}
 
   def build(newsletter, subscriber) do
     new()

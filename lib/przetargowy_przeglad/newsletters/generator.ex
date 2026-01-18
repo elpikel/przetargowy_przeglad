@@ -247,8 +247,6 @@ defmodule PrzetargowyPrzeglad.Newsletter.Generator do
 
         #{build_cta_section_html()}
 
-        #{build_referral_section_html()}
-
         <div class="footer">
           <p>Do przyszłego tygodnia! 👋</p>
           <p style="margin-top: 16px;">
@@ -335,16 +333,6 @@ defmodule PrzetargowyPrzeglad.Newsletter.Generator do
       <h2 style="margin-top: 0;">🎯 Chcesz więcej?</h2>
       <p>Pracuję nad raportem <strong>„Mapa marż przetargowych 2025"</strong> – dowiesz się, gdzie w Polsce jest największa marża w Twojej branży.</p>
       <p>Chcesz dostać go jako pierwszy? <strong>Odpowiedz na tego maila słowem MAPA.</strong></p>
-    </div>
-    """
-  end
-
-  defp build_referral_section_html do
-    """
-    <div class="referral-box">
-      <p style="margin: 0 0 8px 0;"><strong>📬 Poleć znajomemu</strong></p>
-      <p style="margin: 0 0 12px 0; font-size: 14px; color: #64748b;">Znasz kogoś, kto startuje w przetargach? Prześlij mu tego maila!</p>
-      <p style="margin: 0;">Twój kod polecający: <span class="referral-code">{{referral_code}}</span></p>
     </div>
     """
   end
