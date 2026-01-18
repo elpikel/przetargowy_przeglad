@@ -11,7 +11,7 @@ defmodule PrzetargowyPrzegladWeb.LandingLive do
 
     {:ok,
      socket
-     |> assign(:changeset, changeset)
+     |> assign(:form, to_form(changeset))
      |> assign(:referred_by, referred_by)
      |> assign(:submitted, false)
      |> assign(:show_preferences, false)}
@@ -21,12 +21,13 @@ defmodule PrzetargowyPrzegladWeb.LandingLive do
   def handle_event("validate", %{"subscriber" => params}, socket) do
     params = Map.put(params, "referred_by", socket.assigns.referred_by)
 
-    changeset =
+    form =
       %Subscriber{}
       |> Subscriber.signup_changeset(params)
       |> Map.put(:action, :validate)
+      |> to_form()
 
-    {:noreply, assign(socket, :changeset, changeset)}
+    {:noreply, assign(socket, :form, form)}
   end
 
   @impl true
@@ -36,8 +37,8 @@ defmodule PrzetargowyPrzegladWeb.LandingLive do
 
   @impl true
   def handle_event("toggle_region", %{"region" => region}, socket) do
-    changeset = socket.assigns.changeset
-    current_regions = Ecto.Changeset.get_field(changeset, :regions) || []
+    form = socket.assigns.form
+    current_regions = Phoenix.HTML.Form.input_value(form, :regions) || []
 
     new_regions =
       if region in current_regions do
@@ -46,8 +47,11 @@ defmodule PrzetargowyPrzegladWeb.LandingLive do
         [region | current_regions]
       end
 
-    changeset = Ecto.Changeset.put_change(changeset, :regions, new_regions)
-    {:noreply, assign(socket, :changeset, changeset)}
+    changeset =
+      form.source
+      |> Ecto.Changeset.put_change(:regions, new_regions)
+
+    {:noreply, assign(socket, :form, to_form(changeset))}
   end
 
   @impl true
@@ -59,7 +63,7 @@ defmodule PrzetargowyPrzegladWeb.LandingLive do
         {:noreply, assign(socket, :submitted, true)}
 
       {:error, changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+        {:noreply, assign(socket, :form, to_form(changeset))}
     end
   end
 
