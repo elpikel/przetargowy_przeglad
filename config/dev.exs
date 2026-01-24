@@ -23,7 +23,7 @@ config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "ZA0llN2yT0ZQOJfZZYK1ch3QoSJ0WMp7ycFYL4uZwdL30BLFy526pr0czEh29Rp2",
+  secret_key_base: "2dyYqsTT4ta5DDHlWH80w3BkBRCKS64YRL19/oM7o0xwLsFsmkbfZXipkw7jKRpA",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:przetargowy_przeglad, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:przetargowy_przeglad, ~w(--watch)]}
@@ -87,11 +87,6 @@ config :phoenix_live_view,
   debug_attributes: true,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
-
-config :przetargowy_przeglad, Oban,
-  # Bez Cron
-  plugins: [Oban.Plugins.Pruner],
-  queues: [default: 10, mailers: 20, tenders: 5]
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

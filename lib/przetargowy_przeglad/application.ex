@@ -10,9 +10,7 @@ defmodule PrzetargowyPrzeglad.Application do
     children = [
       PrzetargowyPrzegladWeb.Telemetry,
       PrzetargowyPrzeglad.Repo,
-      {Oban, Application.fetch_env!(:przetargowy_przeglad, Oban)},
-      {DNSCluster,
-       query: Application.get_env(:przetargowy_przeglad, :dns_cluster_query) || :ignore},
+      {DNSCluster, query: Application.get_env(:przetargowy_przeglad, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: PrzetargowyPrzeglad.PubSub},
       # Start a worker by calling: PrzetargowyPrzeglad.Worker.start_link(arg)
       # {PrzetargowyPrzeglad.Worker, arg},

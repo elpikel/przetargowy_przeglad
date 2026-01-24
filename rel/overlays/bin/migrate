@@ -1,5 +1,0 @@
-#!/bin/sh
-set -eu
-
-cd -P -- "$(dirname -- "$0")"
-exec ./przetargowy_przeglad eval PrzetargowyPrzeglad.Release.migrate

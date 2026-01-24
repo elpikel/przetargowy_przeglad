@@ -7,10 +7,6 @@
 # General application configuration
 import Config
 
-config :przetargowy_przeglad, :admin_auth,
-  username: "admin",
-  password: "admin"
-
 config :przetargowy_przeglad,
   ecto_repos: [PrzetargowyPrzeglad.Repo],
   generators: [timestamp_type: :utc_datetime]
@@ -24,12 +20,7 @@ config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
     layout: false
   ],
   pubsub_server: PrzetargowyPrzeglad.PubSub,
-  live_view: [signing_salt: "wITUalJC"]
-
-config :przetargowy_przeglad, Oban,
-  engine: Oban.Engines.Basic,
-  queues: [default: 10],
-  repo: PrzetargowyPrzeglad.Repo
+  live_view: [signing_salt: "ibLWsRkx"]
 
 # Configure the mailer
 #
@@ -68,23 +59,6 @@ config :logger, :default_formatter,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
-
-config :przetargowy_przeglad, Oban,
-  repo: PrzetargowyPrzeglad.Repo,
-  plugins: [
-    Oban.Plugins.Pruner,
-    {Oban.Plugins.Cron,
-     crontab: [
-       # Co godzinę pobieraj nowe przetargi
-       {"0 * * * *", PrzetargowyPrzeglad.Workers.FetchTendersWorker,
-        args: %{"days" => 1, "max_pages" => 5}},
-       # Niedziela 20:00
-       {"0 20 * * 0", PrzetargowyPrzeglad.Workers.GenerateNewsletterWorker},
-       # Poniedziałek 8:00
-       {"0 8 * * 1", PrzetargowyPrzeglad.Workers.SendNewsletterWorker}
-     ]}
-  ],
-  queues: [default: 10, mailers: 20, tenders: 5]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
