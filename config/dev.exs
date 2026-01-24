@@ -23,10 +23,9 @@ config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "2dyYqsTT4ta5DDHlWH80w3BkBRCKS64YRL19/oM7o0xwLsFsmkbfZXipkw7jKRpA",
+  secret_key_base: "2u/n6tyF6UPFuQHVxqABnbRBOjC7/GFtKwYJcODtev60mGgpLxyPE+3jQeBcoqab",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:przetargowy_przeglad, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:przetargowy_przeglad, ~w(--watch)]}
+    esbuild: {Esbuild, :install_and_run, [:przetargowy_przeglad, ~w(--sourcemap=inline --watch)]}
   ]
 
 # ## SSL Support

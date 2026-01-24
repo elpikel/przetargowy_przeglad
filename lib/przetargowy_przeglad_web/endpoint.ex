@@ -7,7 +7,7 @@ defmodule PrzetargowyPrzegladWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_przetargowy_przeglad_key",
-    signing_salt: "lAV5ARMx",
+    signing_salt: "2BUNXa+j",
     same_site: "Lax"
   ]
 

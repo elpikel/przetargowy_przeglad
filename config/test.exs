@@ -17,7 +17,7 @@ config :przetargowy_przeglad, PrzetargowyPrzeglad.Repo,
 # you can enable the server option below.
 config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "h52hCjeSzRJbwFZ2GgePeH8Uwvlt80QEmQKPMsZxEUKsW6J1KXZLU++RNK0alrB6",
+  secret_key_base: "V+IzNbD+3lhzHnRi47aZICC7PgWo3onpDQ0HJKJHT97YHlnJI09tj+ByiueEGxwY",
   server: false
 
 # In test we don't send emails
