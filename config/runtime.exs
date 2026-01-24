@@ -66,7 +66,7 @@ if config_env() == :prod do
     url: [host: host, port: url_port, scheme: scheme],
     http: [
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
-      port: port
+      port: url_port
     ],
     secret_key_base: secret_key_base,
     server: true,
