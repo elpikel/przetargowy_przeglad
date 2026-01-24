@@ -57,16 +57,24 @@ if config_env() == :prod do
 
   config :przetargowy_przeglad, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
+  # Use HTTPS scheme when PHX_SCHEME is "https", otherwise default to HTTP
+  # Use HTTPS scheme when PHX_SCHEME is "https", otherwise default to HTTP
+  scheme = System.get_env("PHX_SCHEME", "http")
+  url_port = if scheme == "https", do: 443, else: 80
+
   config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
-    url: [host: host, port: 443, scheme: "https"],
+    url: [host: host, port: url_port, scheme: scheme],
     http: [
-      # Enable IPv6 and bind on all interfaces.
-      # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
-      # See the documentation on https://hexdocs.pm/bandit/Bandit.html#t:options/0
-      # for details about using IPv6 vs IPv4 and loopback vs public addresses.
-      ip: {0, 0, 0, 0, 0, 0, 0, 0}
+      ip: {0, 0, 0, 0, 0, 0, 0, 0},
+      port: port
     ],
-    secret_key_base: secret_key_base
+    secret_key_base: secret_key_base,
+    server: true,
+    check_origin: [
+      "//#{host}",
+      "//localhost",
+      "//*.sslip.io"
+    ]
 
   # ## SSL Support
   #
