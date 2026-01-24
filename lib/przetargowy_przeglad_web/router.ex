@@ -18,6 +18,8 @@ defmodule PrzetargowyPrzegladWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/rules", PageController, :rules
+    get "/privacy-policy", PageController, :privacy_policy
   end
 
   # Other scopes may use custom stacks.

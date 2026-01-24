@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Regulamin - Przetargowy Przegląd</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+          --navy-900: #0a1628;
+          --navy-800: #12233d;
+          --navy-700: #1a3052;
+          --navy-600: #234168;
+          --navy-500: #2d527d;
+          --cream-50: #fefcf8;
+          --cream-100: #fdf8ed;
+          --cream-200: #f9f0db;
+          --cream-300: #f3e4c3;
+          --cream-400: #e8d4a8;
+          --gold-500: #c9a227;
+          --gold-600: #b8922a;
+          --text-primary: #0a1628;
+          --text-secondary: #4a5568;
+          --text-light: #f8f5f0;
+      }
+
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      html {
+          scroll-behavior: smooth;
+      }
+
+      body {
+          font-family: 'DM Sans', sans-serif;
+          background-color: var(--cream-50);
+          color: var(--text-primary);
+          line-height: 1.6;
+      }
+
+      .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 24px;
+      }
+
+      /* Header */
+      header {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 100;
+          background: rgba(254, 252, 248, 0.92);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid rgba(10, 22, 40, 0.06);
+      }
+
+      .header-inner {
+          display: flex;
+          align-items: center;
+          padding: 16px 24px;
+          max-width: 1200px;
+          margin: 0 auto;
+          gap: 24px;
+      }
+
+      .logo {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          text-decoration: none;
+          flex-shrink: 0;
+      }
+
+      .logo-icon {
+          width: 44px;
+          height: 44px;
+          background: var(--cream-50);
+          border: 2px solid var(--navy-600);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1);
+      }
+
+      .logo-icon svg {
+          width: 26px;
+          height: 26px;
+          color: var(--navy-700);
+      }
+
+      .logo-text {
+          font-family: 'Playfair Display', serif;
+          font-weight: 700;
+          font-size: 1.35rem;
+          color: var(--navy-800);
+          letter-spacing: -0.02em;
+      }
+
+      .logo-text span {
+          color: var(--gold-500);
+      }
+
+      nav {
+          display: flex;
+          align-items: center;
+          gap: clamp(16px, 3vw, 32px);
+          margin: 0 auto;
+      }
+
+      nav a {
+          text-decoration: none;
+          color: var(--text-secondary);
+          font-weight: 500;
+          font-size: 0.95rem;
+          transition: color 0.2s ease;
+      }
+
+      nav a:hover {
+          color: var(--navy-800);
+      }
+
+      .header-cta {
+          display: flex;
+          gap: 12px;
+          flex-shrink: 0;
+      }
+
+      .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 0.95rem;
+          text-decoration: none;
+          transition: all 0.25s ease;
+          cursor: pointer;
+          border: none;
+      }
+
+      .btn-outline {
+          background: transparent;
+          color: var(--navy-700);
+          border: 1.5px solid var(--navy-600);
+      }
+
+      .btn-outline:hover {
+          background: var(--navy-800);
+          color: var(--cream-50);
+          border-color: var(--navy-800);
+      }
+
+      .btn-primary {
+          background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
+          color: var(--cream-50);
+          box-shadow: 0 4px 14px rgba(10, 22, 40, 0.25);
+      }
+
+      .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(10, 22, 40, 0.35);
+      }
+
+      /* Content */
+      .page-content {
+          padding: 140px 0 80px;
+      }
+
+      .content-wrapper {
+          max-width: 800px;
+          margin: 0 auto;
+      }
+
+      .page-header {
+          margin-bottom: 48px;
+          padding-bottom: 32px;
+          border-bottom: 1px solid var(--cream-300);
+      }
+
+      .page-title {
+          font-family: 'Playfair Display', serif;
+          font-size: 2.75rem;
+          font-weight: 700;
+          color: var(--navy-900);
+          margin-bottom: 12px;
+      }
+
+      .page-meta {
+          color: var(--text-secondary);
+          font-size: 0.95rem;
+      }
+
+      .legal-content h2 {
+          font-family: 'Playfair Display', serif;
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: var(--navy-800);
+          margin: 40px 0 16px;
+      }
+
+      .legal-content h2:first-child {
+          margin-top: 0;
+      }
+
+      .legal-content p {
+          color: var(--text-secondary);
+          margin-bottom: 16px;
+          line-height: 1.8;
+      }
+
+      .legal-content ul {
+          margin: 16px 0 16px 24px;
+          color: var(--text-secondary);
+      }
+
+      .legal-content li {
+          margin-bottom: 8px;
+          line-height: 1.7;
+      }
+
+      /* Footer */
+      footer {
+          background: var(--cream-100);
+          padding: 60px 0 30px;
+          border-top: 1px solid var(--cream-300);
+      }
+
+      .footer-content {
+          display: grid;
+          grid-template-columns: 1.5fr 1fr 1fr;
+          gap: 60px;
+          margin-bottom: 48px;
+      }
+
+      .footer-brand .logo {
+          margin-bottom: 20px;
+      }
+
+      .footer-brand p {
+          color: var(--text-secondary);
+          font-size: 0.95rem;
+          max-width: 320px;
+      }
+
+      .footer-links h4 {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: var(--navy-800);
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          margin-bottom: 20px;
+      }
+
+      .footer-links ul {
+          list-style: none;
+      }
+
+      .footer-links li {
+          margin-bottom: 12px;
+      }
+
+      .footer-links a {
+          color: var(--text-secondary);
+          text-decoration: none;
+          font-size: 0.95rem;
+          transition: color 0.2s ease;
+      }
+
+      .footer-links a:hover {
+          color: var(--navy-700);
+      }
+
+      .footer-bottom {
+          padding-top: 24px;
+          border-top: 1px solid var(--cream-300);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+
+      .footer-bottom p {
+          color: var(--text-secondary);
+          font-size: 0.85rem;
+      }
+
+      .footer-legal {
+          display: flex;
+          gap: 24px;
+      }
+
+      .footer-legal a {
+          color: var(--text-secondary);
+          text-decoration: none;
+          font-size: 0.85rem;
+          transition: color 0.2s ease;
+      }
+
+      .footer-legal a:hover {
+          color: var(--navy-700);
+      }
+
+      /* Responsive */
+      @media (max-width: 820px) {
+          .header-inner {
+              justify-content: space-between;
+          }
+
+          nav {
+              display: none;
+          }
+      }
+
+      @media (max-width: 640px) {
+          .header-inner {
+              padding: 12px 16px;
+          }
+
+          .logo-text {
+              font-size: 1.1rem;
+          }
+
+          .header-cta .btn-outline {
+              display: none;
+          }
+
+          .page-content {
+              padding: 120px 0 60px;
+          }
+
+          .page-title {
+              font-size: 2rem;
+          }
+
+          .footer-content {
+              grid-template-columns: 1fr;
+              gap: 40px;
+          }
+
+          .footer-bottom {
+              flex-direction: column;
+              gap: 16px;
+              text-align: center;
+          }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M7.5 12H12.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <path
+                d="M7.5 15H10.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <circle
+                cx="16.5"
+                cy="14.5"
+                r="4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M19.5 17.5L22 20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
+        </a>
+        <nav></nav>
+        <div class="header-cta">
+          <a href="/login" class="btn btn-outline">Zaloguj się</a>
+          <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
+        </div>
+      </div>
+    </header>
+    
+<!-- Content -->
+    <main class="page-content">
+      <div class="container">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h1 class="page-title">Regulamin</h1>
+            <p class="page-meta">Ostatnia aktualizacja: 24 stycznia 2026</p>
+          </div>
+
+          <div class="legal-content">
+            <h2>§1. Postanowienia ogólne</h2>
+            <p>
+              Niniejszy Regulamin określa zasady korzystania z serwisu internetowego Przetargowy Przegląd, dostępnego pod adresem przetargowyprzeglad.pl, zwanego dalej "Serwisem".
+            </p>
+            <p>
+              Właścicielem i operatorem Serwisu jest [Nazwa firmy], z siedzibą w [adres], NIP: [numer], REGON: [numer], zwana dalej "Operatorem".
+            </p>
+            <p>Korzystanie z Serwisu oznacza akceptację niniejszego Regulaminu.</p>
+
+            <h2>§2. Definicje</h2>
+            <p>Użyte w Regulaminie pojęcia oznaczają:</p>
+            <ul>
+              <li>
+                <strong>Użytkownik</strong>
+                – osoba fizyczna, osoba prawna lub jednostka organizacyjna nieposiadająca osobowości prawnej, korzystająca z Serwisu.
+              </li>
+              <li>
+                <strong>Konto</strong>
+                – indywidualny profil Użytkownika w Serwisie, utworzony w procesie rejestracji.
+              </li>
+              <li>
+                <strong>Newsletter</strong>
+                – wiadomość e-mail zawierająca informacje o przetargach, wysyłana do Użytkowników.
+              </li>
+              <li>
+                <strong>Plan Darmowy</strong>
+                – bezpłatna wersja usługi z ograniczoną funkcjonalnością.
+              </li>
+              <li>
+                <strong>Plan Premium</strong> – płatna wersja usługi z pełną funkcjonalnością.
+              </li>
+            </ul>
+
+            <h2>§3. Rejestracja i Konto</h2>
+            <p>Rejestracja w Serwisie jest dobrowolna i bezpłatna.</p>
+            <p>Do rejestracji wymagane jest podanie aktywnego adresu e-mail.</p>
+            <p>Użytkownik zobowiązuje się do podania prawdziwych danych podczas rejestracji.</p>
+            <p>
+              Użytkownik jest odpowiedzialny za zachowanie poufności danych dostępowych do swojego Konta.
+            </p>
+
+            <h2>§4. Zakres usług</h2>
+            <p>
+              Serwis świadczy usługi polegające na agregowaniu i dostarczaniu informacji o zamówieniach publicznych publikowanych w serwisie ezamowienia.gov.pl.
+            </p>
+            <p>W ramach Planu Darmowego Użytkownik otrzymuje:</p>
+            <ul>
+              <li>Możliwość wyboru jednej branży</li>
+              <li>Możliwość wyboru jednego regionu</li>
+              <li>Newsletter wysyłany raz w tygodniu (w piątek)</li>
+            </ul>
+            <p>W ramach Planu Premium Użytkownik otrzymuje:</p>
+            <ul>
+              <li>Możliwość wyboru nieograniczonej liczby branż</li>
+              <li>Możliwość wyboru wszystkich lub wybranych regionów</li>
+              <li>Możliwość definiowania własnych słów kluczowych</li>
+              <li>Codzienny newsletter wysyłany o godzinie 7:00</li>
+              <li>Szczegółowe dane o przetargach</li>
+              <li>Priorytetowe wsparcie techniczne</li>
+            </ul>
+
+            <h2>§5. Płatności</h2>
+            <p>Opłata za Plan Premium wynosi 99 zł miesięcznie.</p>
+            <p>Płatności realizowane są za pośrednictwem operatora płatności TPay.</p>
+            <p>Subskrypcja jest odnawiana automatycznie na kolejny okres rozliczeniowy.</p>
+            <p>
+              Użytkownik może zrezygnować z subskrypcji w dowolnym momencie poprzez panel ustawień Konta.
+            </p>
+
+            <h2>§6. Rezygnacja z usług</h2>
+            <p>
+              Użytkownik może w każdej chwili zrezygnować z korzystania z Serwisu poprzez usunięcie Konta.
+            </p>
+            <p>
+              W przypadku rezygnacji z Planu Premium w trakcie okresu rozliczeniowego, Użytkownikowi nie przysługuje zwrot proporcjonalnej części opłaty.
+            </p>
+            <p>
+              Po rezygnacji z Planu Premium Konto Użytkownika zostaje automatycznie przekształcone w Plan Darmowy.
+            </p>
+
+            <h2>§7. Odpowiedzialność</h2>
+            <p>
+              Operator dokłada wszelkich starań, aby informacje prezentowane w Serwisie były aktualne i zgodne z danymi źródłowymi.
+            </p>
+            <p>Operator nie ponosi odpowiedzialności za:</p>
+            <ul>
+              <li>Błędy lub nieścisłości w danych pochodzących z serwisu ezamowienia.gov.pl</li>
+              <li>
+                Czasową niedostępność Serwisu spowodowaną pracami konserwacyjnymi lub awariami
+              </li>
+              <li>
+                Decyzje biznesowe podjęte przez Użytkownika na podstawie informacji z Serwisu
+              </li>
+            </ul>
+
+            <h2>§8. Ochrona danych osobowych</h2>
+            <p>
+              Zasady przetwarzania danych osobowych Użytkowników określa Polityka Prywatności dostępna pod adresem <a href="/polityka-prywatnosci">przetargowyprzeglad.pl/polityka-prywatnosci</a>.
+            </p>
+
+            <h2>§9. Postanowienia końcowe</h2>
+            <p>
+              Operator zastrzega sobie prawo do zmiany Regulaminu. O zmianach Użytkownicy będą informowani drogą mailową z 14-dniowym wyprzedzeniem.
+            </p>
+            <p>
+              W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy prawa polskiego.
+            </p>
+            <p>
+              Wszelkie spory wynikające z korzystania z Serwisu będą rozstrzygane przez sąd właściwy dla siedziby Operatora.
+            </p>
+            <p>Regulamin wchodzi w życie z dniem 24 stycznia 2026 roku.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+<!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <a href="/" class="logo">
+              <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M7.5 12H12.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M7.5 15H10.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                  <circle
+                    cx="16.5"
+                    cy="14.5"
+                    r="4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M19.5 17.5L22 20"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <span class="logo-text">Przetargowy<span>Przegląd</span></span>
+            </a>
+            <p>
+              Automatyczny monitoring zamówień publicznych. Oszczędzaj czas i nie przegap żadnej okazji biznesowej.
+            </p>
+          </div>
+          <div class="footer-links">
+            <h4>Produkt</h4>
+            <ul>
+              <li><a href="/#jak-dziala">Jak to działa</a></li>
+              <li><a href="/#cennik">Cennik</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>Kontakt</h4>
+            <ul>
+              <li>
+                <a href="mailto:kontakt@przetargowyprzeglad.pl">kontakt@przetargowyprzeglad.pl</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 Przetargowy Przegląd. Wszelkie prawa zastrzeżone.</p>
+          <div class="footer-legal">
+            <a href="/regulamin">Regulamin</a>
+            <a href="/polityka-prywatnosci">Polityka prywatności</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
