@@ -1,201 +1,1342 @@
-<Layouts.flash_group flash={@flash} />
-<div class="left-[40rem] fixed inset-y-0 right-0 z-0 hidden lg:block xl:left-[50rem]">
-  <svg
-    viewBox="0 0 1480 957"
-    fill="none"
-    aria-hidden="true"
-    class="absolute inset-0 h-full w-full"
-    preserveAspectRatio="xMinYMid slice"
-  >
-    <path fill="#EE7868" d="M0 0h1480v957H0z" />
-    <path
-      d="M137.542 466.27c-582.851-48.41-988.806-82.127-1608.412 658.2l67.39 810 3083.15-256.51L1535.94-49.622l-98.36 8.183C1269.29 281.468 734.115 515.799 146.47 467.012l-8.928-.742Z"
-      fill="#FF9F92"
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Przetargowy Przegląd - Znajdź idealne przetargi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
     />
-    <path
-      d="M371.028 528.664C-169.369 304.988-545.754 149.198-1361.45 665.565l-182.58 792.025 3014.73 694.98 389.42-1689.25-96.18-22.171C1505.28 697.438 924.153 757.586 379.305 532.09l-8.277-3.426Z"
-      fill="#FA8372"
-    />
-    <path
-      d="M359.326 571.714C-104.765 215.795-428.003-32.102-1349.55 255.554l-282.3 1224.596 3047.04 722.01 312.24-1354.467C1411.25 1028.3 834.355 935.995 366.435 577.166l-7.109-5.452Z"
-      fill="#E96856"
-      fill-opacity=".6"
-    />
-    <path
-      d="M1593.87 1236.88c-352.15 92.63-885.498-145.85-1244.602-613.557l-5.455-7.105C-12.347 152.31-260.41-170.8-1225-131.458l-368.63 1599.048 3057.19 704.76 130.31-935.47Z"
-      fill="#C42652"
-      fill-opacity=".2"
-    />
-    <path
-      d="M1411.91 1526.93c-363.79 15.71-834.312-330.6-1085.883-863.909l-3.822-8.102C72.704 125.95-101.074-242.476-1052.01-408.907l-699.85 1484.267 2837.75 1338.01 326.02-886.44Z"
-      fill="#A41C42"
-      fill-opacity=".2"
-    />
-    <path
-      d="M1116.26 1863.69c-355.457-78.98-720.318-535.27-825.287-1115.521l-1.594-8.816C185.286 163.833 112.786-237.016-762.678-643.898L-1822.83 608.665 571.922 2635.55l544.338-771.86Z"
-      fill="#A41C42"
-      fill-opacity=".2"
-    />
-  </svg>
-</div>
-<div class="px-4 py-10 sm:px-6 sm:py-28 lg:px-8 xl:px-28 xl:py-32">
-  <div class="mx-auto max-w-xl lg:mx-0">
-    <svg viewBox="0 0 71 48" class="h-12" aria-hidden="true">
-      <path
-        d="m26.371 33.477-.552-.1c-3.92-.729-6.397-3.1-7.57-6.829-.733-2.324.597-4.035 3.035-4.148 1.995-.092 3.362 1.055 4.57 2.39 1.557 1.72 2.984 3.558 4.514 5.305 2.202 2.515 4.797 4.134 8.347 3.634 3.183-.448 5.958-1.725 8.371-3.828.363-.316.761-.592 1.144-.886l-.241-.284c-2.027.63-4.093.841-6.205.735-3.195-.16-6.24-.828-8.964-2.582-2.486-1.601-4.319-3.746-5.19-6.611-.704-2.315.736-3.934 3.135-3.6.948.133 1.746.56 2.463 1.165.583.493 1.143 1.015 1.738 1.493 2.8 2.25 6.712 2.375 10.265-.068-5.842-.026-9.817-3.24-13.308-7.313-1.366-1.594-2.7-3.216-4.095-4.785-2.698-3.036-5.692-5.71-9.79-6.623C12.8-.623 7.745.14 2.893 2.361 1.926 2.804.997 3.319 0 4.149c.494 0 .763.006 1.032 0 2.446-.064 4.28 1.023 5.602 3.024.962 1.457 1.415 3.104 1.761 4.798.513 2.515.247 5.078.544 7.605.761 6.494 4.08 11.026 10.26 13.346 2.267.852 4.591 1.135 7.172.555ZM10.751 3.852c-.976.246-1.756-.148-2.56-.962 1.377-.343 2.592-.476 3.897-.528-.107.848-.607 1.306-1.336 1.49Zm32.002 37.924c-.085-.626-.62-.901-1.04-1.228-1.857-1.446-4.03-1.958-6.333-2-1.375-.026-2.735-.128-4.031-.61-.595-.22-1.26-.505-1.244-1.272.015-.78.693-1 1.31-1.184.505-.15 1.026-.247 1.6-.382-1.46-.936-2.886-1.065-4.787-.3-2.993 1.202-5.943 1.06-8.926-.017-1.684-.608-3.179-1.563-4.735-2.408l-.043.03a2.96 2.96 0 0 0 .04-.029c-.038-.117-.107-.12-.197-.054l.122.107c1.29 2.115 3.034 3.817 5.004 5.271 3.793 2.8 7.936 4.471 12.784 3.73A66.714 66.714 0 0 1 37 40.877c1.98-.16 3.866.398 5.753.899Zm-9.14-30.345c-.105-.076-.206-.266-.42-.069 1.745 2.36 3.985 4.098 6.683 5.193 4.354 1.767 8.773 2.07 13.293.51 3.51-1.21 6.033-.028 7.343 3.38.19-3.955-2.137-6.837-5.843-7.401-2.084-.318-4.01.373-5.962.94-5.434 1.575-10.485.798-15.094-2.553Zm27.085 15.425c.708.059 1.416.123 2.124.185-1.6-1.405-3.55-1.517-5.523-1.404-3.003.17-5.167 1.903-7.14 3.972-1.739 1.824-3.31 3.87-5.903 4.604.043.078.054.117.066.117.35.005.699.021 1.047.005 3.768-.17 7.317-.965 10.14-3.7.89-.86 1.685-1.817 2.544-2.71.716-.746 1.584-1.159 2.645-1.07Zm-8.753-4.67c-2.812.246-5.254 1.409-7.548 2.943-1.766 1.18-3.654 1.738-5.776 1.37-.374-.066-.75-.114-1.124-.17l-.013.156c.135.07.265.151.405.207.354.14.702.308 1.07.395 4.083.971 7.992.474 11.516-1.803 2.221-1.435 4.521-1.707 7.013-1.336.252.038.503.083.756.107.234.022.479.255.795.003-2.179-1.574-4.526-2.096-7.094-1.872Zm-10.049-9.544c1.475.051 2.943-.142 4.486-1.059-.452.04-.643.04-.827.076-2.126.424-4.033-.04-5.733-1.383-.623-.493-1.257-.974-1.889-1.457-2.503-1.914-5.374-2.555-8.514-2.5.05.154.054.26.108.315 3.417 3.455 7.371 5.836 12.369 6.008Zm24.727 17.731c-2.114-2.097-4.952-2.367-7.578-.537 1.738.078 3.043.632 4.101 1.728.374.388.763.768 1.182 1.106 1.6 1.29 4.311 1.352 5.896.155-1.861-.726-1.861-.726-3.601-2.452Zm-21.058 16.06c-1.858-3.46-4.981-4.24-8.59-4.008a9.667 9.667 0 0 1 2.977 1.39c.84.586 1.547 1.311 2.243 2.055 1.38 1.473 3.534 2.376 4.962 2.07-.656-.412-1.238-.848-1.592-1.507Zm17.29-19.32c0-.023.001-.045.003-.068l-.006.006.006-.006-.036-.004.021.018.012.053Zm-20 14.744a7.61 7.61 0 0 0-.072-.041.127.127 0 0 0 .015.043c.005.008.038 0 .058-.002Zm-.072-.041-.008-.034-.008.01.008-.01-.022-.006.005.026.024.014Z"
-        fill="#FD4F00"
-      />
-    </svg>
-    <div class="mt-10 flex justify-between items-center">
-      <h1 class="flex items-center text-sm font-semibold leading-6">
-        Phoenix Framework
-        <small class="badge badge-warning badge-sm ml-3">
-          v{Application.spec(:phoenix, :vsn)}
-        </small>
-      </h1>
-    </div>
+    <style>
+      :root {
+          --navy-900: #0a1628;
+          --navy-800: #12233d;
+          --navy-700: #1a3052;
+          --navy-600: #234168;
+          --navy-500: #2d527d;
+          --cream-50: #fefcf8;
+          --cream-100: #fdf8ed;
+          --cream-200: #f9f0db;
+          --cream-300: #f3e4c3;
+          --cream-400: #e8d4a8;
+          --gold-500: #c9a227;
+          --gold-600: #b8922a;
+          --text-primary: #0a1628;
+          --text-secondary: #4a5568;
+          --text-light: #f8f5f0;
+      }
 
-    <p class="text-[2rem] mt-4 font-semibold leading-10 tracking-tighter text-balance">
-      Peace of mind from prototype to production.
-    </p>
-    <p class="mt-4 leading-7 text-base-content/70">
-      Build rich, interactive web applications quickly, with less code and fewer moving parts. Join our growing community of developers using Phoenix to craft APIs, HTML5 apps and more, for fun or at scale.
-    </p>
-    <div class="flex">
-      <div class="w-full sm:w-auto">
-        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
-          <a
-            href="https://hexdocs.pm/phoenix/overview.html"
-            class="group relative rounded-box px-6 py-4 text-sm font-semibold leading-6 sm:py-6"
-          >
-            <span class="absolute inset-0 rounded-box bg-base-200 transition group-hover:bg-base-300 sm:group-hover:scale-105">
-            </span>
-            <span class="relative flex items-center gap-4 sm:flex-col">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="h-6 w-6">
-                <path d="m12 4 10-2v18l-10 2V4Z" fill="currentColor" fill-opacity=".15" />
-                <path
-                  d="M12 4 2 2v18l10 2m0-18v18m0-18 10-2v18l-10 2"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Guides &amp; Docs
-            </span>
-          </a>
-          <a
-            href="https://github.com/phoenixframework/phoenix"
-            class="group relative rounded-box px-6 py-4 text-sm font-semibold leading-6 sm:py-6"
-          >
-            <span class="absolute inset-0 rounded-box bg-base-200 transition group-hover:bg-base-300 sm:group-hover:scale-105">
-            </span>
-            <span class="relative flex items-center gap-4 sm:flex-col">
-              <svg viewBox="0 0 24 24" aria-hidden="true" class="h-6 w-6">
-                <path
-                  fill="currentColor"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M12 0C5.37 0 0 5.506 0 12.303c0 5.445 3.435 10.043 8.205 11.674.6.107.825-.262.825-.585 0-.292-.015-1.261-.015-2.291C6 21.67 5.22 20.346 4.98 19.654c-.135-.354-.72-1.446-1.23-1.738-.42-.23-1.02-.8-.015-.815.945-.015 1.62.892 1.845 1.261 1.08 1.86 2.805 1.338 3.495 1.015.105-.8.42-1.338.765-1.645-2.67-.308-5.46-1.37-5.46-6.075 0-1.338.465-2.446 1.23-3.307-.12-.308-.54-1.569.12-3.26 0 0 1.005-.323 3.3 1.26.96-.276 1.98-.415 3-.415s2.04.139 3 .416c2.295-1.6 3.3-1.261 3.3-1.261.66 1.691.24 2.952.12 3.26.765.861 1.23 1.953 1.23 3.307 0 4.721-2.805 5.767-5.475 6.075.435.384.81 1.122.81 2.276 0 1.645-.015 2.968-.015 3.383 0 .323.225.707.825.585a12.047 12.047 0 0 0 5.919-4.489A12.536 12.536 0 0 0 24 12.304C24 5.505 18.63 0 12 0Z"
-                />
-              </svg>
-              Source Code
-            </span>
-          </a>
-          <a
-            href={"https://github.com/phoenixframework/phoenix/blob/v#{Application.spec(:phoenix, :vsn)}/CHANGELOG.md"}
-            class="group relative rounded-box px-6 py-4 text-sm font-semibold leading-6 sm:py-6"
-          >
-            <span class="absolute inset-0 rounded-box bg-base-200 transition group-hover:bg-base-300 sm:group-hover:scale-105">
-            </span>
-            <span class="relative flex items-center gap-4 sm:flex-col">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="h-6 w-6">
-                <path
-                  d="M12 1v6M12 17v6"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="4"
-                  fill="currentColor"
-                  fill-opacity=".15"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Changelog
-            </span>
-          </a>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      html {
+          scroll-behavior: smooth;
+      }
+
+      body {
+          font-family: 'DM Sans', sans-serif;
+          background-color: var(--cream-50);
+          color: var(--text-primary);
+          line-height: 1.6;
+          overflow-x: hidden;
+      }
+
+      /* Noise texture overlay */
+      body::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+          opacity: 0.03;
+          pointer-events: none;
+          z-index: 1000;
+      }
+
+      .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 24px;
+      }
+
+      /* Header */
+      header {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 100;
+          background: rgba(254, 252, 248, 0.92);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid rgba(10, 22, 40, 0.06);
+          transition: all 0.3s ease;
+      }
+
+      .header-inner {
+          display: flex;
+          align-items: center;
+          padding: 16px 24px;
+          max-width: 1200px;
+          margin: 0 auto;
+          gap: 24px;
+      }
+
+      .logo {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          text-decoration: none;
+          flex-shrink: 0;
+      }
+
+      .logo-icon {
+          width: 44px;
+          height: 44px;
+          background: var(--cream-50);
+          border: 2px solid var(--navy-600);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1);
+          position: relative;
+          overflow: hidden;
+      }
+
+      .logo-icon svg {
+          width: 26px;
+          height: 26px;
+          color: var(--navy-700);
+      }
+
+      .logo-text {
+          font-family: 'Playfair Display', serif;
+          font-weight: 700;
+          font-size: 1.35rem;
+          color: var(--navy-800);
+          letter-spacing: -0.02em;
+      }
+
+      .logo-text span {
+          color: var(--gold-500);
+      }
+
+      nav {
+          display: flex;
+          align-items: center;
+          gap: clamp(16px, 3vw, 32px);
+          margin: 0 auto;
+      }
+
+      nav a {
+          text-decoration: none;
+          color: var(--text-secondary);
+          font-weight: 500;
+          font-size: 0.95rem;
+          transition: color 0.2s ease;
+          position: relative;
+      }
+
+      nav a::after {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: var(--navy-600);
+          transition: width 0.2s ease;
+      }
+
+      nav a:hover {
+          color: var(--navy-800);
+      }
+
+      nav a:hover::after {
+          width: 100%;
+      }
+
+      .header-cta {
+          display: flex;
+          gap: 12px;
+          flex-shrink: 0;
+      }
+
+      .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 0.95rem;
+          text-decoration: none;
+          transition: all 0.25s ease;
+          cursor: pointer;
+          border: none;
+      }
+
+      .btn-outline {
+          background: transparent;
+          color: var(--navy-700);
+          border: 1.5px solid var(--navy-600);
+      }
+
+      .btn-outline:hover {
+          background: var(--navy-800);
+          color: var(--cream-50);
+          border-color: var(--navy-800);
+          transform: translateY(-1px);
+      }
+
+      .btn-primary {
+          background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
+          color: var(--cream-50);
+          box-shadow: 0 4px 14px rgba(10, 22, 40, 0.25);
+      }
+
+      .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(10, 22, 40, 0.35);
+      }
+
+      .btn-gold {
+          background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
+          color: var(--navy-900);
+          box-shadow: 0 4px 14px rgba(201, 162, 39, 0.3);
+      }
+
+      .btn-gold:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
+      }
+
+      /* Pricing card outline button - better contrast on dark background */
+      .pricing-card .btn-outline {
+          background: transparent;
+          color: var(--cream-100);
+          border: 1.5px solid var(--cream-200);
+      }
+
+      .pricing-card .btn-outline:hover {
+          background: var(--cream-50);
+          color: var(--navy-800);
+          border-color: var(--cream-50);
+          transform: translateY(-1px);
+      }
+
+      /* Hero Section */
+      .hero {
+          padding: 160px 0 100px;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .hero::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          right: -20%;
+          width: 80%;
+          height: 150%;
+          background: radial-gradient(ellipse at center, rgba(45, 82, 125, 0.08) 0%, transparent 70%);
+          pointer-events: none;
+      }
+
+      .hero::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, var(--cream-300), transparent);
+      }
+
+      .hero-content {
+          display: grid;
+          grid-template-columns: 1.1fr 0.9fr;
+          gap: 60px;
+          align-items: center;
+      }
+
+      .hero-text {
+          animation: fadeInUp 0.8s ease;
+      }
+
+      @keyframes fadeInUp {
+          from {
+              opacity: 0;
+              transform: translateY(30px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      .hero-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: var(--cream-200);
+          border: 1px solid var(--cream-300);
+          padding: 8px 16px;
+          border-radius: 50px;
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: var(--navy-700);
+          margin-bottom: 24px;
+      }
+
+      .hero-badge svg {
+          width: 16px;
+          height: 16px;
+          fill: var(--gold-500);
+      }
+
+      .hero h1 {
+          font-family: 'Playfair Display', serif;
+          font-size: 3.5rem;
+          font-weight: 700;
+          line-height: 1.15;
+          color: var(--navy-900);
+          margin-bottom: 24px;
+          letter-spacing: -0.02em;
+      }
+
+      .hero h1 span {
+          background: linear-gradient(135deg, var(--navy-600), var(--navy-800));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+      }
+
+      .hero p {
+          font-size: 1.2rem;
+          color: var(--text-secondary);
+          margin-bottom: 36px;
+          max-width: 520px;
+      }
+
+      .hero-buttons {
+          display: flex;
+          gap: 16px;
+          flex-wrap: wrap;
+      }
+
+      .hero-visual {
+          position: relative;
+          animation: fadeInUp 0.8s ease 0.2s backwards;
+      }
+
+      .hero-card {
+          background: white;
+          border-radius: 16px;
+          padding: 32px;
+          box-shadow: 0 20px 60px rgba(10, 22, 40, 0.1), 0 1px 3px rgba(10, 22, 40, 0.05);
+          position: relative;
+          overflow: hidden;
+      }
+
+      .hero-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: linear-gradient(90deg, var(--navy-600), var(--gold-500));
+      }
+
+      .card-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 24px;
+          padding-bottom: 16px;
+          border-bottom: 1px solid var(--cream-200);
+      }
+
+      .card-title {
+          font-weight: 600;
+          color: var(--navy-800);
+          font-size: 1.1rem;
+      }
+
+      .card-badge {
+          background: rgba(201, 162, 39, 0.12);
+          color: var(--gold-600);
+          padding: 4px 10px;
+          border-radius: 20px;
+          font-size: 0.75rem;
+          font-weight: 600;
+      }
+
+      .tender-item {
+          padding: 16px;
+          background: var(--cream-50);
+          border-radius: 10px;
+          margin-bottom: 12px;
+          border-left: 3px solid var(--navy-600);
+          transition: all 0.2s ease;
+      }
+
+      .tender-item:hover {
+          transform: translateX(4px);
+          box-shadow: 0 4px 12px rgba(10, 22, 40, 0.08);
+      }
+
+      .tender-item:last-child {
+          margin-bottom: 0;
+      }
+
+      .tender-title {
+          font-weight: 600;
+          color: var(--navy-800);
+          font-size: 0.95rem;
+          margin-bottom: 6px;
+      }
+
+      .tender-meta {
+          display: flex;
+          gap: 16px;
+          font-size: 0.8rem;
+          color: var(--text-secondary);
+      }
+
+      .tender-meta span {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+      }
+
+      .tender-meta svg {
+          width: 14px;
+          height: 14px;
+          fill: currentColor;
+          opacity: 0.7;
+      }
+
+      .floating-badge {
+          position: absolute;
+          background: white;
+          padding: 12px 18px;
+          border-radius: 12px;
+          box-shadow: 0 8px 30px rgba(10, 22, 40, 0.12);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-weight: 500;
+          font-size: 0.9rem;
+          animation: float 3s ease-in-out infinite;
+      }
+
+      .floating-badge.badge-1 {
+          top: -20px;
+          right: -30px;
+          animation-delay: 0s;
+      }
+
+      .floating-badge.badge-2 {
+          bottom: 40px;
+          left: -40px;
+          animation-delay: 1s;
+      }
+
+      @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+      }
+
+      .floating-badge svg {
+          width: 20px;
+          height: 20px;
+      }
+
+      .badge-icon-green {
+          color: #22c55e;
+      }
+
+      .badge-icon-blue {
+          color: var(--navy-600);
+      }
+
+      /* How It Works Section */
+      .how-it-works {
+          padding: 100px 0;
+          background: linear-gradient(180deg, var(--cream-50) 0%, var(--cream-100) 100%);
+          position: relative;
+      }
+
+      .section-header {
+          text-align: center;
+          margin-bottom: 64px;
+      }
+
+      .section-label {
+          display: inline-block;
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: var(--navy-600);
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          margin-bottom: 16px;
+      }
+
+      .section-title {
+          font-family: 'Playfair Display', serif;
+          font-size: 2.75rem;
+          font-weight: 700;
+          color: var(--navy-900);
+          margin-bottom: 16px;
+      }
+
+      .section-subtitle {
+          font-size: 1.15rem;
+          color: var(--text-secondary);
+          max-width: 600px;
+          margin: 0 auto;
+      }
+
+      .steps {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 40px;
+          position: relative;
+      }
+
+      .steps::before {
+          content: '';
+          position: absolute;
+          top: 60px;
+          left: 15%;
+          right: 15%;
+          height: 2px;
+          background: linear-gradient(90deg, var(--cream-300), var(--navy-500), var(--cream-300));
+          z-index: 0;
+      }
+
+      .step {
+          text-align: center;
+          position: relative;
+          z-index: 1;
+      }
+
+      .step-number {
+          width: 80px;
+          height: 80px;
+          background: white;
+          border: 3px solid var(--navy-600);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 28px;
+          font-family: 'Playfair Display', serif;
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: var(--navy-700);
+          box-shadow: 0 8px 24px rgba(10, 22, 40, 0.1);
+          transition: all 0.3s ease;
+      }
+
+      .step:hover .step-number {
+          background: var(--navy-700);
+          color: white;
+          transform: scale(1.08);
+      }
+
+      .step-icon {
+          width: 56px;
+          height: 56px;
+          background: var(--cream-200);
+          border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 20px;
+      }
+
+      .step-icon svg {
+          width: 28px;
+          height: 28px;
+          fill: var(--navy-700);
+      }
+
+      .step h3 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--navy-800);
+          margin-bottom: 12px;
+      }
+
+      .step p {
+          color: var(--text-secondary);
+          font-size: 0.95rem;
+          max-width: 280px;
+          margin: 0 auto;
+      }
+
+      /* Pricing Section */
+      .pricing {
+          padding: 100px 0;
+          background: var(--navy-900);
+          position: relative;
+          overflow: hidden;
+      }
+
+      .pricing::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(ellipse at top right, rgba(45, 82, 125, 0.3) 0%, transparent 60%),
+                      radial-gradient(ellipse at bottom left, rgba(201, 162, 39, 0.1) 0%, transparent 50%);
+          pointer-events: none;
+      }
+
+      .pricing .section-label {
+          color: var(--gold-500);
+      }
+
+      .pricing .section-title {
+          color: var(--cream-50);
+      }
+
+      .pricing .section-subtitle {
+          color: rgba(248, 245, 240, 0.7);
+      }
+
+      .pricing-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 32px;
+          max-width: 900px;
+          margin: 0 auto;
+          position: relative;
+          z-index: 1;
+      }
+
+      .pricing-card {
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 20px;
+          padding: 40px;
+          backdrop-filter: blur(10px);
+          transition: all 0.3s ease;
+      }
+
+      .pricing-card:hover {
+          transform: translateY(-4px);
+          border-color: rgba(255, 255, 255, 0.15);
+      }
+
+      .pricing-card.featured {
+          background: linear-gradient(135deg, rgba(201, 162, 39, 0.1), rgba(201, 162, 39, 0.02));
+          border-color: var(--gold-500);
+          position: relative;
+      }
+
+      .pricing-card.featured::before {
+          content: 'Polecane';
+          position: absolute;
+          top: -12px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: var(--gold-500);
+          color: var(--navy-900);
+          padding: 6px 20px;
+          border-radius: 20px;
+          font-size: 0.8rem;
+          font-weight: 600;
+      }
+
+      .plan-header {
+          margin-bottom: 32px;
+          padding-bottom: 24px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .plan-name {
+          font-size: 1.35rem;
+          font-weight: 600;
+          color: var(--cream-50);
+          margin-bottom: 8px;
+      }
+
+      .plan-desc {
+          font-size: 0.95rem;
+          color: rgba(248, 245, 240, 0.6);
+      }
+
+      .plan-price {
+          display: flex;
+          align-items: baseline;
+          gap: 4px;
+          margin-top: 20px;
+      }
+
+      .price-amount {
+          font-family: 'Playfair Display', serif;
+          font-size: 3rem;
+          font-weight: 700;
+          color: var(--cream-50);
+      }
+
+      .price-period {
+          color: rgba(248, 245, 240, 0.5);
+          font-size: 0.95rem;
+      }
+
+      .plan-features {
+          list-style: none;
+          margin-bottom: 32px;
+      }
+
+      .plan-features li {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 12px 0;
+          color: rgba(248, 245, 240, 0.85);
+          font-size: 0.95rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+
+      .plan-features li:last-child {
+          border-bottom: none;
+      }
+
+      .plan-features svg {
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
+          margin-top: 2px;
+      }
+
+      .check-icon {
+          fill: #22c55e;
+      }
+
+      .pricing-card.featured .check-icon {
+          fill: var(--gold-500);
+      }
+
+      .pricing-card .btn {
+          width: 100%;
+      }
+
+      /* Footer */
+      footer {
+          background: var(--cream-100);
+          padding: 60px 0 30px;
+          border-top: 1px solid var(--cream-300);
+      }
+
+      .footer-content {
+          display: grid;
+          grid-template-columns: 1.5fr 1fr 1fr;
+          gap: 60px;
+          margin-bottom: 48px;
+      }
+
+      .footer-brand .logo {
+          margin-bottom: 20px;
+      }
+
+      .footer-brand p {
+          color: var(--text-secondary);
+          font-size: 0.95rem;
+          max-width: 320px;
+      }
+
+      .footer-links h4 {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: var(--navy-800);
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          margin-bottom: 20px;
+      }
+
+      .footer-links ul {
+          list-style: none;
+      }
+
+      .footer-links li {
+          margin-bottom: 12px;
+      }
+
+      .footer-links a {
+          color: var(--text-secondary);
+          text-decoration: none;
+          font-size: 0.95rem;
+          transition: color 0.2s ease;
+      }
+
+      .footer-links a:hover {
+          color: var(--navy-700);
+      }
+
+      .footer-bottom {
+          padding-top: 24px;
+          border-top: 1px solid var(--cream-300);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+
+      .footer-bottom p {
+          color: var(--text-secondary);
+          font-size: 0.85rem;
+      }
+
+      .footer-legal {
+          display: flex;
+          gap: 24px;
+      }
+
+      .footer-legal a {
+          color: var(--text-secondary);
+          text-decoration: none;
+          font-size: 0.85rem;
+          transition: color 0.2s ease;
+      }
+
+      .footer-legal a:hover {
+          color: var(--navy-700);
+      }
+
+      /* Responsive */
+      @media (max-width: 1100px) {
+          .header-inner {
+              gap: 16px;
+          }
+
+          .header-cta .btn {
+              padding: 10px 16px;
+              font-size: 0.9rem;
+          }
+
+          .logo-text {
+              font-size: 1.15rem;
+          }
+      }
+
+      @media (max-width: 968px) {
+          .hero-content {
+              grid-template-columns: 1fr;
+              text-align: center;
+          }
+
+          .hero h1 {
+              font-size: 2.75rem;
+          }
+
+          .hero p {
+              margin-left: auto;
+              margin-right: auto;
+          }
+
+          .hero-buttons {
+              justify-content: center;
+          }
+
+          .hero-visual {
+              max-width: 500px;
+              margin: 0 auto;
+          }
+
+          .floating-badge.badge-1 {
+              right: 0;
+          }
+
+          .floating-badge.badge-2 {
+              left: 0;
+          }
+
+          .steps {
+              grid-template-columns: 1fr;
+              gap: 48px;
+          }
+
+          .steps::before {
+              display: none;
+          }
+
+          .pricing-grid {
+              grid-template-columns: 1fr;
+              max-width: 450px;
+          }
+
+          .footer-content {
+              grid-template-columns: 1fr;
+              gap: 40px;
+          }
+      }
+
+      @media (max-width: 820px) {
+          .header-inner {
+              justify-content: space-between;
+          }
+
+          nav {
+              display: none;
+          }
+
+          .header-cta .btn {
+              padding: 10px 18px;
+          }
+      }
+
+      @media (max-width: 640px) {
+          .header-inner {
+              padding: 12px 16px;
+              justify-content: space-between;
+          }
+
+          nav {
+              display: none;
+          }
+
+          .logo-text {
+              font-size: 1.1rem;
+          }
+
+          .header-cta .btn-outline {
+              display: none;
+          }
+
+          .hero {
+              padding: 120px 0 60px;
+          }
+
+          .hero h1 {
+              font-size: 2.25rem;
+          }
+
+          .section-title {
+              font-size: 2rem;
+          }
+
+          .pricing-card {
+              padding: 28px;
+          }
+
+          .footer-bottom {
+              flex-direction: column;
+              gap: 16px;
+              text-align: center;
+          }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Document -->
+              <path
+                d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <!-- Document lines -->
+              <path
+                d="M7.5 12H12.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <path
+                d="M7.5 15H10.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <!-- Magnifying glass -->
+              <circle
+                cx="16.5"
+                cy="14.5"
+                r="4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M19.5 17.5L22 20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
+        </a>
+        <nav>
+          <a href="#jak-dziala">Jak to działa</a>
+          <a href="#cennik">Cennik</a>
+          <a href="#kontakt">Kontakt</a>
+        </nav>
+        <div class="header-cta">
+          <a href="/login" class="btn btn-outline">Zaloguj się</a>
+          <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
         </div>
-        <div class="mt-10 grid grid-cols-1 gap-y-4 text-sm leading-6 text-base-content/80 sm:grid-cols-2">
-          <div>
-            <a
-              href="https://elixirforum.com"
-              class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-base-200 hover:text-base-content"
-            >
-              <svg
-                viewBox="0 0 16 16"
-                aria-hidden="true"
-                class="h-4 w-4 fill-base-content/40 group-hover:fill-base-content"
-              >
-                <path d="M8 13.833c3.866 0 7-2.873 7-6.416C15 3.873 11.866 1 8 1S1 3.873 1 7.417c0 1.081.292 2.1.808 2.995.606 1.05.806 2.399.086 3.375l-.208.283c-.285.386-.01.905.465.85.852-.098 2.048-.318 3.137-.81a3.717 3.717 0 0 1 1.91-.318c.263.027.53.041.802.041Z" />
-              </svg>
-              Discuss on the Elixir Forum
-            </a>
+      </div>
+    </header>
+    
+<!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Znajdź idealne przetargi <span>szybciej niż kiedykolwiek</span></h1>
+            <p>
+              Automatycznie monitorujemy zamówienia publiczne i dostarczamy Ci spersonalizowaną listę przetargów prosto na skrzynkę mailową. Oszczędź czas i nigdy nie przegap okazji biznesowej.
+            </p>
+            <div class="hero-buttons">
+              <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
+              <a href="#jak-dziala" class="btn btn-outline">Dowiedz się więcej</a>
+            </div>
           </div>
-          <div>
-            <a
-              href="https://discord.gg/elixir"
-              class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-base-200 hover:text-base-content"
-            >
-              <svg
-                viewBox="0 0 16 16"
-                aria-hidden="true"
-                class="h-4 w-4 fill-base-content/40 group-hover:fill-base-content"
-              >
-                <path d="M13.545 2.995c-1.02-.46-2.114-.8-3.257-.994a.05.05 0 0 0-.052.024c-.141.246-.297.567-.406.82a12.377 12.377 0 0 0-3.658 0 8.238 8.238 0 0 0-.412-.82.052.052 0 0 0-.052-.024 13.315 13.315 0 0 0-3.257.994.046.046 0 0 0-.021.018C.356 6.063-.213 9.036.066 11.973c.001.015.01.029.02.038a13.353 13.353 0 0 0 3.996 1.987.052.052 0 0 0 .056-.018c.308-.414.582-.85.818-1.309a.05.05 0 0 0-.028-.069 8.808 8.808 0 0 1-1.248-.585.05.05 0 0 1-.005-.084c.084-.062.168-.126.248-.191a.05.05 0 0 1 .051-.007c2.619 1.176 5.454 1.176 8.041 0a.05.05 0 0 1 .053.006c.08.065.164.13.248.192a.05.05 0 0 1-.004.084c-.399.23-.813.423-1.249.585a.05.05 0 0 0-.027.07c.24.457.514.893.817 1.307a.051.051 0 0 0 .056.019 13.31 13.31 0 0 0 4.001-1.987.05.05 0 0 0 .021-.037c.334-3.396-.559-6.345-2.365-8.96a.04.04 0 0 0-.021-.02Zm-8.198 7.19c-.789 0-1.438-.712-1.438-1.587 0-.874.637-1.586 1.438-1.586.807 0 1.45.718 1.438 1.586 0 .875-.637 1.587-1.438 1.587Zm5.316 0c-.788 0-1.438-.712-1.438-1.587 0-.874.637-1.586 1.438-1.586.807 0 1.45.718 1.438 1.586 0 .875-.63 1.587-1.438 1.587Z" />
+          <div class="hero-visual">
+            <div class="hero-card">
+              <div class="card-header">
+                <span class="card-title">Twoje przetargi na dziś</span>
+                <span class="card-badge">12 nowych</span>
+              </div>
+              <div class="tender-item">
+                <div class="tender-title">Dostawa sprzętu komputerowego dla Urzędu Miasta</div>
+                <div class="tender-meta">
+                  <span>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Warszawa
+                  </span>
+                  <span>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    850 000 PLN
+                  </span>
+                </div>
+              </div>
+              <div class="tender-item">
+                <div class="tender-title">Budowa drogi gminnej w miejscowości Kowalów</div>
+                <div class="tender-meta">
+                  <span>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Małopolskie
+                  </span>
+                  <span>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    2 400 000 PLN
+                  </span>
+                </div>
+              </div>
+              <div class="tender-item">
+                <div class="tender-title">Usługi cateringowe dla placówek oświatowych</div>
+                <div class="tender-meta">
+                  <span>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Gdańsk
+                  </span>
+                  <span>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    320 000 PLN
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="floating-badge badge-1">
+              <svg class="badge-icon-green" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Join our Discord server
-            </a>
-          </div>
-          <div>
-            <a
-              href="https://elixir-slack.community/"
-              class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-base-200 hover:text-base-content"
-            >
-              <svg
-                viewBox="0 0 16 16"
-                aria-hidden="true"
-                class="h-4 w-4 fill-base-content/40 group-hover:fill-base-content"
-              >
-                <path d="M3.361 10.11a1.68 1.68 0 1 1-1.68-1.681h1.68v1.682ZM4.209 10.11a1.68 1.68 0 1 1 3.361 0v4.21a1.68 1.68 0 1 1-3.361 0v-4.21ZM5.89 3.361a1.68 1.68 0 1 1 1.681-1.68v1.68H5.89ZM5.89 4.209a1.68 1.68 0 1 1 0 3.361H1.68a1.68 1.68 0 1 1 0-3.361h4.21ZM12.639 5.89a1.68 1.68 0 1 1 1.68 1.681h-1.68V5.89ZM11.791 5.89a1.68 1.68 0 1 1-3.361 0V1.68a1.68 1.68 0 0 1 3.361 0v4.21ZM10.11 12.639a1.68 1.68 0 1 1-1.681 1.68v-1.68h1.682ZM10.11 11.791a1.68 1.68 0 1 1 0-3.361h4.21a1.68 1.68 0 1 1 0 3.361h-4.21Z" />
+              Codzienne aktualizacje
+            </div>
+            <div class="floating-badge badge-2">
+              <svg class="badge-icon-blue" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              Join us on Slack
-            </a>
-          </div>
-          <div>
-            <a
-              href="https://fly.io/docs/elixir/getting-started/"
-              class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-base-200 hover:text-base-content"
-            >
-              <svg
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-                class="h-4 w-4 fill-base-content/40 group-hover:fill-base-content"
-              >
-                <path d="M1 12.5A4.5 4.5 0 005.5 17H15a4 4 0 001.866-7.539 3.504 3.504 0 00-4.504-4.272A4.5 4.5 0 004.06 8.235 4.502 4.502 0 001 12.5z" />
-              </svg>
-              Deploy your application
-            </a>
+              Prosto na email
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+    </section>
+    
+<!-- How It Works Section -->
+    <section class="how-it-works" id="jak-dziala">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Jak to działa</span>
+          <h2 class="section-title">Trzy proste kroki do sukcesu</h2>
+          <p class="section-subtitle">
+            Zacznij otrzymywać spersonalizowane przetargi w kilka minut. Bez skomplikowanych ustawień, bez ukrytych kosztów.
+          </p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+              </svg>
+            </div>
+            <h3>Zarejestruj się</h3>
+            <p>Załóż darmowe konto w mniej niż minutę. Potrzebujesz tylko adresu email.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+            </div>
+            <h3>Określ preferencje</h3>
+            <p>
+              Wybierz branże i regiony, które Cię interesują. Dodaj słowa kluczowe dla lepszego dopasowania.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3>Otrzymuj przetargi</h3>
+            <p>
+              Gotowe! Spersonalizowana lista przetargów trafi prosto do Twojej skrzynki mailowej.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+<!-- Pricing Section -->
+    <section class="pricing" id="cennik">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Cennik</span>
+          <h2 class="section-title">Wybierz plan dla siebie</h2>
+          <p class="section-subtitle">
+            Zacznij od darmowego planu i rozwijaj się wraz z Twoim biznesem.
+          </p>
+        </div>
+        <div class="pricing-grid">
+          <!-- Free Plan -->
+          <div class="pricing-card">
+            <div class="plan-header">
+              <h3 class="plan-name">Plan Darmowy</h3>
+              <p class="plan-desc">Idealny na start</p>
+              <div class="plan-price">
+                <span class="price-amount">0 zł</span>
+                <span class="price-period">/ miesiąc</span>
+              </div>
+            </div>
+            <ul class="plan-features">
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Jedna branża do wyboru</span>
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Jeden region do wyboru</span>
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Newsletter co piątek</span>
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Podstawowe informacje o przetargach</span>
+              </li>
+            </ul>
+            <a href="/register" class="btn btn-outline">Rozpocznij za darmo</a>
+          </div>
+          
+<!-- Premium Plan -->
+          <div class="pricing-card featured">
+            <div class="plan-header">
+              <h3 class="plan-name">Plan Premium</h3>
+              <p class="plan-desc">Dla profesjonalistów</p>
+              <div class="plan-price">
+                <span class="price-amount">99 zł</span>
+                <span class="price-period">/ miesiąc</span>
+              </div>
+            </div>
+            <ul class="plan-features">
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Nieograniczona liczba branż</span>
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Wszystkie regiony lub wybrane</span>
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Własne słowa kluczowe</span>
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Codzienny newsletter o 7:00</span>
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Szczegółowe dane o przetargach</span>
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Priorytetowe wsparcie</span>
+              </li>
+            </ul>
+            <a href="/register/premium" class="btn btn-gold">Wybierz Premium</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+<!-- Footer -->
+    <footer id="kontakt">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <a href="/" class="logo">
+              <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Document -->
+                  <path
+                    d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <!-- Document lines -->
+                  <path
+                    d="M7.5 12H12.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M7.5 15H10.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                  <!-- Magnifying glass -->
+                  <circle
+                    cx="16.5"
+                    cy="14.5"
+                    r="4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M19.5 17.5L22 20"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <span class="logo-text">Przetargowy<span>Przegląd</span></span>
+            </a>
+            <p>
+              Automatyczny monitoring zamówień publicznych. Oszczędzaj czas i nie przegap żadnej okazji biznesowej.
+            </p>
+          </div>
+          <div class="footer-links">
+            <h4>Produkt</h4>
+            <ul>
+              <li><a href="#jak-dziala">Jak to działa</a></li>
+              <li><a href="#cennik">Cennik</a></li>
+              <li><a href="/faq">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>Kontakt</h4>
+            <ul>
+              <li>
+                <a href="mailto:kontakt@przetargowyprzeglad.pl">kontakt@przetargowyprzeglad.pl</a>
+              </li>
+              <li><a href="/pomoc">Centrum pomocy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 Przetargowy Przegląd. Wszelkie prawa zastrzeżone.</p>
+          <div class="footer-legal">
+            <a href="/regulamin">Regulamin</a>
+            <a href="/polityka-prywatnosci">Polityka prywatności</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

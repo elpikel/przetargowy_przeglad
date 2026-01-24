@@ -2,6 +2,8 @@ defmodule PrzetargowyPrzegladWeb.PageController do
   use PrzetargowyPrzegladWeb, :controller
 
   def home(conn, _params) do
-    render(conn, :home)
+    conn
+    |> put_layout(false)
+    |> render(:home)
   end
 end
