@@ -183,7 +183,7 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
       organization_national_id: raw["organizationNationalId"],
       organization_id: raw["organizationId"],
       tender_id: raw["tenderId"],
-      html_body: sanitize_string(raw["htmlBody"]),
+      html_body: sanitize_html(raw["htmlBody"]),
       contractors:
         Enum.map(raw["contractors"] || [], fn contractor ->
           %{
@@ -204,6 +204,13 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
     }
   end
 
-  defp sanitize_string(nil), do: nil
-  defp sanitize_string(str) when is_binary(str), do: String.replace(str, <<0>>, "")
+  def sanitize_html(html) when is_binary(html) do
+    html
+    # Escaped null bytes
+    |> String.replace(~r/\\u0000/, "")
+    # Raw null bytes
+    |> String.replace(<<0>>, "")
+    # Another form
+    |> String.replace(<<0x00>>, "")
+  end
 end
