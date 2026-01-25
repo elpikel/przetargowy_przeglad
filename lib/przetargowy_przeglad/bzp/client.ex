@@ -173,7 +173,7 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
       is_tender_amount_below_eu: raw["isTenderAmountBelowEU"],
       publication_date: raw["publicationDate"],
       order_object: raw["orderObject"],
-      cpv_codes: String.split(raw["cpvCode"], ","),
+      cpv_codes: raw["cpvCode"] |> String.split(",") |> Enum.map(&sanitize_html/1),
       submitting_offers_date: raw["submittingOffersDate"],
       procedure_result: raw["procedureResult"],
       organization_name: raw["organizationName"],
