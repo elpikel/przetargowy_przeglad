@@ -18,6 +18,11 @@ config :phoenix_live_view,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
 
+config :przetargowy_przeglad, Oban,
+  engine: Oban.Engines.Basic,
+  plugins: [],
+  queues: [default: 10]
+
 # Configure your database
 config :przetargowy_przeglad, PrzetargowyPrzeglad.Repo,
   username: "postgres",
