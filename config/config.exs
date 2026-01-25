@@ -7,30 +7,6 @@
 # General application configuration
 import Config
 
-config :przetargowy_przeglad,
-  ecto_repos: [PrzetargowyPrzeglad.Repo],
-  generators: [timestamp_type: :utc_datetime]
-
-# Configure the endpoint
-config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
-  url: [host: "localhost"],
-  adapter: Bandit.PhoenixAdapter,
-  render_errors: [
-    formats: [html: PrzetargowyPrzegladWeb.ErrorHTML, json: PrzetargowyPrzegladWeb.ErrorJSON],
-    layout: false
-  ],
-  pubsub_server: PrzetargowyPrzeglad.PubSub,
-  live_view: [signing_salt: "iPfNmzYb"]
-
-# Configure the mailer
-#
-# By default it uses the "Local" adapter which stores the emails
-# locally. You can see the emails in your browser, at "/dev/mailbox".
-#
-# For production it's recommended to configure a different adapter
-# at the `config/runtime.exs`.
-config :przetargowy_przeglad, PrzetargowyPrzeglad.Mailer, adapter: Swoosh.Adapters.Local
-
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",
@@ -49,6 +25,30 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Configure the mailer
+#
+# By default it uses the "Local" adapter which stores the emails
+# locally. You can see the emails in your browser, at "/dev/mailbox".
+#
+# For production it's recommended to configure a different adapter
+# at the `config/runtime.exs`.
+config :przetargowy_przeglad, PrzetargowyPrzeglad.Mailer, adapter: Swoosh.Adapters.Local
+
+# Configure the endpoint
+config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
+  url: [host: "localhost"],
+  adapter: Bandit.PhoenixAdapter,
+  render_errors: [
+    formats: [html: PrzetargowyPrzegladWeb.ErrorHTML, json: PrzetargowyPrzegladWeb.ErrorJSON],
+    layout: false
+  ],
+  pubsub_server: PrzetargowyPrzeglad.PubSub,
+  live_view: [signing_salt: "iPfNmzYb"]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
+config :przetargowy_przeglad,
+  ecto_repos: [PrzetargowyPrzeglad.Repo],
+  generators: [timestamp_type: :utc_datetime]
+
 import_config "#{config_env()}.exs"

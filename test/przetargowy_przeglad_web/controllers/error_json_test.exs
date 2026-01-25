@@ -2,7 +2,9 @@ defmodule PrzetargowyPrzegladWeb.ErrorJSONTest do
   use PrzetargowyPrzegladWeb.ConnCase, async: true
 
   test "renders 404" do
-    assert PrzetargowyPrzegladWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
+    assert PrzetargowyPrzegladWeb.ErrorJSON.render("404.json", %{}) == %{
+             errors: %{detail: "Not Found"}
+           }
   end
 
   test "renders 500" do

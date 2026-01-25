@@ -19,15 +19,15 @@ defmodule PrzetargowyPrzegladWeb.ConnCase do
 
   using do
     quote do
+      use PrzetargowyPrzegladWeb, :verified_routes
+
+      import Phoenix.ConnTest
+      import Plug.Conn
+      import PrzetargowyPrzegladWeb.ConnCase
       # The default endpoint for testing
       @endpoint PrzetargowyPrzegladWeb.Endpoint
 
-      use PrzetargowyPrzegladWeb, :verified_routes
-
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
-      import PrzetargowyPrzegladWeb.ConnCase
     end
   end
 

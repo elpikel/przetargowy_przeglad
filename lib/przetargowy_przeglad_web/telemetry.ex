@@ -1,5 +1,7 @@
 defmodule PrzetargowyPrzegladWeb.Telemetry do
+  @moduledoc false
   use Supervisor
+
   import Telemetry.Metrics
 
   def start_link(arg) do
@@ -71,8 +73,7 @@ defmodule PrzetargowyPrzegladWeb.Telemetry do
       ),
       summary("przetargowy_przeglad.repo.query.idle_time",
         unit: {:native, :millisecond},
-        description:
-          "The time the connection spent waiting before being checked out for the query"
+        description: "The time the connection spent waiting before being checked out for the query"
       ),
 
       # VM Metrics

@@ -33,14 +33,6 @@ if config_env() == :prod do
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
-  config :przetargowy_przeglad, PrzetargowyPrzeglad.Repo,
-    # ssl: true,
-    url: database_url,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
-    # For machines with several cores, consider starting multiple pools of `pool_size`
-    # pool_count: 4,
-    socket_options: maybe_ipv6
-
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
   # want to use a different value for prod and you most likely don't want
@@ -56,12 +48,18 @@ if config_env() == :prod do
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
-  config :przetargowy_przeglad, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
-
   # Use HTTPS scheme when PHX_SCHEME is "https", otherwise default to HTTP
   # Use HTTPS scheme when PHX_SCHEME is "https", otherwise default to HTTP
   scheme = System.get_env("PHX_SCHEME", "http")
   url_port = if scheme == "https", do: 443, else: 80
+
+  config :przetargowy_przeglad, PrzetargowyPrzeglad.Repo,
+    # ssl: true,
+    url: database_url,
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    # For machines with several cores, consider starting multiple pools of `pool_size`
+    # pool_count: 4,
+    socket_options: maybe_ipv6
 
   config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
     url: [host: host, port: url_port, scheme: scheme],
@@ -108,6 +106,8 @@ if config_env() == :prod do
   #       force_ssl: [hsts: true]
   #
   # Check `Plug.SSL` for all available options in `force_ssl`.
+
+  config :przetargowy_przeglad, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
   # ## Configuring the mailer
   #

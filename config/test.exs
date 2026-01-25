@@ -1,5 +1,18 @@
 import Config
 
+# Print only warnings and errors during test
+config :logger, level: :warning
+
+# Initialize plugs at runtime for faster test compilation
+config :phoenix, :plug_init_mode, :runtime
+
+# Enable helpful, but potentially expensive runtime checks
+config :phoenix_live_view,
+  enable_expensive_runtime_checks: true
+
+# In test we don't send emails
+config :przetargowy_przeglad, PrzetargowyPrzeglad.Mailer, adapter: Swoosh.Adapters.Test
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
@@ -20,18 +33,5 @@ config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
   secret_key_base: "V+IzNbD+3lhzHnRi47aZICC7PgWo3onpDQ0HJKJHT97YHlnJI09tj+ByiueEGxwY",
   server: false
 
-# In test we don't send emails
-config :przetargowy_przeglad, PrzetargowyPrzeglad.Mailer, adapter: Swoosh.Adapters.Test
-
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false
-
-# Print only warnings and errors during test
-config :logger, level: :warning
-
-# Initialize plugs at runtime for faster test compilation
-config :phoenix, :plug_init_mode, :runtime
-
-# Enable helpful, but potentially expensive runtime checks
-config :phoenix_live_view,
-  enable_expensive_runtime_checks: true

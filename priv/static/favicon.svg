@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Document -->
+  <path d="M6 4C5.44772 4 5 4.44772 5 5V21C5 21.5523 5.44772 22 6 22H15C15.5523 22 16 21.5523 16 21V10L11 4H6Z" fill="none" stroke="#1a3052" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Document fold -->
+  <path d="M11 4V8C11 8.55228 11.4477 9 12 9H16" fill="none" stroke="#1a3052" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Document lines -->
+  <path d="M7.5 12H12.5" stroke="#1a3052" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M7.5 15.5H10.5" stroke="#1a3052" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Magnifying glass circle -->
+  <circle cx="22" cy="16" r="5" fill="none" stroke="#1a3052" stroke-width="1.5"/>
+  
+  <!-- Magnifying glass handle -->
+  <path d="M25.5 19.5L29 23" stroke="#1a3052" stroke-width="2" stroke-linecap="round"/>
+</svg>

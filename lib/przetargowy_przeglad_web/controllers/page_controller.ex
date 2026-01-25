@@ -1,21 +1,17 @@
 defmodule PrzetargowyPrzegladWeb.PageController do
   use PrzetargowyPrzegladWeb, :controller
 
+  plug :put_layout, false
+
   def home(conn, _params) do
-    conn
-    |> put_layout(false)
-    |> render(:home)
+    render(conn, :home)
   end
 
   def rules(conn, _params) do
-    conn
-    |> put_layout(false)
-    |> render(:rules)
+    render(conn, :rules)
   end
 
   def privacy_policy(conn, _params) do
-    conn
-    |> put_layout(false)
-    |> render(:privacy_policy)
+    render(conn, :privacy_policy)
   end
 end
