@@ -13,6 +13,7 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
 
   alias PrzetargowyPrzeglad.Bzp.Client, as: BZPClient
   alias PrzetargowyPrzeglad.Tenders
+  alias PrzetargowyPrzeglad.Tenders.TenderNotice
 
   require Logger
 
@@ -25,34 +26,33 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
 
     Logger.info("Starting tender notices fetch from #{publication_date_from} to #{publication_date_to} (#{days} days)")
 
-    case BZPClient.fetch_all_tender_notices(publication_date_from, publication_date_to) do
-      {:ok,
-       %{
-         tenders: tenders,
-         total: _total,
-         page: _page
-       }}
-      when is_list(tenders) ->
-        Logger.info("Fetched #{length(tenders)} tenders notices from BZP")
+    Enum.reduce_while(TenderNotice.notice_types(), :ok, fn notice_type, _ ->
+      Logger.info("Fetching tenders notices for notice type: #{notice_type}")
 
-        {success_count, failed} = Tenders.upsert_tender_notices(tenders)
+      case BZPClient.fetch_all_tender_notices(publication_date_from, publication_date_to, "TenderResultNotice") do
+        {:ok, []} ->
+          Logger.info("No new tenders notices found")
+          {:cont, :ok}
 
-        if length(failed) > 0 do
-          Logger.warning("Failed to upsert #{length(failed)} tenders notices")
-        end
+        {:ok, tenders}
+        when is_list(tenders) ->
+          Logger.info("Fetched #{length(tenders)} tenders notices from BZP")
 
-        Logger.info("Tender notices fetch complete. Inserted/Updated: #{success_count}, Failed: #{length(failed)}")
+          {success_count, failed} = Tenders.upsert_tender_notices(tenders)
 
-        {:ok, %{fetched: length(tenders), inserted: success_count, failed: length(failed)}}
+          if length(failed) > 0 do
+            Logger.warning("Failed to upsert #{length(failed)} tenders notices")
+          end
 
-      {:ok, []} ->
-        Logger.info("No new tenders notices found")
-        {:ok, %{fetched: 0, inserted: 0, failed: 0}}
+          Logger.info("Tender notices fetch complete. Inserted/Updated: #{success_count}, Failed: #{length(failed)}")
 
-      {:error, reason} ->
-        Logger.error("Failed to fetch tenders notices: #{inspect(reason)}")
-        {:error, reason}
-    end
+          {:cont, :ok}
+
+        {:error, reason} ->
+          Logger.error("Failed to fetch tenders notices: #{inspect(reason)}")
+          {:halt, {:error, reason}}
+      end
+    end)
   end
 
   @doc """
@@ -62,11 +62,15 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
   PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker.upsert_all_tender_notices(publication_date_from, publication_date_to)
   """
   def upsert_all_tender_notices(publication_date_from, publication_date_to) do
-    upsert_all_tender_notices(nil, publication_date_from, publication_date_to)
+    for notice_type <- TenderNotice.notice_types() do
+      Logger.info("Starting upsert for notice type: #{notice_type}")
+
+      upsert_all_tender_notices(nil, publication_date_from, publication_date_to, notice_type)
+    end
   end
 
-  defp upsert_all_tender_notices(object_id, publication_date_from, publication_date_to) do
-    case BZPClient.fetch_tenders_notices(object_id, publication_date_from, publication_date_to) do
+  defp upsert_all_tender_notices(object_id, publication_date_from, publication_date_to, notice_type) do
+    case BZPClient.fetch_tenders_notices(object_id, publication_date_from, publication_date_to, notice_type) do
       {:ok, %{tenders: []}} ->
         Logger.info("BZP API: No more results.")
         :ok
@@ -81,7 +85,7 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
         last_tender = List.last(tenders)
         next_object_id = last_tender.object_id
 
-        upsert_all_tender_notices(next_object_id, publication_date_from, publication_date_to)
+        upsert_all_tender_notices(next_object_id, publication_date_from, publication_date_to, notice_type)
 
       {:error, reason} ->
         Logger.error("BZP API: Error: #{inspect(reason)}")

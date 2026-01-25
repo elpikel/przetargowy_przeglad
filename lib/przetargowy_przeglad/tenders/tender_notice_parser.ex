@@ -137,14 +137,19 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNoticeParser do
   Returns list of statuses per part: :contract_signed or :cancelled
   """
   def extract_procedure_results(tender_json) when is_map(tender_json) do
-    tender_json
-    |> Map.get("procedureResult", "")
-    |> String.split(";")
-    |> Enum.map(fn
-      "zawarcieUmowy" -> :contract_signed
-      "uniewaznienie" -> :cancelled
-      other -> {:unknown, other}
-    end)
+    procedure_result = Map.get(tender_json, "procedureResult", "")
+
+    if procedure_result == nil do
+      []
+    else
+      procedure_result
+      |> String.split(";")
+      |> Enum.map(fn
+        "zawarcieUmowy" -> :contract_signed
+        "uniewaznienie" -> :cancelled
+        other -> {:unknown, other}
+      end)
+    end
   end
 
   @doc """
@@ -173,7 +178,7 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNoticeParser do
   """
   def parse_contract(tender_json) when is_map(tender_json) do
     html_body = Map.get(tender_json, "htmlBody", "")
-    contractors = Map.get(tender_json, "contractors", [])
+    contractors = Map.get(tender_json, "contractors", []) || []
 
     procedure_results = extract_procedure_results(tender_json)
     contract_values = extract_contract_values(html_body)

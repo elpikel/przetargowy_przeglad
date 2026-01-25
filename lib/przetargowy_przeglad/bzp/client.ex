@@ -24,12 +24,13 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
   - `:object_id` - specific tender notice ID to fetch
   - `:publication_date_from` - date from (YYYY-MM-DD)
   - `:publication_date_to` - date to (YYYY-MM-DD)
+  - `:notice_type` - type of notice to fetch (e.g., "TenderResultNotice")
   """
-  def fetch_tenders_notices(object_id, publication_date_from, publication_date_to) do
-    params = build_query_params(object_id, publication_date_from, publication_date_to)
+  def fetch_tenders_notices(object_id, publication_date_from, publication_date_to, notice_type) do
+    params = build_query_params(object_id, publication_date_from, publication_date_to, notice_type)
 
     Logger.info(
-      "BZP API: Fetching tenders notices from #{publication_date_from} to #{publication_date_to} from object_id #{inspect(object_id)}"
+      "BZP API: Fetching tenders notices from #{publication_date_from} to #{publication_date_to} from object_id #{inspect(object_id)} with notice_type #{inspect(notice_type)}"
     )
 
     case make_request_with_retry(params) do
@@ -41,12 +42,12 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
   @doc """
   Fetches all pages up to the limit.
   """
-  def fetch_all_tender_notices(publication_date_from, publication_date_to) do
-    fetch_all_tender_notices(nil, publication_date_from, publication_date_to, [])
+  def fetch_all_tender_notices(publication_date_from, publication_date_to, notice_type) do
+    fetch_all_tender_notices(nil, publication_date_from, publication_date_to, notice_type, [])
   end
 
-  defp fetch_all_tender_notices(object_id, publication_date_from, publication_date_to, acc) do
-    case fetch_tenders_notices(object_id, publication_date_from, publication_date_to) do
+  defp fetch_all_tender_notices(object_id, publication_date_from, publication_date_to, notice_type, acc) do
+    case fetch_tenders_notices(object_id, publication_date_from, publication_date_to, notice_type) do
       {:ok, %{tenders: []}} ->
         Logger.info("BZP API: No more results.")
         {:ok, acc}
@@ -57,7 +58,7 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
         Process.sleep(500)
         last_tender = List.last(tenders)
         next_object_id = last_tender.object_id
-        fetch_all_tender_notices(next_object_id, publication_date_from, publication_date_to, acc ++ tenders)
+        fetch_all_tender_notices(next_object_id, publication_date_from, publication_date_to, notice_type, acc ++ tenders)
 
       {:error, reason} ->
         Logger.error("BZP API: Error: #{inspect(reason)}")
@@ -65,13 +66,13 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
     end
   end
 
-  defp build_query_params(object_id, publication_date_from, publication_date_to) do
+  defp build_query_params(object_id, publication_date_from, publication_date_to, notice_type) do
     maybe_add(
       %{
         "PageSize" => @default_page_size,
         "PublicationDateFrom" => publication_date_from,
         "PublicationDateTo" => publication_date_to,
-        "NoticeType" => "TenderResultNotice"
+        "NoticeType" => notice_type
       },
       "SearchAfter",
       object_id

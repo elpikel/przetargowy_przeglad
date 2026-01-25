@@ -6,6 +6,39 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNotice do
 
   import Ecto.Changeset
 
+  @notice_types [
+    # Ogłoszenie o zamówieniu
+    "ContractNotice",
+    # Ogłoszenie o zamiarze zawarcia umowy
+    "AgreementIntentionNotice",
+    # Ogłoszenie o wyniku postępowania
+    "TenderResultNotice",
+    # Ogłoszenie o konkursie
+    "CompetitionNotice",
+    # Ogłoszenie o wynikach konkursu
+    "CompetitionResultNotice",
+    # Ogłoszenie o zmianie ogłoszenia
+    "NoticeUpdateNotice",
+    # Ogłoszenie o zmianie umowy
+    "AgreementUpdateNotice",
+    # Ogłoszenie o wykonaniu umowy
+    "ContractPerformingNotice",
+    # Ogłoszenie o spełnianiu okoliczności, o których mowa w art. 214 ust.1 pkt 11-14 ustawy
+    "CircumstancesFulfillmentNotice",
+    # Ogłoszenie dotyczące zamówienia, dla którego nie ma obowiązku stosowania ustawy Pzp
+    "SmallContractNotice",
+    # Ogłoszenie o koncesji
+    "ConcessionNotice",
+    # Ogłoszenie o zamiarze zawarcia umowy koncesji
+    "ConcessionIntentionAgreementNotice",
+    # Ogłoszenie o zmianie ogłoszenie dot. koncesji
+    "NoticeUpdateConcession",
+    # Ogłoszenie o zawarciu umowy koncesji
+    "ConcessionAgreementNotice",
+    # Ogłoszenie o zmianie umowy koncesji
+    "ConcessionUpdateAgreementNotice"
+  ]
+
   @primary_key {:object_id, :string, autogenerate: false}
   schema "tender_notices" do
     field :client_type, :string
@@ -85,7 +118,6 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNotice do
       :publication_date,
       :order_object,
       :cpv_codes,
-      :procedure_result,
       :organization_name,
       :organization_city,
       :organization_country,
@@ -94,5 +126,9 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNotice do
       :tender_id,
       :html_body
     ])
+  end
+
+  def notice_types do
+    @notice_types
   end
 end
