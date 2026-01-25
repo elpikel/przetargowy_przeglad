@@ -31,7 +31,7 @@ config :przetargowy_przeglad, Oban,
     Oban.Plugins.Pruner,
     {Oban.Plugins.Cron,
      crontab: [
-       {"* * * * *", PrzetargowyPrzeglad.Workers.FetchTendersWorker, args: %{"days" => 1, "max_pages" => 5}}
+       {"0 * * * *", PrzetargowyPrzeglad.Workers.FetchTendersWorker, args: %{"days" => 1}}
      ]}
   ],
   queues: [default: 10, mailers: 20, tenders: 5],
