@@ -41,8 +41,7 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNoticeParser do
   def total_contract_value(html_body) do
     html_body
     |> extract_contract_values()
-    |> Enum.reduce(0.0, fn %{value: v}, acc -> acc + v end)
-    |> Float.round(2)
+    |> Enum.reduce(Decimal.new(0), fn %{value: v}, acc -> Decimal.add(acc, v) end)
   end
 
   @doc """
@@ -253,11 +252,12 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNoticeParser do
     |> String.replace(~r/\s/, "")
     # Polish decimal separator
     |> String.replace(",", ".")
-    |> Float.parse()
-    |> case do
-      {value, _} -> Float.round(value, 2)
-      :error -> 0.0
-    end
+    |> then(fn str ->
+      case Decimal.parse(str) do
+        {decimal, _} -> Decimal.round(decimal, 2)
+        :error -> Decimal.new(0)
+      end
+    end)
   end
 
   defp decode_html_entities(html) do

@@ -61,9 +61,9 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNotice do
     field :organization_id, :string
     field :tender_id, :string
     field :html_body, :string
-    field :estimated_values, {:array, :float}, default: []
-    field :estimated_value, :float
-    field :total_contract_value, :float
+    field :estimated_values, {:array, :decimal}, default: []
+    field :estimated_value, :decimal
+    field :total_contract_value, :decimal
     field :total_contractors_contracts_count, :integer
     field :cancelled_count, :integer
 

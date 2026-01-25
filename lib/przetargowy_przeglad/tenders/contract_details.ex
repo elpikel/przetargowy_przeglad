@@ -9,10 +9,10 @@ defmodule PrzetargowyPrzeglad.Tenders.ContractDetails do
     field :contractor_name, :string
     field :contractor_city, :string
     field :contractor_nip, :string
-    field :contract_value, :float
-    field :winning_price, :float
-    field :lowest_price, :float
-    field :highest_price, :float
+    field :contract_value, :decimal
+    field :winning_price, :decimal
+    field :lowest_price, :decimal
+    field :highest_price, :decimal
     field :cancellation_reason, :string
     field :currency, :string, default: "PLN"
   end

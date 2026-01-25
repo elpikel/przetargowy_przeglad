@@ -35,9 +35,9 @@ defmodule PrzetargowyPrzeglad.TendersTest do
         contractor_national_id: "7740001454"
       }
     ],
-    estimated_values: [1000.0, 2000.0],
-    estimated_value: 3000.0,
-    total_contract_value: 3500.0,
+    estimated_values: [Decimal.new("1000"), Decimal.new("2000")],
+    estimated_value: Decimal.new("3000"),
+    total_contract_value: Decimal.new("3500"),
     total_contractors_contracts_count: 2,
     cancelled_count: 0,
     contractors_contract_details: [
@@ -47,10 +47,10 @@ defmodule PrzetargowyPrzeglad.TendersTest do
         contractor_name: "Polski Koncern Naftowy Orlen Spółka Akcyjna",
         contractor_city: "Płock",
         contractor_nip: "7740001454",
-        contract_value: 1500.0,
-        winning_price: 1500.0,
-        lowest_price: 1500.0,
-        highest_price: 1500.0,
+        contract_value: Decimal.new("1500"),
+        winning_price: Decimal.new("1500"),
+        lowest_price: Decimal.new("1500"),
+        highest_price: Decimal.new("1500"),
         cancellation_reason: nil,
         currency: "PLN"
       },
@@ -60,10 +60,10 @@ defmodule PrzetargowyPrzeglad.TendersTest do
         contractor_name: "Polski Koncern Naftowy Orlen Spółka Akcyjna",
         contractor_city: "Płock",
         contractor_nip: "7740001454",
-        contract_value: 2000.0,
-        winning_price: 2000.0,
-        lowest_price: 2000.0,
-        highest_price: 2000.0,
+        contract_value: Decimal.new("2000"),
+        winning_price: Decimal.new("2000"),
+        lowest_price: Decimal.new("2000"),
+        highest_price: Decimal.new("2000"),
         cancellation_reason: nil,
         currency: "PLN"
       }
@@ -106,9 +106,9 @@ defmodule PrzetargowyPrzeglad.TendersTest do
       assert tender_notice.organization_id == @valid_attrs.organization_id
       assert tender_notice.tender_id == @valid_attrs.tender_id
       assert tender_notice.html_body == @valid_attrs.html_body
-      assert Enum.map(tender_notice.estimated_values, &Decimal.to_float/1) == @valid_attrs.estimated_values
-      assert Decimal.to_float(tender_notice.estimated_value) == @valid_attrs.estimated_value
-      assert Decimal.to_float(tender_notice.total_contract_value) == @valid_attrs.total_contract_value
+      assert tender_notice.estimated_values == @valid_attrs.estimated_values
+      assert tender_notice.estimated_value == @valid_attrs.estimated_value
+      assert tender_notice.total_contract_value == @valid_attrs.total_contract_value
       assert tender_notice.total_contractors_contracts_count == @valid_attrs.total_contractors_contracts_count
       assert tender_notice.cancelled_count == @valid_attrs.cancelled_count
 
@@ -133,10 +133,10 @@ defmodule PrzetargowyPrzeglad.TendersTest do
         assert part.contractor_name == expected_part.contractor_name
         assert part.contractor_city == expected_part.contractor_city
         assert part.contractor_nip == expected_part.contractor_nip
-        assert Decimal.to_float(part.contract_value) == expected_part.contract_value
-        assert Decimal.to_float(part.winning_price) == expected_part.winning_price
-        assert Decimal.to_float(part.lowest_price) == expected_part.lowest_price
-        assert Decimal.to_float(part.highest_price) == expected_part.highest_price
+        assert part.contract_value == expected_part.contract_value
+        assert part.winning_price == expected_part.winning_price
+        assert part.lowest_price == expected_part.lowest_price
+        assert part.highest_price == expected_part.highest_price
         assert part.cancellation_reason == expected_part.cancellation_reason
         assert part.currency == expected_part.currency
       end)

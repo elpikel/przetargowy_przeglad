@@ -35,8 +35,7 @@ defmodule PrzetargowyPrzeglad.Tenders do
             {:ok, tender_notice}
 
           {:error, changeset} ->
-            IO.inspect({:error, attrs, changeset})
-            raise {:error, attrs, changeset}
+            {:error, attrs, changeset}
         end
       end)
 
