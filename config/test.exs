@@ -10,9 +10,10 @@ config :phoenix, :plug_init_mode, :runtime
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
 
+config :przetargowy_przeglad, Oban, testing: :manual
+
 # In test we don't send emails
 config :przetargowy_przeglad, PrzetargowyPrzeglad.Mailer, adapter: Swoosh.Adapters.Test
-
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used

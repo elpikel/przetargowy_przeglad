@@ -12,6 +12,7 @@ defmodule PrzetargowyPrzeglad.Application do
       PrzetargowyPrzeglad.Repo,
       {DNSCluster, query: Application.get_env(:przetargowy_przeglad, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: PrzetargowyPrzeglad.PubSub},
+      {Oban, Application.fetch_env!(:przetargowy_przeglad, Oban)},
       # Start a worker by calling: PrzetargowyPrzeglad.Worker.start_link(arg)
       # {PrzetargowyPrzeglad.Worker, arg},
       # Start to serve requests, typically the last entry

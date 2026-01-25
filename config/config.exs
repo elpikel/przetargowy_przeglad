@@ -25,6 +25,18 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :przetargowy_przeglad, Oban,
+  engine: Oban.Engines.Basic,
+  plugins: [
+    Oban.Plugins.Pruner,
+    {Oban.Plugins.Cron,
+     crontab: [
+       {"* * * * *", PrzetargowyPrzeglad.Workers.FetchTendersWorker, args: %{"days" => 1, "max_pages" => 5}}
+     ]}
+  ],
+  queues: [default: 10, mailers: 20, tenders: 5],
+  repo: PrzetargowyPrzeglad.Repo
+
 # Configure the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
