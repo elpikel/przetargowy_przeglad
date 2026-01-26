@@ -8,6 +8,8 @@ defmodule PrzetargowyPrzeglad.Tenders do
   alias PrzetargowyPrzeglad.Repo
   alias PrzetargowyPrzeglad.Tenders.TenderNotice
 
+  require Logger
+
   @doc """
   Gets the last inserted tender notice's object_id for the given notice type.
   """
@@ -50,6 +52,8 @@ defmodule PrzetargowyPrzeglad.Tenders do
             {:ok, tender_notice}
 
           {:error, changeset} ->
+            Logger.error("Failed to upsert tender notice #{inspect(attrs["object_id"])}: #{inspect(changeset)}")
+
             {:error, attrs, changeset}
         end
       end)

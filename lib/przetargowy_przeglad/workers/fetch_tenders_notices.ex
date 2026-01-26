@@ -81,7 +81,11 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
         # Rate limiting
         Process.sleep(200)
 
-        Tenders.upsert_tender_notices(tenders)
+        {_success_count, failed} = Tenders.upsert_tender_notices(tenders)
+
+        if length(failed) > 0 do
+          raise "Failed to upsert #{length(failed)} tender notices"
+        end
 
         last_tender = List.last(tenders)
         next_object_id = last_tender.object_id

@@ -109,7 +109,6 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNotice do
     |> validate_required([
       :object_id,
       :client_type,
-      :order_type,
       :tender_type,
       :notice_type,
       :notice_number,
