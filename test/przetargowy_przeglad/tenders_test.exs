@@ -4,6 +4,8 @@ defmodule PrzetargowyPrzeglad.TendersTest do
   alias PrzetargowyPrzeglad.Tenders
   alias PrzetargowyPrzeglad.Tenders.TenderNotice
 
+  @moduletag capture_log: true
+
   @valid_attrs %{
     object_id: "obj-1",
     client_type: "1.1.5",
@@ -168,21 +170,22 @@ defmodule PrzetargowyPrzeglad.TendersTest do
 
     test "handles Decimal values in embedded schemas (reproducing Jason.Encoder error)" do
       # This test reproduces the exact error from the stack trace
-      attrs_with_decimal = Map.put(@valid_attrs, :contractors_contract_details, [
-        %{
-          part: 1,
-          status: :contract_signed,
-          contractor_name: "Test Contractor",
-          contractor_city: "Test City",
-          contractor_nip: "1234567890",
-          contract_value: Decimal.new("99682.80"),
-          winning_price: Decimal.new("99682.80"),
-          lowest_price: Decimal.new("99682.80"),
-          highest_price: Decimal.new("99682.80"),
-          cancellation_reason: nil,
-          currency: "PLN"
-        }
-      ])
+      attrs_with_decimal =
+        Map.put(@valid_attrs, :contractors_contract_details, [
+          %{
+            part: 1,
+            status: :contract_signed,
+            contractor_name: "Test Contractor",
+            contractor_city: "Test City",
+            contractor_nip: "1234567890",
+            contract_value: Decimal.new("99682.80"),
+            winning_price: Decimal.new("99682.80"),
+            lowest_price: Decimal.new("99682.80"),
+            highest_price: Decimal.new("99682.80"),
+            cancellation_reason: nil,
+            currency: "PLN"
+          }
+        ])
 
       # This should fail with Protocol.UndefinedError if Jason.Encoder is not implemented for Decimal
       assert {:ok, %TenderNotice{} = tender_notice} = Tenders.upsert_tender_notice(attrs_with_decimal)
