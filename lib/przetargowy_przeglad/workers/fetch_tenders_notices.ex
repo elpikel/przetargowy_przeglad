@@ -7,7 +7,7 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
   - `days` - Number of days back to fetch tenders notices from (defaults to 1)
   """
   use Oban.Worker,
-    queue: :default,
+    queue: :tenders,
     max_attempts: 3,
     unique: [period: 3600]
 
@@ -26,33 +26,9 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
 
     Logger.info("Starting tender notices fetch from #{publication_date_from} to #{publication_date_to} (#{days} days)")
 
-    Enum.reduce_while(TenderNotice.notice_types(), :ok, fn notice_type, _ ->
-      Logger.info("Fetching tenders notices for notice type: #{notice_type}")
+    upsert_all_tender_notices(publication_date_from, publication_date_to)
 
-      case BZPClient.fetch_all_tender_notices(publication_date_from, publication_date_to, "TenderResultNotice") do
-        {:ok, []} ->
-          Logger.info("No new tenders notices found")
-          {:cont, :ok}
-
-        {:ok, tenders}
-        when is_list(tenders) ->
-          Logger.info("Fetched #{length(tenders)} tenders notices from BZP")
-
-          {success_count, failed} = Tenders.upsert_tender_notices(tenders)
-
-          if length(failed) > 0 do
-            Logger.warning("Failed to upsert #{length(failed)} tenders notices")
-          end
-
-          Logger.info("Tender notices fetch complete. Inserted/Updated: #{success_count}, Failed: #{length(failed)}")
-
-          {:cont, :ok}
-
-        {:error, reason} ->
-          Logger.error("Failed to fetch tenders notices: #{inspect(reason)}")
-          {:halt, {:error, reason}}
-      end
-    end)
+    :ok
   end
 
   @doc """
