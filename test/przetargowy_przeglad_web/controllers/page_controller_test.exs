@@ -1,5 +1,5 @@
 defmodule PrzetargowyPrzegladWeb.PageControllerTest do
-  use PrzetargowyPrzegladWeb.ConnCase
+  use PrzetargowyPrzegladWeb.ConnCase, async: true
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
