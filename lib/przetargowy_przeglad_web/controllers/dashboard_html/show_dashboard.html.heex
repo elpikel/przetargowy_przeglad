@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ustawienia - Przetargowy Przegląd</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+          --navy-900: #0a1628;
+          --navy-800: #12233d;
+          --navy-700: #1a3052;
+          --navy-600: #234168;
+          --cream-50: #fefcf8;
+          --cream-100: #fdf8ed;
+          --cream-200: #f9f0db;
+          --cream-300: #f3e4c3;
+          --gold-500: #c9a227;
+          --gold-600: #b8922a;
+          --text-primary: #0a1628;
+          --text-secondary: #4a5568;
+          --error: #dc2626;
+          --error-light: #fef2f2;
+          --success: #16a34a;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'DM Sans', sans-serif; background-color: var(--cream-50); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+      header { background: rgba(254, 252, 248, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(10, 22, 40, 0.06); position: sticky; top: 0; z-index: 100; }
+      .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
+      .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+      .logo-icon { width: 44px; height: 44px; background: var(--cream-50); border: 2px solid var(--navy-600); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1); }
+      .logo-icon svg { width: 26px; height: 26px; color: var(--navy-700); }
+      .logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.35rem; color: var(--navy-800); }
+      .logo-text span { color: var(--gold-500); }
+      .header-user { display: flex; align-items: center; gap: 16px; }
+      .user-email { font-size: 0.9rem; color: var(--text-secondary); }
+      .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.25s ease; cursor: pointer; border: none; }
+      .btn-outline { background: transparent; color: var(--navy-700); border: 1.5px solid var(--navy-600); }
+      .btn-outline:hover { background: var(--navy-800); color: var(--cream-50); border-color: var(--navy-800); }
+      .btn-primary { background: linear-gradient(135deg, var(--navy-700), var(--navy-900)); color: var(--cream-50); box-shadow: 0 4px 14px rgba(10, 22, 40, 0.25); }
+      .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(10, 22, 40, 0.35); }
+      .btn-danger-outline { background: transparent; color: var(--error); border: 1.5px solid var(--error); }
+      .btn-danger-outline:hover { background: var(--error); color: white; }
+      .btn-danger { background: var(--error); color: white; }
+      .btn-danger:hover { background: #b91c1c; }
+      main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+      .page-header { margin-bottom: 40px; }
+      .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--navy-900); margin-bottom: 8px; }
+      .page-subtitle { color: var(--text-secondary); font-size: 1rem; }
+      .settings-section { background: white; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(10, 22, 40, 0.06); border: 1px solid var(--cream-200); overflow: hidden; }
+      .section-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; cursor: pointer; user-select: none; transition: background-color 0.2s ease; }
+      .section-header:hover { background-color: var(--cream-50); }
+      .section-header-left { display: flex; align-items: center; gap: 12px; }
+      .section-title { font-size: 1.1rem; font-weight: 600; color: var(--navy-800); }
+      .section-badge { background: var(--cream-100); border: 1px solid var(--cream-300); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--navy-700); }
+      .section-badge.premium { background: linear-gradient(135deg, var(--gold-500), var(--gold-600)); border: none; color: var(--navy-900); }
+      .collapse-icon { width: 24px; height: 24px; color: var(--text-secondary); transition: transform 0.3s ease; }
+      .settings-section.collapsed .collapse-icon { transform: rotate(-90deg); }
+      .section-content { padding: 0 24px 24px; }
+      .settings-section.collapsed .section-content { display: none; }
+      .section-divider { height: 1px; background: var(--cream-200); margin: 0 24px 24px; }
+      .settings-section.collapsed .section-divider { display: none; }
+      .form-group { margin-bottom: 24px; }
+      .form-group:last-child { margin-bottom: 0; }
+      .form-label { display: block; font-weight: 500; color: var(--navy-800); margin-bottom: 8px; font-size: 0.9rem; }
+      .form-hint { color: var(--text-secondary); font-size: 0.8rem; margin-top: 6px; }
+      .form-input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--cream-300); border-radius: 8px; font-size: 1rem; font-family: inherit; color: var(--text-primary); background: var(--cream-50); transition: all 0.2s ease; }
+      .form-input:focus { outline: none; border-color: var(--navy-600); background: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
+      .form-input:disabled { opacity: 0.7; cursor: not-allowed; }
+      .form-select { width: 100%; padding: 12px 16px; border: 1.5px solid var(--cream-300); border-radius: 8px; font-size: 1rem; font-family: inherit; color: var(--text-primary); background: var(--cream-50); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 44px; }
+      .form-select:focus { outline: none; border-color: var(--navy-600); background-color: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
+      .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px; }
+      .checkbox-item { display: flex; align-items: center; gap: 8px; }
+      .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--gold-500); cursor: pointer; flex-shrink: 0; }
+      .checkbox-item label { font-size: 0.9rem; color: var(--text-primary); cursor: pointer; user-select: none; }
+      .select-all-wrapper { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--cream-300); }
+      .select-all-wrapper .checkbox-item label { font-weight: 600; color: var(--navy-700); }
+      .keywords-container { border: 1.5px solid var(--cream-300); border-radius: 8px; background: var(--cream-50); padding: 12px; min-height: 80px; transition: all 0.2s ease; }
+      .keywords-container:focus-within { border-color: var(--navy-600); background: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
+      .keywords-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+      .keyword-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--navy-700); color: white; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 500; }
+      .keyword-tag button { background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; padding: 0; display: flex; }
+      .keyword-tag button:hover { color: white; }
+      .keyword-tag button svg { width: 14px; height: 14px; }
+      .keyword-input { border: none; background: transparent; font-size: 0.95rem; font-family: inherit; color: var(--text-primary); width: 100%; padding: 4px 0; }
+      .keyword-input:focus { outline: none; }
+      .keyword-input::placeholder { color: var(--text-secondary); opacity: 0.6; }
+      .form-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--cream-200); }
+      .danger-zone { background: var(--error-light); border: 1px solid #fecaca; }
+      .danger-zone .section-header:hover { background-color: #fef2f2; }
+      .danger-zone .section-title { color: var(--error); }
+      .danger-zone .section-divider { background: #fecaca; }
+      .danger-description { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px; }
+      .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 22, 40, 0.5); display: none; align-items: center; justify-content: center; z-index: 200; padding: 24px; }
+      .modal-overlay.visible { display: flex; }
+      .modal { background: white; border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; box-shadow: 0 20px 60px rgba(10, 22, 40, 0.2); }
+      .modal-icon { width: 56px; height: 56px; background: var(--error-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+      .modal-icon svg { width: 28px; height: 28px; stroke: var(--error); }
+      .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--navy-900); text-align: center; margin-bottom: 12px; }
+      .modal-description { color: var(--text-secondary); text-align: center; margin-bottom: 24px; font-size: 0.95rem; }
+      .modal-actions { display: flex; gap: 12px; }
+      .modal-actions .btn { flex: 1; }
+      .toast { position: fixed; bottom: 24px; right: 24px; background: var(--navy-800); color: white; padding: 16px 24px; border-radius: 12px; display: none; align-items: center; gap: 12px; box-shadow: 0 8px 30px rgba(10, 22, 40, 0.2); z-index: 300; }
+      .toast.visible { display: flex; animation: slideIn 0.3s ease; }
+      @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      .toast-icon { width: 24px; height: 24px; fill: var(--success); }
+      @media (max-width: 640px) {
+          .header-inner { padding: 12px 16px; }
+          .logo-text { font-size: 1.1rem; }
+          .user-email { display: none; }
+          main { padding: 24px 16px 60px; }
+          .page-title { font-size: 1.5rem; }
+          .section-header { padding: 16px 20px; }
+          .section-content { padding: 0 20px 20px; }
+          .section-divider { margin: 0 20px 20px; }
+          .checkbox-grid { grid-template-columns: 1fr; }
+          .modal-actions, .form-actions { flex-direction: column; }
+          .form-actions .btn { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M7.5 12H12.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <path
+                d="M7.5 15H10.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <circle
+                cx="16.5"
+                cy="14.5"
+                r="4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M19.5 17.5L22 20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
+        </a>
+        <div class="header-user">
+          <span class="user-email"><%= @current_user.email %></span>
+          <a href="/logout" class="btn btn-outline">Wyloguj się</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="page-header">
+        <h1 class="page-title">Ustawienia</h1>
+        <p class="page-subtitle">Zarządzaj swoim kontem i preferencjami przetargów</p>
+      </div>
+      
+<%= if @current_user.subscription_plan == "free" do %>
+      <section class="settings-section" id="alertsFreeSection">
+        <div class="section-header" onclick="toggleSection('alertsFreeSection')">
+          <div class="section-header-left">
+            <h2 class="section-title">Preferencje przetargów</h2>
+            <span class="section-badge">Plan Darmowy</span>
+          </div>
+          <svg
+            class="collapse-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+        <div class="section-divider"></div>
+        <div class="section-content">
+          <form id="alertsFormFree" action="/dashboard/alerts" method="POST">
+            <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+            <% current_industry = @alert && (@alert.rules[:industry] || @alert.rules["industry"]) %>
+            <% current_region = @alert && (@alert.rules[:region] || @alert.rules["region"]) %>
+            <div class="form-group">
+              <label class="form-label">Branża</label>
+              <select name="industry" class="form-select" required>
+                <option value="">Wybierz branżę</option>
+                <option value="budownictwo" selected={current_industry == "budownictwo"}>Budownictwo</option>
+                <option value="it" selected={current_industry == "it"}>IT i telekomunikacja</option>
+                <option value="medycyna" selected={current_industry == "medycyna"}>Medycyna i farmacja</option>
+                <option value="transport" selected={current_industry == "transport"}>Transport i logistyka</option>
+                <option value="energia" selected={current_industry == "energia"}>Energia i paliwa</option>
+                <option value="edukacja" selected={current_industry == "edukacja"}>Edukacja</option>
+                <option value="administracja" selected={current_industry == "administracja"}>Administracja publiczna</option>
+                <option value="ochrona" selected={current_industry == "ochrona"}>Ochrona i bezpieczeństwo</option>
+                <option value="zywnosc" selected={current_industry == "zywnosc"}>Żywność i catering</option>
+                <option value="srodowisko" selected={current_industry == "srodowisko"}>Ochrona środowiska</option>
+                <option value="finanse" selected={current_industry == "finanse"}>Finanse i ubezpieczenia</option>
+                <option value="marketing" selected={current_industry == "marketing"}>Marketing i reklama</option>
+                <option value="inne" selected={current_industry == "inne"}>Inne</option>
+              </select>
+              <p class="form-hint">W planie darmowym możesz wybrać jedną branżę</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Region</label>
+              <select name="region" class="form-select" required>
+                <option value="">Wybierz województwo</option>
+                <option value="dolnoslaskie" selected={current_region == "dolnoslaskie"}>Dolnośląskie</option>
+                <option value="kujawsko-pomorskie" selected={current_region == "kujawsko-pomorskie"}>Kujawsko-pomorskie</option>
+                <option value="lubelskie" selected={current_region == "lubelskie"}>Lubelskie</option>
+                <option value="lubuskie" selected={current_region == "lubuskie"}>Lubuskie</option>
+                <option value="lodzkie" selected={current_region == "lodzkie"}>Łódzkie</option>
+                <option value="malopolskie" selected={current_region == "malopolskie"}>Małopolskie</option>
+                <option value="mazowieckie" selected={current_region == "mazowieckie"}>Mazowieckie</option>
+                <option value="opolskie" selected={current_region == "opolskie"}>Opolskie</option>
+                <option value="podkarpackie" selected={current_region == "podkarpackie"}>Podkarpackie</option>
+                <option value="podlaskie" selected={current_region == "podlaskie"}>Podlaskie</option>
+                <option value="pomorskie" selected={current_region == "pomorskie"}>Pomorskie</option>
+                <option value="slaskie" selected={current_region == "slaskie"}>Śląskie</option>
+                <option value="swietokrzyskie" selected={current_region == "swietokrzyskie"}>Świętokrzyskie</option>
+                <option value="warminsko-mazurskie" selected={current_region == "warminsko-mazurskie"}>Warmińsko-mazurskie</option>
+                <option value="wielkopolskie" selected={current_region == "wielkopolskie"}>Wielkopolskie</option>
+                <option value="zachodniopomorskie" selected={current_region == "zachodniopomorskie"}>Zachodniopomorskie</option>
+              </select>
+              <p class="form-hint">W planie darmowym możesz wybrać jeden region</p>
+            </div>
+            <div class="form-actions">
+              <a href="/upgrade" class="btn btn-outline">Przejdź na Premium</a>
+              <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+            </div>
+          </form>
+        </div>
+      </section>
+      <% end %>
+      
+<%= if @current_user.subscription_plan == "paid" do %>
+      <% current_industries = (@alert && (@alert.rules[:industries] || @alert.rules["industries"])) || [] %>
+      <% current_regions = (@alert && (@alert.rules[:regions] || @alert.rules["regions"])) || [] %>
+      <% current_keywords = (@alert && (@alert.rules[:keywords] || @alert.rules["keywords"])) || [] %>
+      <section class="settings-section" id="alertsPremiumSection">
+        <div class="section-header" onclick="toggleSection('alertsPremiumSection')">
+          <div class="section-header-left">
+            <h2 class="section-title">Preferencje przetargów</h2>
+            <span class="section-badge premium">Plan Premium</span>
+          </div>
+          <svg
+            class="collapse-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+        <div class="section-divider"></div>
+        <div class="section-content">
+          <form id="alertsFormPremium" action="/dashboard/alerts" method="POST">
+            <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+            <div class="form-group">
+              <label class="form-label">Branże</label>
+              <div class="select-all-wrapper">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="select-all-industries" />
+                  <label for="select-all-industries">Zaznacz wszystkie</label>
+                </div>
+              </div>
+              <div class="checkbox-grid" id="industries-grid">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-budownictwo" name="industries[]" value="budownictwo" checked={"budownictwo" in current_industries} /><label for="ind-budownictwo">Budownictwo</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-it" name="industries[]" value="it" checked={"it" in current_industries} /><label for="ind-it">IT i telekomunikacja</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-medycyna" name="industries[]" value="medycyna" checked={"medycyna" in current_industries} /><label for="ind-medycyna">Medycyna i farmacja</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-transport" name="industries[]" value="transport" checked={"transport" in current_industries} /><label for="ind-transport">Transport i logistyka</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-energia" name="industries[]" value="energia" checked={"energia" in current_industries} /><label for="ind-energia">Energia i paliwa</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-edukacja" name="industries[]" value="edukacja" checked={"edukacja" in current_industries} /><label for="ind-edukacja">Edukacja</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-administracja" name="industries[]" value="administracja" checked={"administracja" in current_industries} /><label for="ind-administracja">Administracja publiczna</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-ochrona" name="industries[]" value="ochrona" checked={"ochrona" in current_industries} /><label for="ind-ochrona">Ochrona i bezpieczeństwo</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-zywnosc" name="industries[]" value="zywnosc" checked={"zywnosc" in current_industries} /><label for="ind-zywnosc">Żywność i catering</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-srodowisko" name="industries[]" value="srodowisko" checked={"srodowisko" in current_industries} /><label for="ind-srodowisko">Ochrona środowiska</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-finanse" name="industries[]" value="finanse" checked={"finanse" in current_industries} /><label for="ind-finanse">Finanse i ubezpieczenia</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-marketing" name="industries[]" value="marketing" checked={"marketing" in current_industries} /><label for="ind-marketing">Marketing i reklama</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="ind-inne" name="industries[]" value="inne" checked={"inne" in current_industries} /><label for="ind-inne">Inne</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Regiony</label>
+              <div class="select-all-wrapper">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="select-all-regions" />
+                  <label for="select-all-regions">Cała Polska</label>
+                </div>
+              </div>
+              <div class="checkbox-grid" id="regions-grid">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-dolnoslaskie" name="regions[]" value="dolnoslaskie" checked={"dolnoslaskie" in current_regions} /><label for="reg-dolnoslaskie">Dolnośląskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-kujawsko-pomorskie" name="regions[]" value="kujawsko-pomorskie" checked={"kujawsko-pomorskie" in current_regions} /><label for="reg-kujawsko-pomorskie">Kujawsko-pomorskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-lubelskie" name="regions[]" value="lubelskie" checked={"lubelskie" in current_regions} /><label for="reg-lubelskie">Lubelskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-lubuskie" name="regions[]" value="lubuskie" checked={"lubuskie" in current_regions} /><label for="reg-lubuskie">Lubuskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-lodzkie" name="regions[]" value="lodzkie" checked={"lodzkie" in current_regions} /><label for="reg-lodzkie">Łódzkie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-malopolskie" name="regions[]" value="malopolskie" checked={"malopolskie" in current_regions} /><label for="reg-malopolskie">Małopolskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-mazowieckie" name="regions[]" value="mazowieckie" checked={"mazowieckie" in current_regions} /><label for="reg-mazowieckie">Mazowieckie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-opolskie" name="regions[]" value="opolskie" checked={"opolskie" in current_regions} /><label for="reg-opolskie">Opolskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-podkarpackie" name="regions[]" value="podkarpackie" checked={"podkarpackie" in current_regions} /><label for="reg-podkarpackie">Podkarpackie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-podlaskie" name="regions[]" value="podlaskie" checked={"podlaskie" in current_regions} /><label for="reg-podlaskie">Podlaskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-pomorskie" name="regions[]" value="pomorskie" checked={"pomorskie" in current_regions} /><label for="reg-pomorskie">Pomorskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-slaskie" name="regions[]" value="slaskie" checked={"slaskie" in current_regions} /><label for="reg-slaskie">Śląskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-swietokrzyskie" name="regions[]" value="swietokrzyskie" checked={"swietokrzyskie" in current_regions} /><label for="reg-swietokrzyskie">Świętokrzyskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-warminsko-mazurskie" name="regions[]" value="warminsko-mazurskie" checked={"warminsko-mazurskie" in current_regions} /><label for="reg-warminsko-mazurskie">Warmińsko-mazurskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-wielkopolskie" name="regions[]" value="wielkopolskie" checked={"wielkopolskie" in current_regions} /><label for="reg-wielkopolskie">Wielkopolskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="reg-zachodniopomorskie" name="regions[]" value="zachodniopomorskie" checked={"zachodniopomorskie" in current_regions} /><label for="reg-zachodniopomorskie">Zachodniopomorskie</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Słowa kluczowe</label>
+              <div class="keywords-container" id="keywords-container">
+                <div class="keywords-list" id="keywords-list"></div>
+                <input
+                  type="text"
+                  class="keyword-input"
+                  id="keyword-input"
+                  placeholder="Wpisz słowo kluczowe i naciśnij Enter"
+                />
+              </div>
+              <input type="hidden" name="keywords" id="keywords-hidden" value={Enum.join(current_keywords, ",")} />
+              <p class="form-hint">np. "oprogramowanie", "remont dróg", "catering szkolny"</p>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+            </div>
+          </form>
+        </div>
+      </section>
+      <% end %>
+
+<!-- Account Section -->
+      <section class="settings-section" id="accountSection">
+        <div class="section-header" onclick="toggleSection('accountSection')">
+          <div class="section-header-left">
+            <h2 class="section-title">Konto</h2>
+          </div>
+          <svg
+            class="collapse-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+        <div class="section-divider"></div>
+        <div class="section-content">
+          <form id="accountForm" action="/settings/account" method="POST">
+            <div class="form-group">
+              <label class="form-label">Adres e-mail</label>
+              <input type="email" name="email" class="form-input" value={@current_user.email} disabled />
+              <p class="form-hint">Aby zmienić adres e-mail, skontaktuj się z nami</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hasło</label>
+              <a href="/reset-password" class="btn btn-outline">Zmień hasło</a>
+            </div>
+          </form>
+        </div>
+      </section>
+      
+<!-- Danger Zone -->
+      <section class="settings-section danger-zone" id="dangerSection">
+        <div class="section-header" onclick="toggleSection('dangerSection')">
+          <div class="section-header-left">
+            <h2 class="section-title">Strefa niebezpieczna</h2>
+          </div>
+          <svg
+            class="collapse-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+        <div class="section-divider"></div>
+        <div class="section-content">
+          <p class="danger-description">
+            Po usunięciu konta wszystkie Twoje dane zostaną trwale usunięte. Tej operacji nie można cofnąć.
+          </p>
+          <button type="button" class="btn btn-danger-outline" id="deleteAccountBtn">
+            Usuń konto
+          </button>
+        </div>
+      </section>
+    </main>
+    
+<!-- Delete Modal -->
+    <div class="modal-overlay" id="deleteModal">
+      <div class="modal">
+        <div class="modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
+            <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </div>
+        <h3 class="modal-title">Usuń konto</h3>
+        <p class="modal-description">
+          Czy na pewno chcesz usunąć swoje konto? Wszystkie dane zostaną trwale usunięte. Tej operacji nie można cofnąć.
+        </p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Anuluj</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Usuń konto</button>
+        </div>
+      </div>
+    </div>
+    
+<!-- Toast -->
+    <div class="toast" id="toast">
+      <svg class="toast-icon" viewBox="0 0 24 24">
+        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>Zmiany zostały zapisane</span>
+    </div>
+
+    <script>
+      function toggleSection(sectionId) {
+          document.getElementById(sectionId).classList.toggle('collapsed');
+      }
+
+      // Select all industries
+      const selectAllInd = document.getElementById('select-all-industries');
+      const indCbs = document.querySelectorAll('#industries-grid input[type="checkbox"]');
+      if (selectAllInd) {
+          selectAllInd.addEventListener('change', function() { indCbs.forEach(cb => cb.checked = this.checked); });
+          indCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllInd.checked = [...indCbs].every(c => c.checked); }); });
+      }
+
+      // Select all regions
+      const selectAllReg = document.getElementById('select-all-regions');
+      const regCbs = document.querySelectorAll('#regions-grid input[type="checkbox"]');
+      if (selectAllReg) {
+          selectAllReg.addEventListener('change', function() { regCbs.forEach(cb => cb.checked = this.checked); });
+          regCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllReg.checked = [...regCbs].every(c => c.checked); }); });
+      }
+
+      // Keywords
+      const kwInput = document.getElementById('keyword-input');
+      const kwList = document.getElementById('keywords-list');
+      const kwHidden = document.getElementById('keywords-hidden');
+      let keywords = kwHidden && kwHidden.value ? kwHidden.value.split(',').filter(k => k.trim()) : [];
+      function updateKwHidden() { if (kwHidden) kwHidden.value = keywords.join(','); }
+      function addKw(kw) { kw = kw.trim().toLowerCase(); if (kw && !keywords.includes(kw)) { keywords.push(kw); renderKw(); updateKwHidden(); } }
+      window.removeKw = function(kw) { keywords = keywords.filter(k => k !== kw); renderKw(); updateKwHidden(); }
+      function renderKw() {
+          if (kwList) kwList.innerHTML = keywords.map(kw => '<span class="keyword-tag">' + kw + '<button type="button" onclick="removeKw(\'' + kw + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></span>').join('');
+      }
+      if (kwInput) kwInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); addKw(this.value); this.value = ''; } });
+      renderKw();
+
+      // Modal
+      const modal = document.getElementById('deleteModal');
+      document.getElementById('deleteAccountBtn').addEventListener('click', () => modal.classList.add('visible'));
+      document.getElementById('cancelDeleteBtn').addEventListener('click', () => modal.classList.remove('visible'));
+      modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('visible'); });
+      document.getElementById('confirmDeleteBtn').addEventListener('click', () => { window.location.href = '/account/delete'; });
+
+      // Toast
+      function showToast() { const t = document.getElementById('toast'); t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 3000); }
+    </script>
+  </body>
+</html>

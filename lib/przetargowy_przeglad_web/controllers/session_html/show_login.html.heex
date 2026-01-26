@@ -259,6 +259,12 @@
           border: 1px solid #fcc;
       }
 
+      .field-error {
+          color: #c33;
+          font-size: 0.85rem;
+          margin-top: 6px;
+      }
+
       @media (max-width: 640px) {
           .login-card {
               padding: 32px 24px;
@@ -327,25 +333,24 @@
           <p>Witaj ponownie! Wprowadź swoje dane logowania.</p>
         </div>
 
-        <%= if @conn.assigns[:flash]["error"] do %>
-          <div class="alert alert-error">
-            {@conn.assigns[:flash]["error"]}
-          </div>
-        <% end %>
-
-        <form action="/create" method="post">
-          <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
-
+        <.form for={@form} action="/create" method="post">
           <div class="form-group">
             <label for="email">Adres email</label>
             <input
               type="email"
               id="email"
-              name="session[email]"
+              name={@form[:email].name}
+              value={@form[:email].value}
               placeholder="twoj@email.pl"
-              required
               autocomplete="email"
             />
+            <%= if @form[:email].errors != [] do %>
+              <div class="field-error">
+                <%= for {msg, _opts} <- @form[:email].errors do %>
+                  <span><%= msg %></span>
+                <% end %>
+              </div>
+            <% end %>
           </div>
 
           <div class="form-group">
@@ -353,17 +358,23 @@
             <input
               type="password"
               id="password"
-              name="session[password]"
+              name={@form[:password].name}
               placeholder="••••••••"
-              required
               autocomplete="current-password"
             />
+            <%= if @form[:password].errors != [] do %>
+              <div class="field-error">
+                <%= for {msg, _opts} <- @form[:password].errors do %>
+                  <span><%= msg %></span>
+                <% end %>
+              </div>
+            <% end %>
           </div>
 
           <button type="submit" class="btn btn-primary">
             Zaloguj się
           </button>
-        </form>
+        </.form>
 
         <div class="divider">
           <span>lub</span>

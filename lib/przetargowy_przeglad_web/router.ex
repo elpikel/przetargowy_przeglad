@@ -14,6 +14,10 @@ defmodule PrzetargowyPrzegladWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :require_auth do
+    plug PrzetargowyPrzegladWeb.Plugs.RequireAuth
+  end
+
   scope "/", PrzetargowyPrzegladWeb do
     pipe_through :browser
 
@@ -26,6 +30,14 @@ defmodule PrzetargowyPrzegladWeb.Router do
     post "/register", UserController, :create_user
     get "/registration-success", UserController, :registration_success
     get "/verify-email", UserController, :verify_email
+  end
+
+  scope "/", PrzetargowyPrzegladWeb do
+    pipe_through [:browser, :require_auth]
+
+    get "/dashboard", DashboardController, :show_dashboard
+    post "/dashboard/alerts", DashboardController, :update_alerts
+    get "/logout", SessionController, :logout
   end
 
   # Other scopes may use custom stacks.

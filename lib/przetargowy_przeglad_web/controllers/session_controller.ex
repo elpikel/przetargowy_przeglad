@@ -1,25 +1,49 @@
 defmodule PrzetargowyPrzegladWeb.SessionController do
   use PrzetargowyPrzegladWeb, :controller
 
+  import Phoenix.Component, only: [to_form: 2]
+
+  alias PrzetargowyPrzeglad.Accounts
+  alias PrzetargowyPrzegladWeb.SessionController.LoginForm
+
   plug :put_layout, false
   plug :put_root_layout, false
 
   def show_login(conn, _params) do
-    render(conn, :show_login)
+    changeset = LoginForm.changeset(%{})
+    render(conn, :show_login, form: to_form(changeset, as: "session"))
   end
 
   def create_session(conn, %{"session" => session_params}) do
-    # TODO: Implement authentication logic
-    # For now, this is a placeholder
-    email = session_params["email"]
-    password = session_params["password"]
+    changeset = LoginForm.changeset(session_params)
 
-    # TODO: Verify credentials against database
-    # TODO: Create session and store user_id
-    # TODO: Redirect to appropriate page on success
+    if changeset.valid? do
+      %{"email" => email, "password" => password} = session_params
 
+      case Accounts.authenticate_user(email, password) do
+        {:ok, user} ->
+          conn
+          |> put_session(:user_id, user.id)
+          |> configure_session(renew: true)
+          |> redirect(to: ~p"/dashboard")
+
+        {:error, :invalid_credentials} ->
+          changeset =
+            changeset
+            |> LoginForm.add_credentials_error()
+            |> Map.put(:action, :validate)
+
+          render(conn, :show_login, form: to_form(changeset, as: "session"))
+      end
+    else
+      changeset = Map.put(changeset, :action, :validate)
+      render(conn, :show_login, form: to_form(changeset, as: "session"))
+    end
+  end
+
+  def logout(conn, _params) do
     conn
-    |> put_flash(:error, "Invalid email or password")
-    |> render(:show_login)
+    |> clear_session()
+    |> redirect(to: ~p"/")
   end
 end
