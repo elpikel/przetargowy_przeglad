@@ -108,21 +108,17 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNotice do
     |> cast_embed(:contractors_contract_details)
     |> validate_required([
       :object_id,
-      :client_type,
-      :tender_type,
       :notice_type,
       :notice_number,
       :bzp_number,
       :is_tender_amount_below_eu,
       :publication_date,
-      :order_object,
       :cpv_codes,
       :organization_name,
       :organization_city,
       :organization_country,
       :organization_national_id,
       :organization_id,
-      :tender_id,
       :html_body
     ])
   end
