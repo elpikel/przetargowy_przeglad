@@ -165,5 +165,30 @@ defmodule PrzetargowyPrzeglad.TendersTest do
       assert success_count == 0
       assert length(failed) == 1
     end
+
+    test "handles Decimal values in embedded schemas (reproducing Jason.Encoder error)" do
+      # This test reproduces the exact error from the stack trace
+      attrs_with_decimal = Map.put(@valid_attrs, :contractors_contract_details, [
+        %{
+          part: 1,
+          status: :contract_signed,
+          contractor_name: "Test Contractor",
+          contractor_city: "Test City",
+          contractor_nip: "1234567890",
+          contract_value: Decimal.new("99682.80"),
+          winning_price: Decimal.new("99682.80"),
+          lowest_price: Decimal.new("99682.80"),
+          highest_price: Decimal.new("99682.80"),
+          cancellation_reason: nil,
+          currency: "PLN"
+        }
+      ])
+
+      # This should fail with Protocol.UndefinedError if Jason.Encoder is not implemented for Decimal
+      assert {:ok, %TenderNotice{} = tender_notice} = Tenders.upsert_tender_notice(attrs_with_decimal)
+
+      [detail] = tender_notice.contractors_contract_details
+      assert Decimal.equal?(detail.contract_value, Decimal.new("99682.80"))
+    end
   end
 end

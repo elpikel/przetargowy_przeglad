@@ -3,8 +3,23 @@ defmodule PrzetargowyPrzeglad.Tenders do
   Context module for managing tenders.
   """
 
+  import Ecto.Query
+
   alias PrzetargowyPrzeglad.Repo
   alias PrzetargowyPrzeglad.Tenders.TenderNotice
+
+  @doc """
+  Gets the last inserted tender notice's object_id for the given notice type.
+  """
+  def get_last_object_id_by_notice_type(notice_type) do
+    TenderNotice
+    |> from(as: :tender_notice)
+    |> where([tender_notice: tn], tn.notice_type == ^notice_type)
+    |> order_by([tender_notice: tn], desc: tn.inserted_at)
+    |> limit(1)
+    |> select([tender_notice: tn], tn.object_id)
+    |> Repo.one()
+  end
 
   @doc """
   Gets a single tender notice by ID.

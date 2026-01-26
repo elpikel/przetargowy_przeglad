@@ -65,7 +65,8 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
     for notice_type <- TenderNotice.notice_types() do
       Logger.info("Starting upsert for notice type: #{notice_type}")
 
-      upsert_all_tender_notices(nil, publication_date_from, publication_date_to, notice_type)
+      last_object_id = Tenders.get_last_object_id_by_notice_type(notice_type)
+      upsert_all_tender_notices(last_object_id, publication_date_from, publication_date_to, notice_type)
     end
   end
 
