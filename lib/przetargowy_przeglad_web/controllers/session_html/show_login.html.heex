@@ -11,6 +11,12 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
       rel="stylesheet"
     />
+    <script
+      defer
+      data-domain="przetargowyprzeglad.pl"
+      src="https://plausible.przetargowyprzeglad.pl/js/script.hash.outbound-links.tagged-events.js"
+    >
+    </script>
     <style>
       :root {
           --navy-900: #0a1628;
@@ -347,7 +353,7 @@
             <%= if @form[:email].errors != [] do %>
               <div class="field-error">
                 <%= for {msg, _opts} <- @form[:email].errors do %>
-                  <span><%= msg %></span>
+                  <span>{msg}</span>
                 <% end %>
               </div>
             <% end %>
@@ -365,7 +371,7 @@
             <%= if @form[:password].errors != [] do %>
               <div class="field-error">
                 <%= for {msg, _opts} <- @form[:password].errors do %>
-                  <span><%= msg %></span>
+                  <span>{msg}</span>
                 <% end %>
               </div>
             <% end %>

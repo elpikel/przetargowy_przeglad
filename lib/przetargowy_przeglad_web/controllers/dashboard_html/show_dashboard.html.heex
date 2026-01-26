@@ -10,6 +10,12 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
       rel="stylesheet"
     />
+    <script
+      defer
+      data-domain="przetargowyprzeglad.pl"
+      src="https://plausible.przetargowyprzeglad.pl/js/script.hash.outbound-links.tagged-events.js"
+    >
+    </script>
     <style>
       :root {
           --navy-900: #0a1628;
@@ -172,7 +178,7 @@
           <span class="logo-text">Przetargowy<span>Przegląd</span></span>
         </a>
         <div class="header-user">
-          <span class="user-email"><%= @current_user.email %></span>
+          <span class="user-email">{@current_user.email}</span>
           <a href="/logout" class="btn btn-outline">Wyloguj się</a>
         </div>
       </div>
@@ -183,237 +189,488 @@
         <h1 class="page-title">Ustawienia</h1>
         <p class="page-subtitle">Zarządzaj swoim kontem i preferencjami przetargów</p>
       </div>
-      
-<%= if @current_user.subscription_plan == "free" do %>
-      <section class="settings-section" id="alertsFreeSection">
-        <div class="section-header" onclick="toggleSection('alertsFreeSection')">
-          <div class="section-header-left">
-            <h2 class="section-title">Preferencje przetargów</h2>
-            <span class="section-badge">Plan Darmowy</span>
+
+      <%= if @current_user.subscription_plan == "free" do %>
+        <section class="settings-section" id="alertsFreeSection">
+          <div class="section-header" onclick="toggleSection('alertsFreeSection')">
+            <div class="section-header-left">
+              <h2 class="section-title">Preferencje przetargów</h2>
+              <span class="section-badge">Plan Darmowy</span>
+            </div>
+            <svg
+              class="collapse-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
-          <svg
-            class="collapse-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </div>
-        <div class="section-divider"></div>
-        <div class="section-content">
-          <form id="alertsFormFree" action="/dashboard/alerts" method="POST">
-            <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
-            <% current_industry = @alert && (@alert.rules[:industry] || @alert.rules["industry"]) %>
-            <% current_region = @alert && (@alert.rules[:region] || @alert.rules["region"]) %>
-            <div class="form-group">
-              <label class="form-label">Branża</label>
-              <select name="industry" class="form-select" required>
-                <option value="">Wybierz branżę</option>
-                <option value="budownictwo" selected={current_industry == "budownictwo"}>Budownictwo</option>
-                <option value="it" selected={current_industry == "it"}>IT i telekomunikacja</option>
-                <option value="medycyna" selected={current_industry == "medycyna"}>Medycyna i farmacja</option>
-                <option value="transport" selected={current_industry == "transport"}>Transport i logistyka</option>
-                <option value="energia" selected={current_industry == "energia"}>Energia i paliwa</option>
-                <option value="edukacja" selected={current_industry == "edukacja"}>Edukacja</option>
-                <option value="administracja" selected={current_industry == "administracja"}>Administracja publiczna</option>
-                <option value="ochrona" selected={current_industry == "ochrona"}>Ochrona i bezpieczeństwo</option>
-                <option value="zywnosc" selected={current_industry == "zywnosc"}>Żywność i catering</option>
-                <option value="srodowisko" selected={current_industry == "srodowisko"}>Ochrona środowiska</option>
-                <option value="finanse" selected={current_industry == "finanse"}>Finanse i ubezpieczenia</option>
-                <option value="marketing" selected={current_industry == "marketing"}>Marketing i reklama</option>
-                <option value="inne" selected={current_industry == "inne"}>Inne</option>
-              </select>
-              <p class="form-hint">W planie darmowym możesz wybrać jedną branżę</p>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Region</label>
-              <select name="region" class="form-select" required>
-                <option value="">Wybierz województwo</option>
-                <option value="dolnoslaskie" selected={current_region == "dolnoslaskie"}>Dolnośląskie</option>
-                <option value="kujawsko-pomorskie" selected={current_region == "kujawsko-pomorskie"}>Kujawsko-pomorskie</option>
-                <option value="lubelskie" selected={current_region == "lubelskie"}>Lubelskie</option>
-                <option value="lubuskie" selected={current_region == "lubuskie"}>Lubuskie</option>
-                <option value="lodzkie" selected={current_region == "lodzkie"}>Łódzkie</option>
-                <option value="malopolskie" selected={current_region == "malopolskie"}>Małopolskie</option>
-                <option value="mazowieckie" selected={current_region == "mazowieckie"}>Mazowieckie</option>
-                <option value="opolskie" selected={current_region == "opolskie"}>Opolskie</option>
-                <option value="podkarpackie" selected={current_region == "podkarpackie"}>Podkarpackie</option>
-                <option value="podlaskie" selected={current_region == "podlaskie"}>Podlaskie</option>
-                <option value="pomorskie" selected={current_region == "pomorskie"}>Pomorskie</option>
-                <option value="slaskie" selected={current_region == "slaskie"}>Śląskie</option>
-                <option value="swietokrzyskie" selected={current_region == "swietokrzyskie"}>Świętokrzyskie</option>
-                <option value="warminsko-mazurskie" selected={current_region == "warminsko-mazurskie"}>Warmińsko-mazurskie</option>
-                <option value="wielkopolskie" selected={current_region == "wielkopolskie"}>Wielkopolskie</option>
-                <option value="zachodniopomorskie" selected={current_region == "zachodniopomorskie"}>Zachodniopomorskie</option>
-              </select>
-              <p class="form-hint">W planie darmowym możesz wybrać jeden region</p>
-            </div>
-            <div class="form-actions">
-              <a href="/upgrade" class="btn btn-outline">Przejdź na Premium</a>
-              <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-            </div>
-          </form>
-        </div>
-      </section>
-      <% end %>
-      
-<%= if @current_user.subscription_plan == "paid" do %>
-      <% current_industries = (@alert && (@alert.rules[:industries] || @alert.rules["industries"])) || [] %>
-      <% current_regions = (@alert && (@alert.rules[:regions] || @alert.rules["regions"])) || [] %>
-      <% current_keywords = (@alert && (@alert.rules[:keywords] || @alert.rules["keywords"])) || [] %>
-      <section class="settings-section" id="alertsPremiumSection">
-        <div class="section-header" onclick="toggleSection('alertsPremiumSection')">
-          <div class="section-header-left">
-            <h2 class="section-title">Preferencje przetargów</h2>
-            <span class="section-badge premium">Plan Premium</span>
+          <div class="section-divider"></div>
+          <div class="section-content">
+            <form id="alertsFormFree" action="/dashboard/alerts" method="POST">
+              <input
+                type="hidden"
+                name="_csrf_token"
+                value={Plug.CSRFProtection.get_csrf_token()}
+              />
+              <% current_industry =
+                @alert && (@alert.rules[:industry] || @alert.rules["industry"]) %>
+              <% current_region = @alert && (@alert.rules[:region] || @alert.rules["region"]) %>
+              <div class="form-group">
+                <label class="form-label">Branża</label>
+                <select name="industry" class="form-select" required>
+                  <option value="">Wybierz branżę</option>
+                  <option value="budownictwo" selected={current_industry == "budownictwo"}>
+                    Budownictwo
+                  </option>
+                  <option value="it" selected={current_industry == "it"}>
+                    IT i telekomunikacja
+                  </option>
+                  <option value="medycyna" selected={current_industry == "medycyna"}>
+                    Medycyna i farmacja
+                  </option>
+                  <option value="transport" selected={current_industry == "transport"}>
+                    Transport i logistyka
+                  </option>
+                  <option value="energia" selected={current_industry == "energia"}>
+                    Energia i paliwa
+                  </option>
+                  <option value="edukacja" selected={current_industry == "edukacja"}>
+                    Edukacja
+                  </option>
+                  <option value="administracja" selected={current_industry == "administracja"}>
+                    Administracja publiczna
+                  </option>
+                  <option value="ochrona" selected={current_industry == "ochrona"}>
+                    Ochrona i bezpieczeństwo
+                  </option>
+                  <option value="zywnosc" selected={current_industry == "zywnosc"}>
+                    Żywność i catering
+                  </option>
+                  <option value="srodowisko" selected={current_industry == "srodowisko"}>
+                    Ochrona środowiska
+                  </option>
+                  <option value="finanse" selected={current_industry == "finanse"}>
+                    Finanse i ubezpieczenia
+                  </option>
+                  <option value="marketing" selected={current_industry == "marketing"}>
+                    Marketing i reklama
+                  </option>
+                  <option value="inne" selected={current_industry == "inne"}>Inne</option>
+                </select>
+                <p class="form-hint">W planie darmowym możesz wybrać jedną branżę</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Region</label>
+                <select name="region" class="form-select" required>
+                  <option value="">Wybierz województwo</option>
+                  <option value="dolnoslaskie" selected={current_region == "dolnoslaskie"}>
+                    Dolnośląskie
+                  </option>
+                  <option
+                    value="kujawsko-pomorskie"
+                    selected={current_region == "kujawsko-pomorskie"}
+                  >
+                    Kujawsko-pomorskie
+                  </option>
+                  <option value="lubelskie" selected={current_region == "lubelskie"}>
+                    Lubelskie
+                  </option>
+                  <option value="lubuskie" selected={current_region == "lubuskie"}>
+                    Lubuskie
+                  </option>
+                  <option value="lodzkie" selected={current_region == "lodzkie"}>Łódzkie</option>
+                  <option value="malopolskie" selected={current_region == "malopolskie"}>
+                    Małopolskie
+                  </option>
+                  <option value="mazowieckie" selected={current_region == "mazowieckie"}>
+                    Mazowieckie
+                  </option>
+                  <option value="opolskie" selected={current_region == "opolskie"}>
+                    Opolskie
+                  </option>
+                  <option value="podkarpackie" selected={current_region == "podkarpackie"}>
+                    Podkarpackie
+                  </option>
+                  <option value="podlaskie" selected={current_region == "podlaskie"}>
+                    Podlaskie
+                  </option>
+                  <option value="pomorskie" selected={current_region == "pomorskie"}>
+                    Pomorskie
+                  </option>
+                  <option value="slaskie" selected={current_region == "slaskie"}>Śląskie</option>
+                  <option value="swietokrzyskie" selected={current_region == "swietokrzyskie"}>
+                    Świętokrzyskie
+                  </option>
+                  <option
+                    value="warminsko-mazurskie"
+                    selected={current_region == "warminsko-mazurskie"}
+                  >
+                    Warmińsko-mazurskie
+                  </option>
+                  <option value="wielkopolskie" selected={current_region == "wielkopolskie"}>
+                    Wielkopolskie
+                  </option>
+                  <option
+                    value="zachodniopomorskie"
+                    selected={current_region == "zachodniopomorskie"}
+                  >
+                    Zachodniopomorskie
+                  </option>
+                </select>
+                <p class="form-hint">W planie darmowym możesz wybrać jeden region</p>
+              </div>
+              <div class="form-actions">
+                <a href="/upgrade" class="btn btn-outline">Przejdź na Premium</a>
+                <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+              </div>
+            </form>
           </div>
-          <svg
-            class="collapse-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </div>
-        <div class="section-divider"></div>
-        <div class="section-content">
-          <form id="alertsFormPremium" action="/dashboard/alerts" method="POST">
-            <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
-            <div class="form-group">
-              <label class="form-label">Branże</label>
-              <div class="select-all-wrapper">
-                <div class="checkbox-item">
-                  <input type="checkbox" id="select-all-industries" />
-                  <label for="select-all-industries">Zaznacz wszystkie</label>
-                </div>
-              </div>
-              <div class="checkbox-grid" id="industries-grid">
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-budownictwo" name="industries[]" value="budownictwo" checked={"budownictwo" in current_industries} /><label for="ind-budownictwo">Budownictwo</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-it" name="industries[]" value="it" checked={"it" in current_industries} /><label for="ind-it">IT i telekomunikacja</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-medycyna" name="industries[]" value="medycyna" checked={"medycyna" in current_industries} /><label for="ind-medycyna">Medycyna i farmacja</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-transport" name="industries[]" value="transport" checked={"transport" in current_industries} /><label for="ind-transport">Transport i logistyka</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-energia" name="industries[]" value="energia" checked={"energia" in current_industries} /><label for="ind-energia">Energia i paliwa</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-edukacja" name="industries[]" value="edukacja" checked={"edukacja" in current_industries} /><label for="ind-edukacja">Edukacja</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-administracja" name="industries[]" value="administracja" checked={"administracja" in current_industries} /><label for="ind-administracja">Administracja publiczna</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-ochrona" name="industries[]" value="ochrona" checked={"ochrona" in current_industries} /><label for="ind-ochrona">Ochrona i bezpieczeństwo</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-zywnosc" name="industries[]" value="zywnosc" checked={"zywnosc" in current_industries} /><label for="ind-zywnosc">Żywność i catering</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-srodowisko" name="industries[]" value="srodowisko" checked={"srodowisko" in current_industries} /><label for="ind-srodowisko">Ochrona środowiska</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-finanse" name="industries[]" value="finanse" checked={"finanse" in current_industries} /><label for="ind-finanse">Finanse i ubezpieczenia</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-marketing" name="industries[]" value="marketing" checked={"marketing" in current_industries} /><label for="ind-marketing">Marketing i reklama</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ind-inne" name="industries[]" value="inne" checked={"inne" in current_industries} /><label for="ind-inne">Inne</label>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Regiony</label>
-              <div class="select-all-wrapper">
-                <div class="checkbox-item">
-                  <input type="checkbox" id="select-all-regions" />
-                  <label for="select-all-regions">Cała Polska</label>
-                </div>
-              </div>
-              <div class="checkbox-grid" id="regions-grid">
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-dolnoslaskie" name="regions[]" value="dolnoslaskie" checked={"dolnoslaskie" in current_regions} /><label for="reg-dolnoslaskie">Dolnośląskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-kujawsko-pomorskie" name="regions[]" value="kujawsko-pomorskie" checked={"kujawsko-pomorskie" in current_regions} /><label for="reg-kujawsko-pomorskie">Kujawsko-pomorskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-lubelskie" name="regions[]" value="lubelskie" checked={"lubelskie" in current_regions} /><label for="reg-lubelskie">Lubelskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-lubuskie" name="regions[]" value="lubuskie" checked={"lubuskie" in current_regions} /><label for="reg-lubuskie">Lubuskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-lodzkie" name="regions[]" value="lodzkie" checked={"lodzkie" in current_regions} /><label for="reg-lodzkie">Łódzkie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-malopolskie" name="regions[]" value="malopolskie" checked={"malopolskie" in current_regions} /><label for="reg-malopolskie">Małopolskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-mazowieckie" name="regions[]" value="mazowieckie" checked={"mazowieckie" in current_regions} /><label for="reg-mazowieckie">Mazowieckie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-opolskie" name="regions[]" value="opolskie" checked={"opolskie" in current_regions} /><label for="reg-opolskie">Opolskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-podkarpackie" name="regions[]" value="podkarpackie" checked={"podkarpackie" in current_regions} /><label for="reg-podkarpackie">Podkarpackie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-podlaskie" name="regions[]" value="podlaskie" checked={"podlaskie" in current_regions} /><label for="reg-podlaskie">Podlaskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-pomorskie" name="regions[]" value="pomorskie" checked={"pomorskie" in current_regions} /><label for="reg-pomorskie">Pomorskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-slaskie" name="regions[]" value="slaskie" checked={"slaskie" in current_regions} /><label for="reg-slaskie">Śląskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-swietokrzyskie" name="regions[]" value="swietokrzyskie" checked={"swietokrzyskie" in current_regions} /><label for="reg-swietokrzyskie">Świętokrzyskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-warminsko-mazurskie" name="regions[]" value="warminsko-mazurskie" checked={"warminsko-mazurskie" in current_regions} /><label for="reg-warminsko-mazurskie">Warmińsko-mazurskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-wielkopolskie" name="regions[]" value="wielkopolskie" checked={"wielkopolskie" in current_regions} /><label for="reg-wielkopolskie">Wielkopolskie</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="reg-zachodniopomorskie" name="regions[]" value="zachodniopomorskie" checked={"zachodniopomorskie" in current_regions} /><label for="reg-zachodniopomorskie">Zachodniopomorskie</label>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Słowa kluczowe</label>
-              <div class="keywords-container" id="keywords-container">
-                <div class="keywords-list" id="keywords-list"></div>
-                <input
-                  type="text"
-                  class="keyword-input"
-                  id="keyword-input"
-                  placeholder="Wpisz słowo kluczowe i naciśnij Enter"
-                />
-              </div>
-              <input type="hidden" name="keywords" id="keywords-hidden" value={Enum.join(current_keywords, ",")} />
-              <p class="form-hint">np. "oprogramowanie", "remont dróg", "catering szkolny"</p>
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-            </div>
-          </form>
-        </div>
-      </section>
+        </section>
       <% end %>
 
+      <%= if @current_user.subscription_plan == "paid" do %>
+        <% current_industries =
+          (@alert && (@alert.rules[:industries] || @alert.rules["industries"])) || [] %>
+        <% current_regions = (@alert && (@alert.rules[:regions] || @alert.rules["regions"])) || [] %>
+        <% current_keywords =
+          (@alert && (@alert.rules[:keywords] || @alert.rules["keywords"])) || [] %>
+        <section class="settings-section" id="alertsPremiumSection">
+          <div class="section-header" onclick="toggleSection('alertsPremiumSection')">
+            <div class="section-header-left">
+              <h2 class="section-title">Preferencje przetargów</h2>
+              <span class="section-badge premium">Plan Premium</span>
+            </div>
+            <svg
+              class="collapse-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="section-divider"></div>
+          <div class="section-content">
+            <form id="alertsFormPremium" action="/dashboard/alerts" method="POST">
+              <input
+                type="hidden"
+                name="_csrf_token"
+                value={Plug.CSRFProtection.get_csrf_token()}
+              />
+              <div class="form-group">
+                <label class="form-label">Branże</label>
+                <div class="select-all-wrapper">
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="select-all-industries" />
+                    <label for="select-all-industries">Zaznacz wszystkie</label>
+                  </div>
+                </div>
+                <div class="checkbox-grid" id="industries-grid">
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-budownictwo"
+                      name="industries[]"
+                      value="budownictwo"
+                      checked={"budownictwo" in current_industries}
+                    /><label for="ind-budownictwo">Budownictwo</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-it"
+                      name="industries[]"
+                      value="it"
+                      checked={"it" in current_industries}
+                    /><label for="ind-it">IT i telekomunikacja</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-medycyna"
+                      name="industries[]"
+                      value="medycyna"
+                      checked={"medycyna" in current_industries}
+                    /><label for="ind-medycyna">Medycyna i farmacja</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-transport"
+                      name="industries[]"
+                      value="transport"
+                      checked={"transport" in current_industries}
+                    /><label for="ind-transport">Transport i logistyka</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-energia"
+                      name="industries[]"
+                      value="energia"
+                      checked={"energia" in current_industries}
+                    /><label for="ind-energia">Energia i paliwa</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-edukacja"
+                      name="industries[]"
+                      value="edukacja"
+                      checked={"edukacja" in current_industries}
+                    /><label for="ind-edukacja">Edukacja</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-administracja"
+                      name="industries[]"
+                      value="administracja"
+                      checked={"administracja" in current_industries}
+                    /><label for="ind-administracja">Administracja publiczna</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-ochrona"
+                      name="industries[]"
+                      value="ochrona"
+                      checked={"ochrona" in current_industries}
+                    /><label for="ind-ochrona">Ochrona i bezpieczeństwo</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-zywnosc"
+                      name="industries[]"
+                      value="zywnosc"
+                      checked={"zywnosc" in current_industries}
+                    /><label for="ind-zywnosc">Żywność i catering</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-srodowisko"
+                      name="industries[]"
+                      value="srodowisko"
+                      checked={"srodowisko" in current_industries}
+                    /><label for="ind-srodowisko">Ochrona środowiska</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-finanse"
+                      name="industries[]"
+                      value="finanse"
+                      checked={"finanse" in current_industries}
+                    /><label for="ind-finanse">Finanse i ubezpieczenia</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-marketing"
+                      name="industries[]"
+                      value="marketing"
+                      checked={"marketing" in current_industries}
+                    /><label for="ind-marketing">Marketing i reklama</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="ind-inne"
+                      name="industries[]"
+                      value="inne"
+                      checked={"inne" in current_industries}
+                    /><label for="ind-inne">Inne</label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Regiony</label>
+                <div class="select-all-wrapper">
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="select-all-regions" />
+                    <label for="select-all-regions">Cała Polska</label>
+                  </div>
+                </div>
+                <div class="checkbox-grid" id="regions-grid">
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-dolnoslaskie"
+                      name="regions[]"
+                      value="dolnoslaskie"
+                      checked={"dolnoslaskie" in current_regions}
+                    /><label for="reg-dolnoslaskie">Dolnośląskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-kujawsko-pomorskie"
+                      name="regions[]"
+                      value="kujawsko-pomorskie"
+                      checked={"kujawsko-pomorskie" in current_regions}
+                    /><label for="reg-kujawsko-pomorskie">Kujawsko-pomorskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-lubelskie"
+                      name="regions[]"
+                      value="lubelskie"
+                      checked={"lubelskie" in current_regions}
+                    /><label for="reg-lubelskie">Lubelskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-lubuskie"
+                      name="regions[]"
+                      value="lubuskie"
+                      checked={"lubuskie" in current_regions}
+                    /><label for="reg-lubuskie">Lubuskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-lodzkie"
+                      name="regions[]"
+                      value="lodzkie"
+                      checked={"lodzkie" in current_regions}
+                    /><label for="reg-lodzkie">Łódzkie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-malopolskie"
+                      name="regions[]"
+                      value="malopolskie"
+                      checked={"malopolskie" in current_regions}
+                    /><label for="reg-malopolskie">Małopolskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-mazowieckie"
+                      name="regions[]"
+                      value="mazowieckie"
+                      checked={"mazowieckie" in current_regions}
+                    /><label for="reg-mazowieckie">Mazowieckie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-opolskie"
+                      name="regions[]"
+                      value="opolskie"
+                      checked={"opolskie" in current_regions}
+                    /><label for="reg-opolskie">Opolskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-podkarpackie"
+                      name="regions[]"
+                      value="podkarpackie"
+                      checked={"podkarpackie" in current_regions}
+                    /><label for="reg-podkarpackie">Podkarpackie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-podlaskie"
+                      name="regions[]"
+                      value="podlaskie"
+                      checked={"podlaskie" in current_regions}
+                    /><label for="reg-podlaskie">Podlaskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-pomorskie"
+                      name="regions[]"
+                      value="pomorskie"
+                      checked={"pomorskie" in current_regions}
+                    /><label for="reg-pomorskie">Pomorskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-slaskie"
+                      name="regions[]"
+                      value="slaskie"
+                      checked={"slaskie" in current_regions}
+                    /><label for="reg-slaskie">Śląskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-swietokrzyskie"
+                      name="regions[]"
+                      value="swietokrzyskie"
+                      checked={"swietokrzyskie" in current_regions}
+                    /><label for="reg-swietokrzyskie">Świętokrzyskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-warminsko-mazurskie"
+                      name="regions[]"
+                      value="warminsko-mazurskie"
+                      checked={"warminsko-mazurskie" in current_regions}
+                    /><label for="reg-warminsko-mazurskie">Warmińsko-mazurskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-wielkopolskie"
+                      name="regions[]"
+                      value="wielkopolskie"
+                      checked={"wielkopolskie" in current_regions}
+                    /><label for="reg-wielkopolskie">Wielkopolskie</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="reg-zachodniopomorskie"
+                      name="regions[]"
+                      value="zachodniopomorskie"
+                      checked={"zachodniopomorskie" in current_regions}
+                    /><label for="reg-zachodniopomorskie">Zachodniopomorskie</label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Słowa kluczowe</label>
+                <div class="keywords-container" id="keywords-container">
+                  <div class="keywords-list" id="keywords-list"></div>
+                  <input
+                    type="text"
+                    class="keyword-input"
+                    id="keyword-input"
+                    placeholder="Wpisz słowo kluczowe i naciśnij Enter"
+                  />
+                </div>
+                <input
+                  type="hidden"
+                  name="keywords"
+                  id="keywords-hidden"
+                  value={Enum.join(current_keywords, ",")}
+                />
+                <p class="form-hint">np. "oprogramowanie", "remont dróg", "catering szkolny"</p>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+              </div>
+            </form>
+          </div>
+        </section>
+      <% end %>
+      
 <!-- Account Section -->
       <section class="settings-section" id="accountSection">
         <div class="section-header" onclick="toggleSection('accountSection')">
@@ -435,7 +692,13 @@
           <form id="accountForm" action="/settings/account" method="POST">
             <div class="form-group">
               <label class="form-label">Adres e-mail</label>
-              <input type="email" name="email" class="form-input" value={@current_user.email} disabled />
+              <input
+                type="email"
+                name="email"
+                class="form-input"
+                value={@current_user.email}
+                disabled
+              />
               <p class="form-hint">Aby zmienić adres e-mail, skontaktuj się z nami</p>
             </div>
             <div class="form-group">
