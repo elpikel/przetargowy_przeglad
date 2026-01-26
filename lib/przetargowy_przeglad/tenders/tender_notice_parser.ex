@@ -166,7 +166,7 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNoticeParser do
     |> Enum.map(fn [_full, part_num, reason] ->
       %{
         part: String.to_integer(part_num),
-        cancellation_reason: String.trim(reason)
+        cancellation_reason: reason |> String.trim() |> sanitize_html()
       }
     end)
   end
@@ -219,9 +219,9 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNoticeParser do
           part = %{
             part: part_index,
             status: :contract_signed,
-            contractor_name: Map.get(contractor, "contractorName"),
-            contractor_city: Map.get(contractor, "contractorCity"),
-            contractor_nip: Map.get(contractor, "contractorNationalId"),
+            contractor_name: sanitize_html(Map.get(contractor, "contractorName")),
+            contractor_city: sanitize_html(Map.get(contractor, "contractorCity")),
+            contractor_nip: sanitize_html(Map.get(contractor, "contractorNationalId")),
             contract_value: Map.get(contract, :value),
             winning_price: Map.get(winning, :winning_price),
             lowest_price: Map.get(range, :lowest_price),
@@ -268,5 +268,17 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNoticeParser do
     |> String.replace("&amp;", "&")
     |> String.replace("&lt;", "<")
     |> String.replace("&gt;", ">")
+  end
+
+  def sanitize_html(nil), do: nil
+
+  def sanitize_html(html) when is_binary(html) do
+    html
+    # Escaped null bytes
+    |> String.replace(~r/\\u0000/, "")
+    # Raw null bytes
+    |> String.replace(<<0>>, "")
+    # Another form
+    |> String.replace(<<0x00>>, "")
   end
 end

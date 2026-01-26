@@ -165,34 +165,34 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
     } = PrzetargowyPrzeglad.Tenders.TenderNoticeParser.parse_contract(raw)
 
     %{
-      client_type: raw["clientType"],
-      order_type: raw["orderType"],
-      tender_type: raw["tenderType"],
-      notice_type: raw["noticeType"],
-      notice_number: raw["noticeNumber"] || raw["bzpNumber"],
-      bzp_number: raw["bzpNumber"],
+      client_type: sanitize_html(raw["clientType"]),
+      order_type: sanitize_html(raw["orderType"]),
+      tender_type: sanitize_html(raw["tenderType"]),
+      notice_type: sanitize_html(raw["noticeType"]),
+      notice_number: sanitize_html(raw["noticeNumber"]),
+      bzp_number: sanitize_html(raw["bzpNumber"]),
       is_tender_amount_below_eu: raw["isTenderAmountBelowEU"],
       publication_date: raw["publicationDate"],
-      order_object: raw["orderObject"],
+      order_object: sanitize_html(raw["orderObject"]),
       cpv_codes: raw["cpvCode"] |> String.split(",") |> Enum.map(&sanitize_html/1),
       submitting_offers_date: raw["submittingOffersDate"],
-      procedure_result: raw["procedureResult"],
-      organization_name: raw["organizationName"],
-      organization_city: raw["organizationCity"],
-      organization_province: raw["organizationProvince"],
-      organization_country: raw["organizationCountry"],
-      organization_national_id: raw["organizationNationalId"],
+      procedure_result: sanitize_html(raw["procedureResult"]),
+      organization_name: sanitize_html(raw["organizationName"]),
+      organization_city: sanitize_html(raw["organizationCity"]),
+      organization_province: sanitize_html(raw["organizationProvince"]),
+      organization_country: sanitize_html(raw["organizationCountry"]),
+      organization_national_id: sanitize_html(raw["organizationNationalId"]),
       organization_id: raw["organizationId"],
       tender_id: raw["tenderId"],
       html_body: sanitize_html(raw["htmlBody"]),
       contractors:
         Enum.map(raw["contractors"] || [], fn contractor ->
           %{
-            contractor_name: contractor["contractorName"],
-            contractor_city: contractor["contractorCity"],
-            contractor_province: contractor["contractorProvince"],
-            contractor_country: contractor["contractorCountry"],
-            contractor_national_id: contractor["contractorNationalId"]
+            contractor_name: sanitize_html(contractor["contractorName"]),
+            contractor_city: sanitize_html(contractor["contractorCity"]),
+            contractor_province: sanitize_html(contractor["contractorProvince"]),
+            contractor_country: sanitize_html(contractor["contractorCountry"]),
+            contractor_national_id: sanitize_html(contractor["contractorNationalId"])
           }
         end),
       object_id: raw["objectId"],
@@ -204,6 +204,8 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
       contractors_contract_details: contractors_contract_details
     }
   end
+
+  def sanitize_html(nil), do: nil
 
   def sanitize_html(html) when is_binary(html) do
     html
