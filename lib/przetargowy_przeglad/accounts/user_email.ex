@@ -87,7 +87,7 @@ defmodule PrzetargowyPrzeglad.Accounts.UserEmail do
       <body>
         <div class="container">
           <div class="header">
-            <h1>🎯 Przetargowy Przegląd</h1>
+            <h1>Przetargowy Przegląd</h1>
           </div>
           <div class="content">
             <p>Witaj!</p>
