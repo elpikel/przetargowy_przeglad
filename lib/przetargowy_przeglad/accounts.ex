@@ -28,6 +28,13 @@ defmodule PrzetargowyPrzeglad.Accounts do
   end
 
   @doc """
+  Gets a single user by email.
+  """
+  def get_non_verified_user_by_email(email) do
+    Repo.get_by(User, email: email, email_verified: false)
+  end
+
+  @doc """
   Registers a new user with a simple alert.
 
   ## Examples

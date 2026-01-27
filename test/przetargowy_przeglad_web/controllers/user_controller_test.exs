@@ -31,7 +31,7 @@ defmodule PrzetargowyPrzegladWeb.UserControllerTest do
       assert redirected_to(conn) == ~p"/registration-success"
 
       # Verify user was created
-      user = Accounts.get_user_by_email("test@example.com")
+      user = Accounts.get_non_verified_user_by_email("test@example.com")
       assert user
       assert user.email_verified == false
       assert user.email_verification_token

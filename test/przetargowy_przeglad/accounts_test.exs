@@ -101,6 +101,8 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
           region: "mazowieckie"
         })
 
+      {:ok, user} = Accounts.verify_user_email(user.email_verification_token)
+
       found_user = Accounts.get_user_by_email("test@example.com")
       assert found_user.id == user.id
       assert found_user.email == "test@example.com"
@@ -120,6 +122,8 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
           industry: "it",
           region: "mazowieckie"
         })
+
+      {:ok, user} = Accounts.verify_user_email(user.email_verification_token)
 
       %{user: user}
     end
@@ -147,6 +151,8 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
           industry: "it",
           region: "mazowieckie"
         })
+
+      Accounts.verify_user_email(user.email_verification_token)
 
       %{user: user, alert: alert}
     end
