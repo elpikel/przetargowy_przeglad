@@ -37,7 +37,9 @@ defmodule PrzetargowyPrzegladWeb.Router do
 
     get "/dashboard", DashboardController, :show_dashboard
     post "/dashboard/alerts", DashboardController, :update_alerts
+    post "/dashboard/password", DashboardController, :update_password
     get "/logout", SessionController, :logout
+    delete "/user", UserController, :delete_user
   end
 
   # Other scopes may use custom stacks.

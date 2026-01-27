@@ -7,6 +7,20 @@ defmodule PrzetargowyPrzegladWeb.UserController do
   plug :put_layout, false
   plug :put_root_layout, false
 
+  def delete_user(conn, _params) do
+    case Accounts.delete_user(conn.assigns.current_user.id) do
+      {:ok, _user} ->
+        conn
+        |> clear_session()
+        |> redirect(to: ~p"/")
+
+      {:error, _reason} ->
+        conn
+        |> clear_session()
+        |> redirect(to: ~p"/")
+    end
+  end
+
   def show_register(conn, _params) do
     changeset = RegistrationForm.changeset(%RegistrationForm{}, %{})
     render(conn, :show_register, changeset: changeset)

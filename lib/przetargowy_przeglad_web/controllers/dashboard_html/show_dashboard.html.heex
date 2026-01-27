@@ -78,6 +78,10 @@
       .form-input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--cream-300); border-radius: 8px; font-size: 1rem; font-family: inherit; color: var(--text-primary); background: var(--cream-50); transition: all 0.2s ease; }
       .form-input:focus { outline: none; border-color: var(--navy-600); background: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
       .form-input:disabled { opacity: 0.7; cursor: not-allowed; }
+      .form-input.error { border-color: var(--error); background: var(--error-light); }
+      .form-input.error:focus { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1); }
+      .form-error { color: var(--error); font-size: 0.8rem; margin-top: 6px; display: none; }
+      .form-error.visible { display: block; }
       .form-select { width: 100%; padding: 12px 16px; border: 1.5px solid var(--cream-300); border-radius: 8px; font-size: 1rem; font-family: inherit; color: var(--text-primary); background: var(--cream-50); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 44px; }
       .form-select:focus { outline: none; border-color: var(--navy-600); background-color: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
       .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px; }
@@ -323,7 +327,7 @@
                 <p class="form-hint">W planie darmowym możesz wybrać jeden region</p>
               </div>
               <div class="form-actions">
-                <a href="/upgrade" class="btn btn-outline">Przejdź na Premium</a>
+                <%!-- <a href="/work-in-progress" class="btn btn-outline">Przejdź na Premium</a> --%>
                 <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
               </div>
             </form>
@@ -689,23 +693,60 @@
         </div>
         <div class="section-divider"></div>
         <div class="section-content">
-          <form id="accountForm" action="/settings/account" method="POST">
+          <div class="form-group">
+            <label class="form-label">Adres e-mail</label>
+            <input
+              type="email"
+              class="form-input"
+              value={@current_user.email}
+              disabled
+            />
+            <p class="form-hint">Aby zmienić adres e-mail, skontaktuj się z nami</p>
+          </div>
+          <.form
+            :let={f}
+            for={@password_changeset}
+            as={:password_form}
+            action="/dashboard/password"
+            id="passwordForm"
+          >
             <div class="form-group">
-              <label class="form-label">Adres e-mail</label>
+              <label class="form-label" for="password_form_password">Nowe hasło</label>
               <input
-                type="email"
-                name="email"
-                class="form-input"
-                value={@current_user.email}
-                disabled
+                type="password"
+                id="password_form_password"
+                name="password_form[password]"
+                class={"form-input #{if f.errors[:password], do: "error"}"}
+                placeholder="Minimum 8 znaków"
+                minlength="8"
+                required
               />
-              <p class="form-hint">Aby zmienić adres e-mail, skontaktuj się z nami</p>
+              <%= if error = f.errors[:password] do %>
+                <p class="form-error visible">{elem(error, 0)}</p>
+              <% end %>
             </div>
             <div class="form-group">
-              <label class="form-label">Hasło</label>
-              <a href="/reset-password" class="btn btn-outline">Zmień hasło</a>
+              <label class="form-label" for="password_form_password_confirmation">
+                Powtórz hasło
+              </label>
+              <input
+                type="password"
+                id="password_form_password_confirmation"
+                name="password_form[password_confirmation]"
+                class={"form-input #{if f.errors[:password_confirmation], do: "error"}"}
+                placeholder="Powtórz nowe hasło"
+                required
+              />
+              <%= if error = f.errors[:password_confirmation] do %>
+                <p class="form-error visible">{elem(error, 0)}</p>
+              <% end %>
             </div>
-          </form>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="changePasswordBtn">
+                Zmień hasło
+              </button>
+            </div>
+          </.form>
         </div>
       </section>
       
@@ -753,10 +794,12 @@
         <p class="modal-description">
           Czy na pewno chcesz usunąć swoje konto? Wszystkie dane zostaną trwale usunięte. Tej operacji nie można cofnąć.
         </p>
-        <div class="modal-actions">
-          <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Anuluj</button>
-          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Usuń konto</button>
-        </div>
+        <.form for={} action="/user" method="delete">
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Anuluj</button>
+            <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Usuń konto</button>
+          </div>
+        </.form>
       </div>
     </div>
     
@@ -808,10 +851,26 @@
       document.getElementById('deleteAccountBtn').addEventListener('click', () => modal.classList.add('visible'));
       document.getElementById('cancelDeleteBtn').addEventListener('click', () => modal.classList.remove('visible'));
       modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('visible'); });
-      document.getElementById('confirmDeleteBtn').addEventListener('click', () => { window.location.href = '/account/delete'; });
 
       // Toast
       function showToast() { const t = document.getElementById('toast'); t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 3000); }
+
+      // Password form client-side validation
+      const passwordForm = document.getElementById('passwordForm');
+      const passwordInput = document.getElementById('password_form_password');
+      const passwordConfirmInput = document.getElementById('password_form_password_confirmation');
+
+      if (passwordForm && passwordInput && passwordConfirmInput) {
+          passwordInput.addEventListener('input', () => {
+              const isValid = passwordInput.value.length >= 8 || passwordInput.value.length === 0;
+              passwordInput.classList.toggle('error', !isValid);
+          });
+
+          passwordConfirmInput.addEventListener('input', () => {
+              const isMatch = passwordInput.value === passwordConfirmInput.value || passwordConfirmInput.value.length === 0;
+              passwordConfirmInput.classList.toggle('error', !isMatch);
+          });
+      }
     </script>
   </body>
 </html>

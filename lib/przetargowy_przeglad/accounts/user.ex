@@ -109,4 +109,32 @@ defmodule PrzetargowyPrzeglad.Accounts.User do
     |> put_change(:email_verified, true)
     |> put_change(:email_verification_token, nil)
   end
+
+  @doc """
+  Changeset for updating user password.
+  """
+  def password_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:password])
+    |> validate_required([:password])
+    |> validate_password()
+    |> hash_password()
+  end
+
+  @doc """
+  Changeset for password change form with confirmation validation.
+  Used for form validation before updating the password.
+  """
+  def password_change_changeset(attrs \\ %{}) do
+    types = %{password: :string, password_confirmation: :string}
+
+    {%{}, types}
+    |> cast(attrs, [:password, :password_confirmation])
+    |> validate_required([:password, :password_confirmation],
+      message: "pole jest wymagane"
+    )
+    |> validate_length(:password, min: 8, message: "hasło musi mieć co najmniej 8 znaków")
+    |> validate_length(:password, max: 80, message: "hasło jest za długie")
+    |> validate_confirmation(:password, message: "hasła nie są identyczne")
+  end
 end

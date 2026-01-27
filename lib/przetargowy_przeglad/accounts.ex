@@ -24,7 +24,7 @@ defmodule PrzetargowyPrzeglad.Accounts do
   Gets a single user by email.
   """
   def get_user_by_email(email) do
-    Repo.get_by(User, email: email)
+    Repo.get_by(User, email: email, email_verified: true)
   end
 
   @doc """
@@ -136,6 +136,33 @@ defmodule PrzetargowyPrzeglad.Accounts do
     user
     |> User.changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Updates a user's password.
+
+  ## Examples
+
+      iex> update_user_password(user, "new_password")
+      {:ok, %User{}}
+
+      iex> update_user_password(user, "short")
+      {:error, %Ecto.Changeset{}}
+  """
+  def update_user_password(%User{} = user, password) do
+    user
+    |> User.password_changeset(%{password: password})
+    |> Repo.update()
+  end
+
+  def delete_user(user_id) do
+    case get_user(user_id) do
+      nil ->
+        {:error, :not_found}
+
+      user ->
+        Repo.delete(user)
+    end
   end
 
   @doc """

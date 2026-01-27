@@ -2,16 +2,19 @@ defmodule PrzetargowyPrzegladWeb.DashboardController do
   use PrzetargowyPrzegladWeb, :controller
 
   alias PrzetargowyPrzeglad.Accounts
+  alias PrzetargowyPrzeglad.Accounts.User
 
   def show_dashboard(conn, _params) do
     user = conn.assigns.current_user
     alerts = Accounts.list_user_alerts(user)
     alert = List.first(alerts)
+    password_changeset = User.password_change_changeset()
 
     render(conn, :show_dashboard,
       current_user: user,
       alerts: alerts,
-      alert: alert
+      alert: alert,
+      password_changeset: password_changeset
     )
   end
 
@@ -26,7 +29,7 @@ defmodule PrzetargowyPrzegladWeb.DashboardController do
           case params["keywords"] do
             nil -> []
             "" -> []
-            kw -> String.split(kw, ",") |> Enum.map(&String.trim/1) |> Enum.filter(&(&1 != ""))
+            kw -> kw |> String.split(",") |> Enum.map(&String.trim/1) |> Enum.filter(&(&1 != ""))
           end
 
         %{
@@ -52,5 +55,44 @@ defmodule PrzetargowyPrzegladWeb.DashboardController do
     conn
     |> put_flash(:info, "Zmiany zostały zapisane")
     |> redirect(to: ~p"/dashboard")
+  end
+
+  def update_password(conn, %{"password_form" => %{"password" => password} = form_params}) do
+    user = conn.assigns.current_user
+    changeset = User.password_change_changeset(form_params)
+
+    if changeset.valid? do
+      case Accounts.update_user_password(user, password) do
+        {:ok, _user} ->
+          conn
+          |> put_flash(:info, "Hasło zostało zmienione")
+          |> redirect(to: ~p"/dashboard")
+
+        {:error, _changeset} ->
+          alerts = Accounts.list_user_alerts(user)
+          alert = List.first(alerts)
+
+          conn
+          |> put_status(:unprocessable_entity)
+          |> render(:show_dashboard,
+            current_user: user,
+            alerts: alerts,
+            alert: alert,
+            password_changeset: %{changeset | action: :validate}
+          )
+      end
+    else
+      alerts = Accounts.list_user_alerts(user)
+      alert = List.first(alerts)
+
+      conn
+      |> put_status(:unprocessable_entity)
+      |> render(:show_dashboard,
+        current_user: user,
+        alerts: alerts,
+        alert: alert,
+        password_changeset: %{changeset | action: :validate}
+      )
+    end
   end
 end
