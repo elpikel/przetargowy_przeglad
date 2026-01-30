@@ -477,6 +477,163 @@
           color: var(--navy-600);
       }
 
+      /* Tender Search Section */
+      .tender-search-section {
+          padding: 80px 0;
+          background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-900) 100%);
+          position: relative;
+          overflow: hidden;
+      }
+
+      .tender-search-section::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(ellipse at center right, rgba(201, 162, 39, 0.15) 0%, transparent 50%);
+          pointer-events: none;
+      }
+
+      .tender-search-content {
+          display: grid;
+          grid-template-columns: 1.2fr 0.8fr;
+          gap: 60px;
+          align-items: center;
+          position: relative;
+          z-index: 1;
+      }
+
+      .tender-search-text h2 {
+          font-family: 'Playfair Display', serif;
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: var(--cream-50);
+          margin-bottom: 20px;
+      }
+
+      .tender-search-text p {
+          font-size: 1.15rem;
+          color: rgba(248, 245, 240, 0.8);
+          margin-bottom: 32px;
+          max-width: 500px;
+      }
+
+      .tender-search-features {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 24px;
+          margin-bottom: 32px;
+      }
+
+      .tender-search-feature {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: rgba(248, 245, 240, 0.9);
+          font-size: 0.95rem;
+      }
+
+      .tender-search-feature svg {
+          width: 20px;
+          height: 20px;
+          fill: var(--gold-500);
+          flex-shrink: 0;
+      }
+
+      .tender-search-visual {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          padding: 32px;
+          backdrop-filter: blur(10px);
+      }
+
+      .search-preview-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 20px;
+          padding-bottom: 16px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .search-preview-header svg {
+          width: 24px;
+          height: 24px;
+          color: var(--gold-500);
+      }
+
+      .search-preview-header span {
+          font-weight: 600;
+          color: var(--cream-100);
+          font-size: 1.1rem;
+      }
+
+      .search-preview-item {
+          padding: 14px;
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 8px;
+          margin-bottom: 10px;
+          border-left: 3px solid var(--gold-500);
+      }
+
+      .search-preview-item:last-child {
+          margin-bottom: 0;
+      }
+
+      .search-preview-title {
+          color: var(--cream-100);
+          font-weight: 500;
+          font-size: 0.9rem;
+          margin-bottom: 6px;
+      }
+
+      .search-preview-meta {
+          display: flex;
+          gap: 16px;
+          font-size: 0.8rem;
+          color: rgba(248, 245, 240, 0.6);
+      }
+
+      @media (max-width: 968px) {
+          .tender-search-content {
+              grid-template-columns: 1fr;
+              text-align: center;
+          }
+
+          .tender-search-text p {
+              margin-left: auto;
+              margin-right: auto;
+          }
+
+          .tender-search-features {
+              justify-content: center;
+          }
+
+          .tender-search-visual {
+              max-width: 450px;
+              margin: 0 auto;
+          }
+      }
+
+      @media (max-width: 640px) {
+          .tender-search-section {
+              padding: 60px 0;
+          }
+
+          .tender-search-text h2 {
+              font-size: 1.85rem;
+          }
+
+          .tender-search-features {
+              flex-direction: column;
+              align-items: center;
+              gap: 16px;
+          }
+      }
+
       /* How It Works Section */
       .how-it-works {
           padding: 100px 0;
@@ -1068,6 +1225,7 @@
           <span class="logo-text">Przetargowy<span>Przegląd</span></span>
         </a>
         <nav>
+          <a href="/tenders">Szukaj przetargów</a>
           <a href="#jak-dziala">Jak to działa</a>
           <a href="#cennik">Cennik</a>
           <a href="#kontakt">Kontakt</a>
@@ -1086,6 +1244,7 @@
     
 <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobile-menu">
+      <a href="/tenders" class="mobile-link">Szukaj przetargów</a>
       <a href="#jak-dziala" class="mobile-link">Jak to działa</a>
       <a href="#cennik" class="mobile-link">Cennik</a>
       <a href="#kontakt" class="mobile-link">Kontakt</a>
@@ -1181,7 +1340,72 @@
         </div>
       </div>
     </section>
-    
+
+<!-- Tender Search Section -->
+    <section class="tender-search-section">
+      <div class="container">
+        <div class="tender-search-content">
+          <div class="tender-search-text">
+            <h2>Przeszukaj bazę przetargów publicznych</h2>
+            <p>
+              Nie musisz czekać na newsletter. Przeszukaj aktualne ogłoszenia o zamówieniach publicznych w całej Polsce. Filtruj po regionie, kategorii i słowach kluczowych.
+            </p>
+            <div class="tender-search-features">
+              <div class="tender-search-feature">
+                <svg viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Bezpłatny dostęp</span>
+              </div>
+              <div class="tender-search-feature">
+                <svg viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Bez rejestracji</span>
+              </div>
+              <div class="tender-search-feature">
+                <svg viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Codzienne aktualizacje</span>
+              </div>
+            </div>
+            <a href="/tenders" class="btn btn-gold">Przeszukaj przetargi</a>
+          </div>
+          <div class="tender-search-visual">
+            <div class="search-preview-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+              <span>Wyszukiwarka przetargów</span>
+            </div>
+            <div class="search-preview-item">
+              <div class="search-preview-title">Modernizacja oświetlenia ulicznego</div>
+              <div class="search-preview-meta">
+                <span>Mazowieckie</span>
+                <span>Dostawy</span>
+              </div>
+            </div>
+            <div class="search-preview-item">
+              <div class="search-preview-title">Przebudowa drogi powiatowej</div>
+              <div class="search-preview-meta">
+                <span>Wielkopolskie</span>
+                <span>Roboty budowlane</span>
+              </div>
+            </div>
+            <div class="search-preview-item">
+              <div class="search-preview-title">Usługi utrzymania zieleni miejskiej</div>
+              <div class="search-preview-meta">
+                <span>Dolnośląskie</span>
+                <span>Usługi</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
 <!-- How It Works Section -->
     <section class="how-it-works" id="jak-dziala">
       <div class="container">
@@ -1383,6 +1607,7 @@
           <div class="footer-links">
             <h4>Produkt</h4>
             <ul>
+              <li><a href="/tenders">Szukaj przetargów</a></li>
               <li><a href="#jak-dziala">Jak to działa</a></li>
               <li><a href="#cennik">Cennik</a></li>
             </ul>

@@ -30,6 +30,7 @@ defmodule PrzetargowyPrzegladWeb.Router do
     post "/register", UserController, :create_user
     get "/registration-success", UserController, :registration_success
     get "/verify-email", UserController, :verify_email
+    get "/tenders", TenderController, :index
   end
 
   scope "/", PrzetargowyPrzegladWeb do
