@@ -1,4 +1,4 @@
-defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
+defmodule PrzetargowyPrzeglad.Workers.FetchTendersNotices do
   @moduledoc """
   Oban worker for fetching tenders notices from BZP API.
   Runs daily to fetch new and updated tenders notices.
@@ -35,7 +35,7 @@ defmodule PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker do
   Upserts all tender notices published between the given dates.
   publication_date_from = Date.utc_today() |> Date.shift(year: -2) |> Date.to_iso8601()
   publication_date_to = Date.to_iso8601(Date.utc_today())
-  PrzetargowyPrzeglad.Workers.FetchTendersNoticesWorker.upsert_all_tender_notices(publication_date_from, publication_date_to)
+  PrzetargowyPrzeglad.Workers.FetchTendersNotices.upsert_all_tender_notices(publication_date_from, publication_date_to)
   """
   def upsert_all_tender_notices(publication_date_from, publication_date_to) do
     for notice_type <- TenderNotice.notice_types() do

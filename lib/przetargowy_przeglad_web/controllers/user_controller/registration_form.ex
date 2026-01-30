@@ -11,13 +11,13 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationForm do
     field :email, :string
     field :password, :string
     field :password_confirmation, :string
-    field :industry, :string
+    field :tender_category, :string
     field :region, :string
     field :terms, :boolean, default: false
   end
 
-  @required_fields [:email, :password, :password_confirmation, :industry, :region, :terms]
-  @industries ~w(budownictwo it medycyna transport energia edukacja administracja ochrona zywnosc srodowisko finanse marketing inne)
+  @required_fields [:email, :password, :password_confirmation, :tender_category, :region, :terms]
+  @tender_categories ["Dostawy", "Usługi", "Roboty budowlane"]
   @regions ~w(dolnoslaskie kujawsko-pomorskie lubelskie lubuskie lodzkie malopolskie mazowieckie opolskie podkarpackie podlaskie pomorskie slaskie swietokrzyskie warminsko-mazurskie wielkopolskie zachodniopomorskie)
 
   @doc """
@@ -30,7 +30,7 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationForm do
     |> validate_email()
     |> validate_password()
     |> validate_password_confirmation()
-    |> validate_industry()
+    |> validate_tender_category()
     |> validate_region()
     |> validate_terms()
   end
@@ -58,8 +58,8 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationForm do
     end
   end
 
-  defp validate_industry(changeset) do
-    validate_inclusion(changeset, :industry, @industries, message: "nieprawidłowa branża")
+  defp validate_tender_category(changeset) do
+    validate_inclusion(changeset, :tender_category, @tender_categories, message: "nieprawidłowy rodzaj zamówienia")
   end
 
   defp validate_region(changeset) do

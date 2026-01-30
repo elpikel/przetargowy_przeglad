@@ -1,15 +1,15 @@
-defmodule PrzetargowyPrzeglad.Accounts.UserEmail do
+defmodule PrzetargowyPrzeglad.Accounts.UserVerificationEmail do
   @moduledoc """
-  Delivers emails related to user accounts.
+  Composes emails related to user accounts.
   """
   import Swoosh.Email
 
   alias PrzetargowyPrzeglad.Accounts.User
 
   @doc """
-  Delivers the email verification email.
+  Composes verification email.
   """
-  def verify_email(%User{} = user, verification_url) do
+  def compose(%User{} = user, verification_url) do
     new()
     |> to({user.email, user.email})
     |> from({"Przetargowy Przegląd", "noreply@przetargowyprzeglad.pl"})

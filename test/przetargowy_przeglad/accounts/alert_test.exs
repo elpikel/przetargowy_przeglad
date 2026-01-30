@@ -21,7 +21,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
       attrs = %{
         user_id: user.id,
         region: "mazowieckie",
-        industry: "it"
+        tender_category: "Dostawy"
       }
 
       changeset = Alert.simple_alert_changeset(%Alert{}, attrs)
@@ -29,13 +29,13 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
 
       rules = Ecto.Changeset.get_change(changeset, :rules)
       assert rules.region == "mazowieckie"
-      assert rules.industry == "it"
+      assert rules.tender_category == "Dostawy"
     end
 
     test "requires user_id", %{user: _user} do
       attrs = %{
         region: "mazowieckie",
-        industry: "it"
+        tender_category: "Dostawy"
       }
 
       changeset = Alert.simple_alert_changeset(%Alert{}, attrs)
@@ -47,7 +47,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
     test "requires region", %{user: user} do
       attrs = %{
         user_id: user.id,
-        industry: "it"
+        tender_category: "Dostawy"
       }
 
       changeset = Alert.simple_alert_changeset(%Alert{}, attrs)
@@ -55,7 +55,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
       assert "region jest wymagany" in errors_on(changeset).rules
     end
 
-    test "requires industry", %{user: user} do
+    test "requires tender_category", %{user: user} do
       attrs = %{
         user_id: user.id,
         region: "mazowieckie"
@@ -63,7 +63,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
 
       changeset = Alert.simple_alert_changeset(%Alert{}, attrs)
       refute changeset.valid?
-      assert "industry jest wymagany" in errors_on(changeset).rules
+      assert "rodzaj zamówienia jest wymagany" in errors_on(changeset).rules
     end
   end
 
@@ -82,7 +82,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
     test "creates alert with simple rules format", %{user: user} do
       attrs = %{
         user_id: user.id,
-        rules: %{region: "mazowieckie", industry: "it"}
+        rules: %{region: "mazowieckie", tender_category: "Dostawy"}
       }
 
       changeset = Alert.changeset(%Alert{}, attrs)
@@ -94,7 +94,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
         user_id: user.id,
         rules: %{
           regions: ["mazowieckie", "malopolskie"],
-          industries: ["it", "budownictwo"],
+          tender_categories: ["Dostawy", "Usługi"],
           keywords: ["software"]
         }
       }
@@ -105,7 +105,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
 
     test "requires user_id", %{user: _user} do
       attrs = %{
-        rules: %{region: "mazowieckie", industry: "it"}
+        rules: %{region: "mazowieckie", tender_category: "Dostawy"}
       }
 
       changeset = Alert.changeset(%Alert{}, attrs)
@@ -139,7 +139,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
         user_id: user.id,
         rules: %{
           regions: "not-a-list",
-          industries: ["it"]
+          tender_categories: ["Dostawy"]
         }
       }
 
@@ -148,18 +148,18 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertTest do
       assert "regions musi być listą" in errors_on(changeset).rules
     end
 
-    test "validates advanced rules - industries must be list", %{user: user} do
+    test "validates advanced rules - tender_categories must be list", %{user: user} do
       attrs = %{
         user_id: user.id,
         rules: %{
           regions: ["mazowieckie"],
-          industries: "not-a-list"
+          tender_categories: "not-a-list"
         }
       }
 
       changeset = Alert.changeset(%Alert{}, attrs)
       refute changeset.valid?
-      assert "industries musi być listą" in errors_on(changeset).rules
+      assert "tender_categories musi być listą" in errors_on(changeset).rules
     end
   end
 end

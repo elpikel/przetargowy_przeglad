@@ -39,7 +39,7 @@ defmodule PrzetargowyPrzegladWeb.DashboardController do
         }
       else
         %{
-          industry: params["industry"],
+          tender_category: params["tender_category"],
           region: params["region"]
         }
       end

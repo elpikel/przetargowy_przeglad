@@ -2,8 +2,8 @@ defmodule PrzetargowyPrzeglad.Accounts.Alert do
   @moduledoc """
   Schema for user alerts.
   Rules can be either:
-  - Simple alert: %{region: "mazowieckie", industry: "it"}
-  - Advanced alert: %{regions: ["mazowieckie", "malopolskie"], industries: ["it", "budownictwo"], keywords: ["oprogramowanie"]}
+  - Simple alert: %{region: "mazowieckie", tender_category: "Dostawy"}
+  - Advanced alert: %{regions: ["mazowieckie", "malopolskie"], tender_categories: ["Dostawy", "Usługi"], keywords: ["oprogramowanie"]}
   """
   use Ecto.Schema
 
@@ -39,7 +39,7 @@ defmodule PrzetargowyPrzeglad.Accounts.Alert do
     |> validate_required([:user_id])
     |> put_change(:rules, %{
       region: attrs["region"] || attrs[:region],
-      industry: attrs["industry"] || attrs[:industry]
+      tender_category: attrs["tender_category"] || attrs[:tender_category]
     })
     |> validate_required([:rules])
     |> validate_simple_rules()
@@ -50,10 +50,10 @@ defmodule PrzetargowyPrzeglad.Accounts.Alert do
     rules = get_field(changeset, :rules)
 
     case rules do
-      %{region: _, industry: _} ->
+      %{region: _, tender_category: _} ->
         validate_simple_rules(changeset)
 
-      %{regions: _, industries: _} ->
+      %{regions: _, tender_categories: _} ->
         validate_advanced_rules(changeset)
 
       _ ->
@@ -68,8 +68,8 @@ defmodule PrzetargowyPrzeglad.Accounts.Alert do
       is_nil(rules[:region]) && is_nil(rules["region"]) ->
         add_error(changeset, :rules, "region jest wymagany")
 
-      is_nil(rules[:industry]) && is_nil(rules["industry"]) ->
-        add_error(changeset, :rules, "industry jest wymagany")
+      is_nil(rules[:tender_category]) && is_nil(rules["tender_category"]) ->
+        add_error(changeset, :rules, "rodzaj zamówienia jest wymagany")
 
       true ->
         changeset
@@ -83,8 +83,8 @@ defmodule PrzetargowyPrzeglad.Accounts.Alert do
       not is_list(rules[:regions]) && not is_list(rules["regions"]) ->
         add_error(changeset, :rules, "regions musi być listą")
 
-      not is_list(rules[:industries]) && not is_list(rules["industries"]) ->
-        add_error(changeset, :rules, "industries musi być listą")
+      not is_list(rules[:tender_categories]) && not is_list(rules["tender_categories"]) ->
+        add_error(changeset, :rules, "tender_categories musi być listą")
 
       true ->
         changeset

@@ -7,7 +7,7 @@ defmodule PrzetargowyPrzeglad.Accounts do
 
   alias PrzetargowyPrzeglad.Accounts.Alert
   alias PrzetargowyPrzeglad.Accounts.User
-  alias PrzetargowyPrzeglad.Accounts.UserEmail
+  alias PrzetargowyPrzeglad.Accounts.UserVerificationEmail
   alias PrzetargowyPrzeglad.Mailer
   alias PrzetargowyPrzeglad.Repo
 
@@ -39,7 +39,7 @@ defmodule PrzetargowyPrzeglad.Accounts do
 
   ## Examples
 
-      iex> register_user(%{email: "user@example.com", password: "password123", industry: "it", region: "mazowieckie"})
+      iex> register_user(%{email: "user@example.com", password: "password123", tender_category: "Dostawy", region: "mazowieckie"})
       {:ok, %{user: %User{}, alert: %Alert{}}}
 
       iex> register_user(%{email: "invalid", password: "short"})
@@ -84,7 +84,7 @@ defmodule PrzetargowyPrzeglad.Accounts do
   defp send_verification_email(user) do
     verification_url = build_verification_url(user.email_verification_token)
 
-    case user |> UserEmail.verify_email(verification_url) |> Mailer.deliver() do
+    case user |> UserVerificationEmail.compose(verification_url) |> Mailer.deliver() do
       {:ok, _metadata} ->
         Logger.info("Verification email sent to #{user.email}")
         {:ok, :email_sent}
@@ -235,7 +235,7 @@ defmodule PrzetargowyPrzeglad.Accounts do
 
   ## Examples
 
-      iex> create_alert(%{user_id: 1, rules: %{region: "mazowieckie", industry: "it"}})
+      iex> create_alert(%{user_id: 1, rules: %{region: "mazowieckie", tender_category: "Dostawy"}})
       {:ok, %Alert{}}
 
       iex> create_alert(%{user_id: 1, rules: %{}})
@@ -261,7 +261,7 @@ defmodule PrzetargowyPrzeglad.Accounts do
 
   ## Examples
 
-      iex> update_alert(alert, %{rules: %{region: "malopolskie", industry: "medycyna"}})
+      iex> update_alert(alert, %{rules: %{region: "malopolskie", tender_category: "Usługi"}})
       {:ok, %Alert{}}
   """
   def update_alert(%Alert{} = alert, attrs) do

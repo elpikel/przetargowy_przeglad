@@ -9,7 +9,7 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
     @valid_attrs %{
       email: "test@example.com",
       password: "password123",
-      industry: "it",
+      tender_category: "Dostawy",
       region: "mazowieckie"
     }
 
@@ -24,7 +24,7 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
       refute user.password == "password123"
 
       assert alert.user_id == user.id
-      assert alert.rules[:industry] == "it" || alert.rules["industry"] == "it"
+      assert alert.rules[:tender_category] == "Dostawy" || alert.rules["tender_category"] == "Dostawy"
       assert alert.rules[:region] == "mazowieckie" || alert.rules["region"] == "mazowieckie"
     end
 
@@ -73,7 +73,7 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
         Accounts.register_user(%{
           email: "test@example.com",
           password: "password123",
-          industry: "it",
+          tender_category: "Dostawy",
           region: "mazowieckie"
         })
 
@@ -97,7 +97,7 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
         Accounts.register_user(%{
           email: "test@example.com",
           password: "password123",
-          industry: "it",
+          tender_category: "Dostawy",
           region: "mazowieckie"
         })
 
@@ -119,7 +119,7 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
         Accounts.register_user(%{
           email: "test@example.com",
           password: "password123",
-          industry: "it",
+          tender_category: "Dostawy",
           region: "mazowieckie"
         })
 
@@ -148,7 +148,7 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
         Accounts.register_user(%{
           email: "test@example.com",
           password: "password123",
-          industry: "it",
+          tender_category: "Dostawy",
           region: "mazowieckie"
         })
 
@@ -168,7 +168,7 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
         Accounts.register_user(%{
           email: "other@example.com",
           password: "password123",
-          industry: "it",
+          tender_category: "Dostawy",
           region: "malopolskie"
         })
 

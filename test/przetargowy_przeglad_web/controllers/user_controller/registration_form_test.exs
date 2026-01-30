@@ -8,7 +8,7 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
       email: "test@example.com",
       password: "password123",
       password_confirmation: "password123",
-      industry: "it",
+      tender_category: "Dostawy",
       region: "mazowieckie",
       terms: true
     }
@@ -26,7 +26,7 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
       assert "to pole jest wymagane" in errors.email || "can't be blank" in errors.email
       assert "to pole jest wymagane" in errors.password || "can't be blank" in errors.password
       assert "to pole jest wymagane" in errors.password_confirmation || "can't be blank" in errors.password_confirmation
-      assert "to pole jest wymagane" in errors.industry || "can't be blank" in errors.industry
+      assert "to pole jest wymagane" in errors.tender_category || "can't be blank" in errors.tender_category
       assert "to pole jest wymagane" in errors.region || "can't be blank" in errors.region
       # Terms has a custom error message
       assert "musisz zaakceptować regulamin" in errors.terms || "to pole jest wymagane" in errors.terms
@@ -64,17 +64,16 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
       assert "hasła nie są identyczne" in errors_on(changeset).password_confirmation
     end
 
-    test "validates industry is from valid list" do
-      valid_industries =
-        ~w(budownictwo it medycyna transport energia edukacja administracja ochrona zywnosc srodowisko finanse marketing inne)
+    test "validates tender_category is from valid list" do
+      valid_categories = ["Dostawy", "Usługi", "Roboty budowlane"]
 
-      for industry <- valid_industries do
-        changeset = RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :industry, industry))
+      for category <- valid_categories do
+        changeset = RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :tender_category, category))
         assert changeset.valid?
       end
 
-      invalid_changeset = RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :industry, "invalid"))
-      assert "nieprawidłowa branża" in errors_on(invalid_changeset).industry
+      invalid_changeset = RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :tender_category, "invalid"))
+      assert "nieprawidłowy rodzaj zamówienia" in errors_on(invalid_changeset).tender_category
     end
 
     test "validates region is from valid list" do
@@ -110,7 +109,7 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
       assert changeset.valid?
       assert Ecto.Changeset.get_field(changeset, :email) == "test@example.com"
       assert Ecto.Changeset.get_field(changeset, :password) == "password123"
-      assert Ecto.Changeset.get_field(changeset, :industry) == "it"
+      assert Ecto.Changeset.get_field(changeset, :tender_category) == "Dostawy"
       assert Ecto.Changeset.get_field(changeset, :region) == "mazowieckie"
       assert Ecto.Changeset.get_field(changeset, :terms) == true
     end

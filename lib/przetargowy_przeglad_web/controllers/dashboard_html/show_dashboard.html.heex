@@ -219,52 +219,24 @@
                 name="_csrf_token"
                 value={Plug.CSRFProtection.get_csrf_token()}
               />
-              <% current_industry =
-                @alert && (@alert.rules[:industry] || @alert.rules["industry"]) %>
+              <% current_tender_category =
+                @alert && (@alert.rules[:tender_category] || @alert.rules["tender_category"]) %>
               <% current_region = @alert && (@alert.rules[:region] || @alert.rules["region"]) %>
               <div class="form-group">
-                <label class="form-label">Branża</label>
-                <select name="industry" class="form-select" required>
-                  <option value="">Wybierz branżę</option>
-                  <option value="budownictwo" selected={current_industry == "budownictwo"}>
-                    Budownictwo
+                <label class="form-label">Rodzaj zamówienia</label>
+                <select name="tender_category" class="form-select" required>
+                  <option value="">Wybierz rodzaj zamówienia</option>
+                  <option value="Dostawy" selected={current_tender_category == "Dostawy"}>
+                    Dostawy
                   </option>
-                  <option value="it" selected={current_industry == "it"}>
-                    IT i telekomunikacja
+                  <option value="Usługi" selected={current_tender_category == "Usługi"}>
+                    Usługi
                   </option>
-                  <option value="medycyna" selected={current_industry == "medycyna"}>
-                    Medycyna i farmacja
+                  <option value="Roboty budowlane" selected={current_tender_category == "Roboty budowlane"}>
+                    Roboty budowlane
                   </option>
-                  <option value="transport" selected={current_industry == "transport"}>
-                    Transport i logistyka
-                  </option>
-                  <option value="energia" selected={current_industry == "energia"}>
-                    Energia i paliwa
-                  </option>
-                  <option value="edukacja" selected={current_industry == "edukacja"}>
-                    Edukacja
-                  </option>
-                  <option value="administracja" selected={current_industry == "administracja"}>
-                    Administracja publiczna
-                  </option>
-                  <option value="ochrona" selected={current_industry == "ochrona"}>
-                    Ochrona i bezpieczeństwo
-                  </option>
-                  <option value="zywnosc" selected={current_industry == "zywnosc"}>
-                    Żywność i catering
-                  </option>
-                  <option value="srodowisko" selected={current_industry == "srodowisko"}>
-                    Ochrona środowiska
-                  </option>
-                  <option value="finanse" selected={current_industry == "finanse"}>
-                    Finanse i ubezpieczenia
-                  </option>
-                  <option value="marketing" selected={current_industry == "marketing"}>
-                    Marketing i reklama
-                  </option>
-                  <option value="inne" selected={current_industry == "inne"}>Inne</option>
                 </select>
-                <p class="form-hint">W planie darmowym możesz wybrać jedną branżę</p>
+                <p class="form-hint">W planie darmowym możesz wybrać jeden rodzaj zamówienia</p>
               </div>
               <div class="form-group">
                 <label class="form-label">Region</label>
