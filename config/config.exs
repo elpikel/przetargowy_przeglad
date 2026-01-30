@@ -32,7 +32,7 @@ config :przetargowy_przeglad, Oban,
     {Oban.Plugins.Cron,
      crontab: [
        {"0 * * * *", PrzetargowyPrzeglad.Workers.FetchTendersNotices, args: %{"days" => 730}},
-       {"0 * * * *", PrzetargowyPrzeglad.Workers.SendAlerts}
+       {"0 6 * * *", PrzetargowyPrzeglad.Workers.SendAlerts}
      ]}
   ],
   queues: [default: 10, mailers: 20, tenders: 1, alerts: 1],

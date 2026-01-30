@@ -159,7 +159,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertEmail do
               <a href="mailto:kontakt@przetargowyprzeglad.pl">kontakt@przetargowyprzeglad.pl</a>
             </p>
             <p class="unsubscribe">
-              Aby zmienić preferencje powiadomień, zaloguj się do swojego konta.
+              Aby zmienić preferencje powiadomień, <a href="https://przetargowyprzeglad.pl/login">zaloguj się do swojego konta</a>.
             </p>
           </div>
         </div>
@@ -208,7 +208,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertEmail do
     Przetargowy Przegląd
     kontakt@przetargowyprzeglad.pl
 
-    Aby zmienić preferencje powiadomień, zaloguj się do swojego konta.
+    Aby zmienić preferencje powiadomień, zaloguj się do swojego konta: https://przetargowyprzeglad.pl/login
     """
   end
 
