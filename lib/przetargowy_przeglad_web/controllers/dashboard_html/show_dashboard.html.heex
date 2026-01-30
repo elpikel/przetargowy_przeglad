@@ -309,35 +309,35 @@
       <% end %>
 
       <%= if @current_user.subscription_plan == "paid" do %>
-        <% current_industries =
-          (@alert && (@alert.rules[:industries] || @alert.rules["industries"])) || [] %>
-        <% current_regions = (@alert && (@alert.rules[:regions] || @alert.rules["regions"])) || [] %>
-        <% current_keywords =
-          (@alert && (@alert.rules[:keywords] || @alert.rules["keywords"])) || [] %>
-        <section class="settings-section" id="alertsPremiumSection">
-          <div class="section-header" onclick="toggleSection('alertsPremiumSection')">
-            <div class="section-header-left">
-              <h2 class="section-title">Preferencje przetargów</h2>
-              <span class="section-badge premium">Plan Premium</span>
+        <%= for {alert, index} <- Enum.with_index(@alerts) do %>
+          <% alert_industries = (alert.rules[:industries] || alert.rules["industries"]) || [] %>
+          <% alert_regions = (alert.rules[:regions] || alert.rules["regions"]) || [] %>
+          <% alert_keywords = (alert.rules[:keywords] || alert.rules["keywords"]) || [] %>
+          <section class="settings-section" id={"alertsPremiumSection-#{index}"}>
+            <div class="section-header" onclick={"toggleSection('alertsPremiumSection-#{index}')"}>
+              <div class="section-header-left">
+                <h2 class="section-title">Alert #{index + 1}</h2>
+                <span class="section-badge premium">Plan Premium</span>
+              </div>
+              <svg
+                class="collapse-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
             </div>
-            <svg
-              class="collapse-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-          <div class="section-divider"></div>
-          <div class="section-content">
-            <form id="alertsFormPremium" action="/dashboard/alerts" method="POST">
-              <input
-                type="hidden"
-                name="_csrf_token"
-                value={Plug.CSRFProtection.get_csrf_token()}
-              />
+            <div class="section-divider"></div>
+            <div class="section-content">
+              <form id={"alertsFormPremium-#{index}"} action="/dashboard/alerts" method="POST">
+                <input
+                  type="hidden"
+                  name="_csrf_token"
+                  value={Plug.CSRFProtection.get_csrf_token()}
+                />
+                <input type="hidden" name="alert_id" value={alert.id} />
               <div class="form-group">
                 <label class="form-label">Branże</label>
                 <div class="select-all-wrapper">
@@ -346,14 +346,14 @@
                     <label for="select-all-industries">Zaznacz wszystkie</label>
                   </div>
                 </div>
-                <div class="checkbox-grid" id="industries-grid">
+                <div class="checkbox-grid" id={"industries-grid-#{index}"}>
                   <div class="checkbox-item">
                     <input
                       type="checkbox"
                       id="ind-budownictwo"
                       name="industries[]"
                       value="budownictwo"
-                      checked={"budownictwo" in current_industries}
+                      checked={"budownictwo" in alert_industries}
                     /><label for="ind-budownictwo">Budownictwo</label>
                   </div>
                   <div class="checkbox-item">
@@ -362,7 +362,7 @@
                       id="ind-it"
                       name="industries[]"
                       value="it"
-                      checked={"it" in current_industries}
+                      checked={"it" in alert_industries}
                     /><label for="ind-it">IT i telekomunikacja</label>
                   </div>
                   <div class="checkbox-item">
@@ -371,7 +371,7 @@
                       id="ind-medycyna"
                       name="industries[]"
                       value="medycyna"
-                      checked={"medycyna" in current_industries}
+                      checked={"medycyna" in alert_industries}
                     /><label for="ind-medycyna">Medycyna i farmacja</label>
                   </div>
                   <div class="checkbox-item">
@@ -380,7 +380,7 @@
                       id="ind-transport"
                       name="industries[]"
                       value="transport"
-                      checked={"transport" in current_industries}
+                      checked={"transport" in alert_industries}
                     /><label for="ind-transport">Transport i logistyka</label>
                   </div>
                   <div class="checkbox-item">
@@ -389,7 +389,7 @@
                       id="ind-energia"
                       name="industries[]"
                       value="energia"
-                      checked={"energia" in current_industries}
+                      checked={"energia" in alert_industries}
                     /><label for="ind-energia">Energia i paliwa</label>
                   </div>
                   <div class="checkbox-item">
@@ -398,7 +398,7 @@
                       id="ind-edukacja"
                       name="industries[]"
                       value="edukacja"
-                      checked={"edukacja" in current_industries}
+                      checked={"edukacja" in alert_industries}
                     /><label for="ind-edukacja">Edukacja</label>
                   </div>
                   <div class="checkbox-item">
@@ -407,7 +407,7 @@
                       id="ind-administracja"
                       name="industries[]"
                       value="administracja"
-                      checked={"administracja" in current_industries}
+                      checked={"administracja" in alert_industries}
                     /><label for="ind-administracja">Administracja publiczna</label>
                   </div>
                   <div class="checkbox-item">
@@ -416,7 +416,7 @@
                       id="ind-ochrona"
                       name="industries[]"
                       value="ochrona"
-                      checked={"ochrona" in current_industries}
+                      checked={"ochrona" in alert_industries}
                     /><label for="ind-ochrona">Ochrona i bezpieczeństwo</label>
                   </div>
                   <div class="checkbox-item">
@@ -425,7 +425,7 @@
                       id="ind-zywnosc"
                       name="industries[]"
                       value="zywnosc"
-                      checked={"zywnosc" in current_industries}
+                      checked={"zywnosc" in alert_industries}
                     /><label for="ind-zywnosc">Żywność i catering</label>
                   </div>
                   <div class="checkbox-item">
@@ -434,7 +434,7 @@
                       id="ind-srodowisko"
                       name="industries[]"
                       value="srodowisko"
-                      checked={"srodowisko" in current_industries}
+                      checked={"srodowisko" in alert_industries}
                     /><label for="ind-srodowisko">Ochrona środowiska</label>
                   </div>
                   <div class="checkbox-item">
@@ -443,7 +443,7 @@
                       id="ind-finanse"
                       name="industries[]"
                       value="finanse"
-                      checked={"finanse" in current_industries}
+                      checked={"finanse" in alert_industries}
                     /><label for="ind-finanse">Finanse i ubezpieczenia</label>
                   </div>
                   <div class="checkbox-item">
@@ -452,7 +452,7 @@
                       id="ind-marketing"
                       name="industries[]"
                       value="marketing"
-                      checked={"marketing" in current_industries}
+                      checked={"marketing" in alert_industries}
                     /><label for="ind-marketing">Marketing i reklama</label>
                   </div>
                   <div class="checkbox-item">
@@ -461,7 +461,7 @@
                       id="ind-inne"
                       name="industries[]"
                       value="inne"
-                      checked={"inne" in current_industries}
+                      checked={"inne" in alert_industries}
                     /><label for="ind-inne">Inne</label>
                   </div>
                 </div>
@@ -474,14 +474,14 @@
                     <label for="select-all-regions">Cała Polska</label>
                   </div>
                 </div>
-                <div class="checkbox-grid" id="regions-grid">
+                <div class="checkbox-grid" id={"regions-grid-#{index}"}>
                   <div class="checkbox-item">
                     <input
                       type="checkbox"
                       id="reg-dolnoslaskie"
                       name="regions[]"
                       value="dolnoslaskie"
-                      checked={"dolnoslaskie" in current_regions}
+                      checked={"dolnoslaskie" in alert_regions}
                     /><label for="reg-dolnoslaskie">Dolnośląskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -490,7 +490,7 @@
                       id="reg-kujawsko-pomorskie"
                       name="regions[]"
                       value="kujawsko-pomorskie"
-                      checked={"kujawsko-pomorskie" in current_regions}
+                      checked={"kujawsko-pomorskie" in alert_regions}
                     /><label for="reg-kujawsko-pomorskie">Kujawsko-pomorskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -499,7 +499,7 @@
                       id="reg-lubelskie"
                       name="regions[]"
                       value="lubelskie"
-                      checked={"lubelskie" in current_regions}
+                      checked={"lubelskie" in alert_regions}
                     /><label for="reg-lubelskie">Lubelskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -508,7 +508,7 @@
                       id="reg-lubuskie"
                       name="regions[]"
                       value="lubuskie"
-                      checked={"lubuskie" in current_regions}
+                      checked={"lubuskie" in alert_regions}
                     /><label for="reg-lubuskie">Lubuskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -517,7 +517,7 @@
                       id="reg-lodzkie"
                       name="regions[]"
                       value="lodzkie"
-                      checked={"lodzkie" in current_regions}
+                      checked={"lodzkie" in alert_regions}
                     /><label for="reg-lodzkie">Łódzkie</label>
                   </div>
                   <div class="checkbox-item">
@@ -526,7 +526,7 @@
                       id="reg-malopolskie"
                       name="regions[]"
                       value="malopolskie"
-                      checked={"malopolskie" in current_regions}
+                      checked={"malopolskie" in alert_regions}
                     /><label for="reg-malopolskie">Małopolskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -535,7 +535,7 @@
                       id="reg-mazowieckie"
                       name="regions[]"
                       value="mazowieckie"
-                      checked={"mazowieckie" in current_regions}
+                      checked={"mazowieckie" in alert_regions}
                     /><label for="reg-mazowieckie">Mazowieckie</label>
                   </div>
                   <div class="checkbox-item">
@@ -544,7 +544,7 @@
                       id="reg-opolskie"
                       name="regions[]"
                       value="opolskie"
-                      checked={"opolskie" in current_regions}
+                      checked={"opolskie" in alert_regions}
                     /><label for="reg-opolskie">Opolskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -553,7 +553,7 @@
                       id="reg-podkarpackie"
                       name="regions[]"
                       value="podkarpackie"
-                      checked={"podkarpackie" in current_regions}
+                      checked={"podkarpackie" in alert_regions}
                     /><label for="reg-podkarpackie">Podkarpackie</label>
                   </div>
                   <div class="checkbox-item">
@@ -562,7 +562,7 @@
                       id="reg-podlaskie"
                       name="regions[]"
                       value="podlaskie"
-                      checked={"podlaskie" in current_regions}
+                      checked={"podlaskie" in alert_regions}
                     /><label for="reg-podlaskie">Podlaskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -571,7 +571,7 @@
                       id="reg-pomorskie"
                       name="regions[]"
                       value="pomorskie"
-                      checked={"pomorskie" in current_regions}
+                      checked={"pomorskie" in alert_regions}
                     /><label for="reg-pomorskie">Pomorskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -580,7 +580,7 @@
                       id="reg-slaskie"
                       name="regions[]"
                       value="slaskie"
-                      checked={"slaskie" in current_regions}
+                      checked={"slaskie" in alert_regions}
                     /><label for="reg-slaskie">Śląskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -589,7 +589,7 @@
                       id="reg-swietokrzyskie"
                       name="regions[]"
                       value="swietokrzyskie"
-                      checked={"swietokrzyskie" in current_regions}
+                      checked={"swietokrzyskie" in alert_regions}
                     /><label for="reg-swietokrzyskie">Świętokrzyskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -598,7 +598,7 @@
                       id="reg-warminsko-mazurskie"
                       name="regions[]"
                       value="warminsko-mazurskie"
-                      checked={"warminsko-mazurskie" in current_regions}
+                      checked={"warminsko-mazurskie" in alert_regions}
                     /><label for="reg-warminsko-mazurskie">Warmińsko-mazurskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -607,7 +607,7 @@
                       id="reg-wielkopolskie"
                       name="regions[]"
                       value="wielkopolskie"
-                      checked={"wielkopolskie" in current_regions}
+                      checked={"wielkopolskie" in alert_regions}
                     /><label for="reg-wielkopolskie">Wielkopolskie</label>
                   </div>
                   <div class="checkbox-item">
@@ -616,38 +616,59 @@
                       id="reg-zachodniopomorskie"
                       name="regions[]"
                       value="zachodniopomorskie"
-                      checked={"zachodniopomorskie" in current_regions}
+                      checked={"zachodniopomorskie" in alert_regions}
                     /><label for="reg-zachodniopomorskie">Zachodniopomorskie</label>
                   </div>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Słowa kluczowe</label>
-                <div class="keywords-container" id="keywords-container">
-                  <div class="keywords-list" id="keywords-list"></div>
+                <div class="keywords-container" id={"keywords-container-#{index}"}>
+                  <div class="keywords-list" id={"keywords-list-#{index}"}></div>
                   <input
                     type="text"
                     class="keyword-input"
-                    id="keyword-input"
+                    id={"keyword-input-#{index}"}
                     placeholder="Wpisz słowo kluczowe i naciśnij Enter"
+                    data-index={index}
                   />
                 </div>
                 <input
                   type="hidden"
                   name="keywords"
-                  id="keywords-hidden"
-                  value={Enum.join(current_keywords, ",")}
+                  id={"keywords-hidden-#{index}"}
+                  value={Enum.join(alert_keywords, ",")}
                 />
                 <p class="form-hint">np. "oprogramowanie", "remont dróg", "catering szkolny"</p>
               </div>
               <div class="form-actions">
+                <%= if length(@alerts) > 1 do %>
+                  <button
+                    type="button"
+                    class="btn btn-danger-outline"
+                    onclick={"showDeleteAlertModal(#{alert.id})"}
+                  >
+                    Usuń alert
+                  </button>
+                <% end %>
                 <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
               </div>
             </form>
           </div>
         </section>
+        <% end %>
+
+        <!-- Add New Alert Button -->
+        <div style="text-align: center; margin-bottom: 24px;">
+          <form action="/dashboard/alerts/new" method="POST" style="display: inline;">
+            <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+            <button type="submit" class="btn btn-primary">
+              + Dodaj nowy alert
+            </button>
+          </form>
+        </div>
       <% end %>
-      
+
 <!-- Account Section -->
       <section class="settings-section" id="accountSection">
         <div class="section-header" onclick="toggleSection('accountSection')">
@@ -775,7 +796,32 @@
         </.form>
       </div>
     </div>
-    
+
+    <!-- Delete Alert Modal -->
+    <div class="modal-overlay" id="deleteAlertModal">
+      <div class="modal">
+        <div class="modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
+            <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+          </svg>
+        </div>
+        <h3 class="modal-title">Usuń alert</h3>
+        <p class="modal-description">
+          Czy na pewno chcesz usunąć ten alert? Tej operacji nie można cofnąć.
+        </p>
+        <form id="deleteAlertForm" action="" method="POST">
+          <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+          <input type="hidden" name="_method" value="delete" />
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" onclick="hideDeleteAlertModal()">Anuluj</button>
+            <button type="submit" class="btn btn-danger">Usuń alert</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
 <!-- Toast -->
     <div class="toast" id="toast">
       <svg class="toast-icon" viewBox="0 0 24 24">
@@ -819,11 +865,25 @@
       if (kwInput) kwInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); addKw(this.value); this.value = ''; } });
       renderKw();
 
-      // Modal
+      // Modal - Delete Account
       const modal = document.getElementById('deleteModal');
       document.getElementById('deleteAccountBtn').addEventListener('click', () => modal.classList.add('visible'));
       document.getElementById('cancelDeleteBtn').addEventListener('click', () => modal.classList.remove('visible'));
       modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('visible'); });
+
+      // Modal - Delete Alert
+      const deleteAlertModal = document.getElementById('deleteAlertModal');
+      const deleteAlertForm = document.getElementById('deleteAlertForm');
+      window.showDeleteAlertModal = function(alertId) {
+          deleteAlertForm.action = '/dashboard/alerts/' + alertId;
+          deleteAlertModal.classList.add('visible');
+      };
+      window.hideDeleteAlertModal = function() {
+          deleteAlertModal.classList.remove('visible');
+      };
+      if (deleteAlertModal) {
+          deleteAlertModal.addEventListener('click', e => { if (e.target === deleteAlertModal) hideDeleteAlertModal(); });
+      }
 
       // Toast
       function showToast() { const t = document.getElementById('toast'); t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 3000); }

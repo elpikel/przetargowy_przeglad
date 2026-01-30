@@ -39,7 +39,9 @@ defmodule PrzetargowyPrzegladWeb.Router do
     pipe_through [:browser, :require_auth]
 
     get "/dashboard", DashboardController, :show_dashboard
-    post "/dashboard/alerts", DashboardController, :update_alerts
+    post "/dashboard/alerts", DashboardController, :update_alert
+    post "/dashboard/alerts/new", DashboardController, :create_alert
+    delete "/dashboard/alerts/:id", DashboardController, :delete_alert
     post "/dashboard/password", DashboardController, :update_password
     get "/logout", SessionController, :logout
     delete "/user", UserController, :delete_user

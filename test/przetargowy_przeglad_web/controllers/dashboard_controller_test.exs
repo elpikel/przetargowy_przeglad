@@ -160,4 +160,134 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
       assert "cloud" in keywords
     end
   end
+
+  describe "POST /dashboard/alerts/new for premium user" do
+    setup %{conn: conn} do
+      {:ok, %{user: premium_user}} =
+        Accounts.register_premium_user(%{
+          email: "premium3@example.com",
+          password: "password123",
+          tender_category: "Usługi",
+          region: "malopolskie",
+          keyword: "software"
+        })
+
+      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+
+      premium_conn =
+        conn
+        |> init_test_session(%{})
+        |> put_session(:user_id, verified_premium.id)
+
+      %{premium_conn: premium_conn, premium_user: verified_premium}
+    end
+
+    test "creates a new alert for premium user", %{premium_conn: conn, premium_user: user} do
+      # User should have 1 alert initially
+      assert length(Accounts.list_user_alerts(user)) == 1
+
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "industries" => ["it"],
+          "regions" => ["wielkopolskie"],
+          "keywords" => "cloud"
+        })
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      # User should now have 2 alerts
+      alerts = Accounts.list_user_alerts(user)
+      assert length(alerts) == 2
+    end
+  end
+
+  describe "POST /dashboard/alerts/new for free user" do
+    test "rejects creating new alert for free user", %{conn: conn, user: user} do
+      # User should have 1 alert initially
+      assert length(Accounts.list_user_alerts(user)) == 1
+
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "tender_category" => "Usługi",
+          "region" => "wielkopolskie"
+        })
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      # User should still have only 1 alert
+      assert length(Accounts.list_user_alerts(user)) == 1
+    end
+  end
+
+  describe "DELETE /dashboard/alerts/:id for premium user" do
+    setup %{conn: conn} do
+      {:ok, %{user: premium_user}} =
+        Accounts.register_premium_user(%{
+          email: "premium4@example.com",
+          password: "password123",
+          tender_category: "Usługi",
+          region: "malopolskie",
+          keyword: "software"
+        })
+
+      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+
+      # Create a second alert so we can delete one
+      {:ok, _second_alert} =
+        Accounts.create_alert(%{
+          user_id: verified_premium.id,
+          rules: %{industries: ["it"], regions: ["mazowieckie"], keywords: ["cloud"]}
+        })
+
+      premium_conn =
+        conn
+        |> init_test_session(%{})
+        |> put_session(:user_id, verified_premium.id)
+
+      %{premium_conn: premium_conn, premium_user: verified_premium}
+    end
+
+    test "deletes an alert for premium user with multiple alerts", %{
+      premium_conn: conn,
+      premium_user: user
+    } do
+      alerts = Accounts.list_user_alerts(user)
+      assert length(alerts) == 2
+
+      alert_to_delete = List.last(alerts)
+      conn = delete(conn, ~p"/dashboard/alerts/#{alert_to_delete.id}")
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      # User should now have 1 alert
+      assert length(Accounts.list_user_alerts(user)) == 1
+    end
+
+    test "cannot delete last alert for premium user", %{premium_conn: conn, premium_user: user} do
+      # Delete one alert first
+      alerts = Accounts.list_user_alerts(user)
+      Accounts.delete_alert(List.last(alerts))
+
+      # Now try to delete the last remaining alert
+      [last_alert] = Accounts.list_user_alerts(user)
+      conn = delete(conn, ~p"/dashboard/alerts/#{last_alert.id}")
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      # User should still have 1 alert
+      assert length(Accounts.list_user_alerts(user)) == 1
+    end
+  end
+
+  describe "DELETE /dashboard/alerts/:id for free user" do
+    test "cannot delete alert for free user", %{conn: conn, user: user} do
+      [alert] = Accounts.list_user_alerts(user)
+      conn = delete(conn, ~p"/dashboard/alerts/#{alert.id}")
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      # User should still have 1 alert
+      assert length(Accounts.list_user_alerts(user)) == 1
+    end
+  end
 end
