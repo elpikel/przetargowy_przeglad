@@ -16,6 +16,19 @@ defmodule PrzetargowyPrzegladWeb.UserControllerTest do
     end
   end
 
+  describe "GET /register/premium" do
+    test "renders premium registration form", %{conn: conn} do
+      conn = get(conn, ~p"/register/premium")
+      assert html_response(conn, 200) =~ "Utwórz konto Premium"
+      assert html_response(conn, 200) =~ "Plan Premium"
+      assert html_response(conn, 200) =~ "Adres e-mail"
+      assert html_response(conn, 200) =~ "Hasło"
+      assert html_response(conn, 200) =~ "Rodzaj zamówienia"
+      assert html_response(conn, 200) =~ "Region"
+      assert html_response(conn, 200) =~ "Słowo kluczowe"
+    end
+  end
+
   describe "POST /register" do
     @valid_attrs %{
       "email" => "test@example.com",
@@ -90,6 +103,60 @@ defmodule PrzetargowyPrzegladWeb.UserControllerTest do
       conn = post(conn, ~p"/register", registration_form: invalid_attrs)
 
       assert html_response(conn, 200) =~ "musisz zaakceptować regulamin"
+    end
+  end
+
+  describe "POST /register/premium" do
+    @valid_premium_attrs %{
+      "email" => "premium@example.com",
+      "password" => "password123",
+      "password_confirmation" => "password123",
+      "tender_category" => "Dostawy",
+      "region" => "mazowieckie",
+      "keyword" => "oprogramowanie",
+      "terms" => "true"
+    }
+
+    test "creates premium user and redirects to success page", %{conn: conn} do
+      conn = post(conn, ~p"/register/premium", registration_form: @valid_premium_attrs)
+      assert redirected_to(conn) == ~p"/registration-success"
+
+      # Verify user was created with premium subscription
+      user = Accounts.get_non_verified_user_by_email("premium@example.com")
+      assert user
+      assert user.subscription_plan == "paid"
+      assert user.email_verified == false
+    end
+
+    test "creates premium alert with keyword", %{conn: conn} do
+      post(conn, ~p"/register/premium", registration_form: @valid_premium_attrs)
+
+      user = Accounts.get_non_verified_user_by_email("premium@example.com")
+      alerts = Accounts.list_user_alerts(user)
+      assert length(alerts) == 1
+
+      alert = List.first(alerts)
+      assert alert.rules["keywords"] == ["oprogramowanie"]
+      assert alert.rules["regions"] == ["mazowieckie"]
+    end
+
+    test "creates premium user without keyword", %{conn: conn} do
+      attrs = Map.delete(@valid_premium_attrs, "keyword")
+      conn = post(conn, ~p"/register/premium", registration_form: attrs)
+      assert redirected_to(conn) == ~p"/registration-success"
+
+      user = Accounts.get_non_verified_user_by_email("premium@example.com")
+      alerts = Accounts.list_user_alerts(user)
+      alert = List.first(alerts)
+      assert alert.rules["keywords"] == []
+    end
+
+    test "renders errors on premium form with invalid data", %{conn: conn} do
+      invalid_attrs = Map.put(@valid_premium_attrs, "email", "invalid-email")
+      conn = post(conn, ~p"/register/premium", registration_form: invalid_attrs)
+
+      assert html_response(conn, 200) =~ "nieprawidłowy format adresu e-mail"
+      assert html_response(conn, 200) =~ "Plan Premium"
     end
   end
 

@@ -113,5 +113,28 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
       assert Ecto.Changeset.get_field(changeset, :region) == "mazowieckie"
       assert Ecto.Changeset.get_field(changeset, :terms) == true
     end
+
+    test "keyword field is optional" do
+      # Valid without keyword
+      changeset_without = RegistrationForm.changeset(%RegistrationForm{}, @valid_attrs)
+      assert changeset_without.valid?
+      assert Ecto.Changeset.get_field(changeset_without, :keyword) == nil
+
+      # Valid with keyword
+      attrs_with_keyword = Map.put(@valid_attrs, :keyword, "oprogramowanie")
+      changeset_with = RegistrationForm.changeset(%RegistrationForm{}, attrs_with_keyword)
+      assert changeset_with.valid?
+      assert Ecto.Changeset.get_field(changeset_with, :keyword) == "oprogramowanie"
+    end
+
+    test "accepts various keyword values" do
+      keywords = ["meble", "remont", "oprogramowanie", "usługi IT", ""]
+
+      for keyword <- keywords do
+        attrs = Map.put(@valid_attrs, :keyword, keyword)
+        changeset = RegistrationForm.changeset(%RegistrationForm{}, attrs)
+        assert changeset.valid?
+      end
+    end
   end
 end

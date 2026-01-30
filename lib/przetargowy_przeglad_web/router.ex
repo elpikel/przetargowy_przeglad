@@ -27,7 +27,9 @@ defmodule PrzetargowyPrzegladWeb.Router do
     get "/login", SessionController, :show_login
     post "/create", SessionController, :create_session
     get "/register", UserController, :show_register
+    get "/register/premium", UserController, :show_register_premium
     post "/register", UserController, :create_user
+    post "/register/premium", UserController, :create_premium_user
     get "/registration-success", UserController, :registration_success
     get "/verify-email", UserController, :verify_email
     get "/tenders", TenderController, :index

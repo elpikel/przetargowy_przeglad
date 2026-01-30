@@ -81,6 +81,55 @@ defmodule PrzetargowyPrzeglad.Accounts do
     end
   end
 
+  @doc """
+  Registers a new premium user with a premium alert.
+
+  ## Examples
+
+      iex> register_premium_user(%{email: "user@example.com", password: "password123", region: "mazowieckie", keyword: "software"})
+      {:ok, %{user: %User{subscription_plan: "paid"}, alert: %Alert{}}}
+  """
+  def register_premium_user(attrs) do
+    # Add subscription_plan to attrs
+    user_attrs =
+      if is_map(attrs) and Map.has_key?(attrs, "email") do
+        Map.put(attrs, "subscription_plan", "paid")
+      else
+        Map.put(attrs, :subscription_plan, "paid")
+      end
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user, User.registration_changeset(%User{}, user_attrs))
+    |> Ecto.Multi.insert(:alert, fn %{user: user} ->
+      alert_attrs =
+        if is_map(attrs) and Map.has_key?(attrs, "email") do
+          Map.put(attrs, "user_id", user.id)
+        else
+          Map.put(attrs, :user_id, user.id)
+        end
+
+      Alert.premium_alert_changeset(%Alert{}, alert_attrs)
+    end)
+    |> Ecto.Multi.run(:send_email, fn _repo, %{user: user} ->
+      send_verification_email(user)
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user, alert: alert}} ->
+        {:ok, %{user: user, alert: alert}}
+
+      {:error, :user, changeset, _} ->
+        {:error, :user, changeset, %{}}
+
+      {:error, :alert, changeset, _} ->
+        {:error, :alert, changeset, %{}}
+
+      {:error, :send_email, reason, _} ->
+        Logger.error("Failed to send verification email: #{inspect(reason)}")
+        {:error, :send_email, reason, %{}}
+    end
+  end
+
   defp send_verification_email(user) do
     verification_url = build_verification_url(user.email_verification_token)
 

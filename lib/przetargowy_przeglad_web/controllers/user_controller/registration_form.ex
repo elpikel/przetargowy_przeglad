@@ -13,10 +13,12 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationForm do
     field :password_confirmation, :string
     field :tender_category, :string
     field :region, :string
+    field :keyword, :string
     field :terms, :boolean, default: false
   end
 
   @required_fields [:email, :password, :password_confirmation, :tender_category, :region, :terms]
+  @optional_fields [:keyword]
   @tender_categories ["Dostawy", "Usługi", "Roboty budowlane"]
   @regions ~w(dolnoslaskie kujawsko-pomorskie lubelskie lubuskie lodzkie malopolskie mazowieckie opolskie podkarpackie podlaskie pomorskie slaskie swietokrzyskie warminsko-mazurskie wielkopolskie zachodniopomorskie)
 
@@ -25,7 +27,7 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationForm do
   """
   def changeset(form \\ %__MODULE__{}, attrs) do
     form
-    |> cast(attrs, @required_fields)
+    |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields, message: "to pole jest wymagane")
     |> validate_email()
     |> validate_password()
