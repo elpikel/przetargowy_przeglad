@@ -173,8 +173,18 @@
 
       .header-cta {
           display: flex;
+          align-items: center;
           gap: 12px;
           flex-shrink: 0;
+      }
+
+      .user-email {
+          font-size: 0.85rem;
+          color: var(--text-secondary);
+          max-width: 160px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
       }
 
       .btn {
@@ -1033,20 +1043,6 @@
           }
       }
 
-      @media (max-width: 820px) {
-          .header-inner {
-              justify-content: space-between;
-          }
-
-          nav {
-              display: none;
-          }
-
-          .header-cta .btn {
-              padding: 10px 18px;
-          }
-      }
-
       /* Mobile menu */
       .hamburger {
           display: none;
@@ -1057,6 +1053,24 @@
           height: 32px;
           cursor: pointer;
           z-index: 110;
+      }
+
+      @media (max-width: 900px) {
+          .header-inner {
+              justify-content: space-between;
+          }
+
+          nav {
+              display: none;
+          }
+
+          .header-cta {
+              display: none;
+          }
+
+          .hamburger {
+              display: flex;
+          }
       }
 
       .hamburger span {
@@ -1123,22 +1137,26 @@
           border: 1.5px solid var(--navy-600);
       }
 
-      @media (max-width: 640px) {
-          .hamburger {
-              display: flex;
-          }
+      .mobile-menu-user {
+          padding: 16px;
+          background: var(--cream-100);
+          border-radius: 12px;
+          margin-bottom: 8px;
+          width: 100%;
+          max-width: 280px;
+          text-align: center;
+      }
 
+      .mobile-menu-user-email {
+          font-size: 0.9rem;
+          color: var(--navy-800);
+          font-weight: 500;
+          word-break: break-all;
+      }
+
+      @media (max-width: 640px) {
           .header-inner {
               padding: 12px 16px;
-              justify-content: space-between;
-          }
-
-          nav {
-              display: none;
-          }
-
-          .header-cta {
-              display: none;
           }
 
           .logo-text {
@@ -1231,8 +1249,13 @@
           <a href="#kontakt">Kontakt</a>
         </nav>
         <div class="header-cta">
-          <a href="/login" class="btn btn-outline">Zaloguj się</a>
-          <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
+          <%= if @current_user do %>
+            <span class="user-email">{@current_user.email}</span>
+            <a href="/dashboard" class="btn btn-primary">Ustawienia</a>
+          <% else %>
+            <a href="/login" class="btn btn-outline">Zaloguj się</a>
+            <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
+          <% end %>
         </div>
         <div class="hamburger" id="hamburger">
           <span></span>
@@ -1244,12 +1267,20 @@
     
 <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobile-menu">
+      <%= if @current_user do %>
+        <div class="mobile-menu-user">
+          <span class="mobile-menu-user-email">{@current_user.email}</span>
+        </div>
+        <a href="/dashboard" class="btn btn-primary">Ustawienia</a>
+        <a href="/logout" class="mobile-link">Wyloguj się</a>
+      <% else %>
+        <a href="/login" class="btn btn-outline">Zaloguj się</a>
+        <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
+      <% end %>
       <a href="/tenders" class="mobile-link">Szukaj przetargów</a>
       <a href="#jak-dziala" class="mobile-link">Jak to działa</a>
       <a href="#cennik" class="mobile-link">Cennik</a>
       <a href="#kontakt" class="mobile-link">Kontakt</a>
-      <a href="/login" class="btn btn-outline">Zaloguj się</a>
-      <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
     </div>
     
 <!-- Hero Section -->

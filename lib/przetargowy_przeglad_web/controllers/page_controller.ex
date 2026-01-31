@@ -3,9 +3,10 @@ defmodule PrzetargowyPrzegladWeb.PageController do
 
   plug :put_layout, false
   plug :put_root_layout, false
+  plug PrzetargowyPrzegladWeb.Plugs.OptionalAuth
 
   def home(conn, _params) do
-    render(conn, :home)
+    render(conn, :home, current_user: conn.assigns[:current_user])
   end
 
   def rules(conn, _params) do
