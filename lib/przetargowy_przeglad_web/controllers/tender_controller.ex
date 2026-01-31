@@ -5,6 +5,7 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
 
   plug :put_layout, false
   plug :put_root_layout, false
+  plug PrzetargowyPrzegladWeb.Plugs.OptionalAuth
 
   def index(conn, params) do
     page = parse_page(params["page"])
@@ -26,7 +27,8 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
       total_pages: result.total_pages,
       query: params["q"] || "",
       region: params["region"] || "",
-      order_type: params["order_type"] || ""
+      order_type: params["order_type"] || "",
+      current_user: conn.assigns[:current_user]
     )
   end
 
