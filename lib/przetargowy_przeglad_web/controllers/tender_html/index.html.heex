@@ -5,15 +5,14 @@
   header_position="sticky"
   show_footer={false}
 >
-  <:page_styles>
-    <link rel="stylesheet" href="/assets/css/tenders.css" />
+  <:page_meta>
     <meta
       name="description"
       content="Przeszukaj bazę przetargów publicznych z całej Polski. Znajdź aktualne ogłoszenia o zamówieniach publicznych."
     />
-  </:page_styles>
+  </:page_meta>
 
-  <main>
+  <main class="tenders-page">
     <div class="page-header">
       <h1 class="page-title">Wyszukaj przetargi</h1>
       <p class="page-subtitle">
@@ -79,7 +78,9 @@
             <option value="Works" selected={@order_type == "Works"}>Roboty budowlane</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-primary btn-search">Szukaj</button>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-search">Szukaj</button>
+        </div>
       </form>
     </section>
 

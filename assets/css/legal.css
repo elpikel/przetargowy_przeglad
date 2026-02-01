@@ -1,0 +1,76 @@
+/* Legal pages styles (rules, privacy policy) */
+
+.legal-page {
+  padding: 140px 0 80px;
+}
+
+.legal-page .content-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.legal-page .page-header {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--cream-300);
+}
+
+.legal-page .page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin-bottom: 12px;
+}
+
+.legal-page .page-meta {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.legal-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--navy-800);
+  margin: 40px 0 16px;
+}
+
+.legal-content h2:first-child {
+  margin-top: 0;
+}
+
+.legal-content p {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.8;
+}
+
+.legal-content ul {
+  margin: 16px 0 16px 24px;
+  color: var(--text-secondary);
+}
+
+.legal-content li {
+  margin-bottom: 8px;
+  line-height: 1.7;
+}
+
+.legal-content a {
+  color: var(--navy-600);
+  text-decoration: underline;
+}
+
+.legal-content a:hover {
+  color: var(--navy-800);
+}
+
+@media (max-width: 640px) {
+  .legal-page {
+    padding: 120px 0 60px;
+  }
+
+  .legal-page .page-title {
+    font-size: 2rem;
+  }
+}

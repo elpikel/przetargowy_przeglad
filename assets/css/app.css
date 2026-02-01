@@ -1,0 +1,12 @@
+/* Main application CSS - imports all stylesheets */
+
+/* Site-wide base styles */
+@import "./site.css";
+
+/* Page-specific styles */
+@import "./auth.css";
+@import "./dashboard.css";
+@import "./legal.css";
+@import "./registration-success.css";
+@import "./subscription.css";
+@import "./tenders.css";

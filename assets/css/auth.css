@@ -1,0 +1,325 @@
+/* Auth pages styles (login, register) */
+
+.auth-container {
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(10, 22, 40, 0.08), 0 1px 3px rgba(10, 22, 40, 0.04);
+  border: 1px solid var(--cream-200);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--navy-600), var(--gold-500));
+}
+
+.auth-card .btn {
+  width: 100%;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.auth-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin-bottom: 8px;
+}
+
+.auth-header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--cream-100);
+  border: 1px solid var(--cream-300);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--navy-700);
+  margin-top: 12px;
+}
+
+.plan-badge svg {
+  width: 14px;
+  height: 14px;
+  fill: var(--gold-500);
+}
+
+/* Form styles */
+.form-section {
+  margin-bottom: 28px;
+}
+
+.form-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cream-200);
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  color: var(--navy-800);
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.form-label .required {
+  color: var(--error);
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--cream-300);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--cream-50);
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--navy-600);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.form-input.error {
+  border-color: var(--error);
+}
+
+.form-select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--cream-300);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--cream-50);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 44px;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--navy-600);
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1);
+}
+
+.form-hint {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
+.form-error {
+  color: var(--error);
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+
+/* Password strength */
+.password-strength {
+  margin-top: 8px;
+}
+
+.password-strength-bar {
+  height: 4px;
+  background: var(--cream-200);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.password-strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.password-strength-fill.weak {
+  width: 33%;
+  background: var(--error);
+}
+
+.password-strength-fill.medium {
+  width: 66%;
+  background: var(--gold-500);
+}
+
+.password-strength-fill.strong {
+  width: 100%;
+  background: var(--success);
+}
+
+.password-strength-text {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  color: var(--text-secondary);
+}
+
+/* Terms checkbox */
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 24px 0;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--navy-700);
+  cursor: pointer;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.terms-checkbox label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.terms-checkbox a {
+  color: var(--navy-600);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.terms-checkbox a:hover {
+  text-decoration: underline;
+}
+
+/* Divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 28px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--cream-300);
+}
+
+.auth-divider span {
+  padding: 0 16px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+/* Auth link (login/register switch) */
+.auth-link {
+  text-align: center;
+}
+
+.auth-link p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.auth-link a {
+  color: var(--navy-600);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.auth-link a:hover {
+  color: var(--navy-800);
+  text-decoration: underline;
+}
+
+/* Premium badge variant */
+.plan-badge.premium {
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
+  border: none;
+  color: white;
+}
+
+.plan-badge.premium svg {
+  fill: white;
+}
+
+/* Gold button variant for premium */
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
+  color: white;
+  box-shadow: 0 4px 14px rgba(201, 162, 39, 0.35);
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(201, 162, 39, 0.45);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 40px 16px 60px;
+  }
+
+  .auth-card {
+    padding: 28px 24px;
+  }
+
+  .auth-header h1 {
+    font-size: 1.5rem;
+  }
+}

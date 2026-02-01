@@ -30,6 +30,7 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
   attr :current_user, :map, default: nil
   attr :position, :string, default: "sticky", values: ["fixed", "sticky"]
   attr :hide_default_cta, :boolean, default: false
+  attr :hide_hamburger, :boolean, default: false
 
   slot :nav
   slot :cta
@@ -86,31 +87,35 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
           <% end %>
         </div>
 
-        <button class="hamburger" id="hamburger" aria-label="Menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+        <%= unless @hide_hamburger do %>
+          <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        <% end %>
       </div>
     </header>
 
-    <div class="mobile-menu" id="mobile-menu">
-      <%= if @current_user do %>
-        <div class="mobile-menu-user">
-          <span class="mobile-menu-user-email">{@current_user.email}</span>
-        </div>
-        <a href="/dashboard" class="btn btn-primary">Ustawienia</a>
-        <a href="/logout" class="mobile-link">Wyloguj się</a>
-      <% else %>
-        <a href="/login" class="btn btn-outline">Zaloguj się</a>
-        <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
-      <% end %>
-      <%= if @nav != [] do %>
-        <div class="mobile-nav">
-          {render_slot(@nav)}
-        </div>
-      <% end %>
-    </div>
+    <%= unless @hide_hamburger do %>
+      <div class="mobile-menu" id="mobile-menu">
+        <%= if @current_user do %>
+          <div class="mobile-menu-user">
+            <span class="mobile-menu-user-email">{@current_user.email}</span>
+          </div>
+          <a href="/dashboard" class="btn btn-primary">Ustawienia</a>
+          <a href="/logout" class="mobile-link">Wyloguj się</a>
+        <% else %>
+          <a href="/login" class="btn btn-outline">Zaloguj się</a>
+          <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
+        <% end %>
+        <%= if @nav != [] do %>
+          <div class="mobile-nav">
+            {render_slot(@nav)}
+          </div>
+        <% end %>
+      </div>
+    <% end %>
     """
   end
 

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content={get_csrf_token()} />
     <title><%= @page_title || "Przetargowy Przegląd" %></title>
+    <%= if assigns[:page_meta] do %>
+      {render_slot(@page_meta)}
+    <% end %>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/assets/css/site.css" />
+    <link rel="stylesheet" href="/assets/css/app.css" />
     <script
       defer
       data-domain="przetargowyprzeglad.pl"
@@ -20,15 +23,13 @@
     >
     </script>
     <.page_header_styles />
-    <%= if assigns[:page_styles] do %>
-      {render_slot(@page_styles)}
-    <% end %>
   </head>
   <body>
     <.page_header
       current_user={assigns[:current_user]}
       position={assigns[:header_position] || "sticky"}
       hide_default_cta={assigns[:cta] != nil}
+      hide_hamburger={assigns[:hide_hamburger] || false}
     >
       <:nav>
         <%= if assigns[:nav] do %>
