@@ -21,13 +21,15 @@ defmodule PrzetargowyPrzegladWeb.WebhookController do
 
     Logger.info("Received Tpay webhook: #{inspect(params)}")
 
-    # For now, handle without strict signature verification in development
-    # In production, you should verify the signature
+    # Skip signature verification for sandbox, verify in production
+    tpay_api_url = Application.get_env(:przetargowy_przeglad, :tpay)[:api_url]
+    is_sandbox = tpay_api_url == "https://openapi.sandbox.tpay.com"
+
     result =
-      if Mix.env() == :prod do
-        WebhookHandler.handle(Jason.encode!(params), signature)
-      else
+      if is_sandbox do
         WebhookHandler.handle_without_verification(params)
+      else
+        WebhookHandler.handle(Jason.encode!(params), signature)
       end
 
     case result do
