@@ -247,6 +247,27 @@
       </div>
 
       <%= if @current_user.subscription_plan == "free" do %>
+        <!-- Upgrade Banner for Free Users -->
+        <div class="settings-section" style="background: linear-gradient(135deg, #fdf8ed 0%, #f9f0db 100%); border: 2px solid #c9a227;">
+          <div class="section-content" style="padding: 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+              <div>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: #0a1628; margin-bottom: 4px;">
+                  Odblokuj pełny potencjał
+                </h3>
+                <p style="color: #4a5568; font-size: 0.95rem; margin: 0;">
+                  Przejdź na Premium i korzystaj z nieograniczonych alertów, wielu regionów i własnych słów kluczowych.
+                </p>
+              </div>
+              <a href="/dashboard/subscription/new" class="btn" style="background: linear-gradient(135deg, #c9a227, #b8922a); color: #0a1628; font-weight: 700; padding: 12px 24px;">
+                Wykup Premium za 19 zł/mies.
+              </a>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <%= if @current_user.subscription_plan == "free" do %>
         <section class="settings-section" id="alertsFreeSection">
           <div class="section-header" onclick="toggleSection('alertsFreeSection')">
             <div class="section-header-left">
@@ -360,6 +381,32 @@
       <% end %>
 
       <%= if @current_user.subscription_plan == "paid" do %>
+        <!-- Subscription Status for Premium Users -->
+        <div class="settings-section" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #16a34a;">
+          <div class="section-content" style="padding: 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; background: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <h3 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #0a1628; margin: 0;">
+                    Plan Premium aktywny
+                  </h3>
+                  <p style="color: #4a5568; font-size: 0.85rem; margin: 0;">
+                    Korzystasz z pełnego dostępu do wszystkich funkcji
+                  </p>
+                </div>
+              </div>
+              <a href="/dashboard/subscription" class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 16px;">
+                Zarządzaj subskrypcją
+              </a>
+            </div>
+          </div>
+        </div>
+
         <%= for {alert, index} <- Enum.with_index(@alerts) do %>
           <% alert_industries = (alert.rules[:industries] || alert.rules["industries"]) || [] %>
           <% alert_regions = (alert.rules[:regions] || alert.rules["regions"]) || [] %>

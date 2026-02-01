@@ -32,10 +32,14 @@ config :przetargowy_przeglad, Oban,
     {Oban.Plugins.Cron,
      crontab: [
        {"0 * * * *", PrzetargowyPrzeglad.Workers.FetchTendersNotices, args: %{"days" => 730}},
-       {"0 6 * * *", PrzetargowyPrzeglad.Workers.SendAlerts}
+       {"0 6 * * *", PrzetargowyPrzeglad.Workers.SendAlerts},
+       # Payment workers - run daily
+       {"0 3 * * *", PrzetargowyPrzeglad.Workers.ProcessSubscriptionRenewals},
+       {"0 4 * * *", PrzetargowyPrzeglad.Workers.ExpireSubscriptions},
+       {"0 5 * * *", PrzetargowyPrzeglad.Workers.RetryFailedPayments}
      ]}
   ],
-  queues: [default: 10, mailers: 20, tenders: 1, alerts: 1],
+  queues: [default: 10, mailers: 20, tenders: 1, alerts: 1, payments: 5],
   repo: PrzetargowyPrzeglad.Repo
 
 # Configure the mailer

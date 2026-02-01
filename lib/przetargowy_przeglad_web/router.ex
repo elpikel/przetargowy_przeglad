@@ -43,8 +43,24 @@ defmodule PrzetargowyPrzegladWeb.Router do
     post "/dashboard/alerts/new", DashboardController, :create_alert
     delete "/dashboard/alerts/:id", DashboardController, :delete_alert
     post "/dashboard/password", DashboardController, :update_password
+
+    # Subscription management
+    get "/dashboard/subscription", SubscriptionController, :show
+    get "/dashboard/subscription/new", SubscriptionController, :new
+    post "/dashboard/subscription", SubscriptionController, :create
+    delete "/dashboard/subscription", SubscriptionController, :cancel
+    get "/dashboard/subscription/success", SubscriptionController, :payment_success
+    get "/dashboard/subscription/error", SubscriptionController, :payment_error
+
     get "/logout", SessionController, :logout
     delete "/user", UserController, :delete_user
+  end
+
+  # Webhook endpoints (no CSRF protection)
+  scope "/webhooks", PrzetargowyPrzegladWeb do
+    pipe_through :api
+
+    post "/tpay", WebhookController, :tpay
   end
 
   # Other scopes may use custom stacks.

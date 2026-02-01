@@ -4,6 +4,9 @@ defmodule PrzetargowyPrzegladWeb.UserControllerTest do
   import Swoosh.TestAssertions
 
   alias PrzetargowyPrzeglad.Accounts
+  alias PrzetargowyPrzeglad.Payments.PaymentTransaction
+  alias PrzetargowyPrzeglad.Payments.Subscription
+  alias PrzetargowyPrzeglad.Repo
 
   describe "GET /register" do
     test "renders registration form", %{conn: conn} do
@@ -200,6 +203,77 @@ defmodule PrzetargowyPrzegladWeb.UserControllerTest do
     test "redirects to home with missing token", %{conn: conn} do
       conn = get(conn, ~p"/verify-email")
       assert redirected_to(conn) == ~p"/"
+    end
+  end
+
+  describe "DELETE /user" do
+    setup %{conn: conn} do
+      # Create and verify a user
+      {:ok, %{user: user}} =
+        Accounts.register_user(%{
+          email: "delete-test@example.com",
+          password: "password123",
+          tender_category: "Dostawy",
+          region: "mazowieckie"
+        })
+
+      {:ok, verified_user} = Accounts.verify_user_email(user.email_verification_token)
+
+      conn =
+        conn
+        |> init_test_session(%{})
+        |> put_session(:user_id, verified_user.id)
+
+      %{conn: conn, user: verified_user}
+    end
+
+    test "deletes user and redirects to home", %{conn: conn, user: user} do
+      conn = delete(conn, ~p"/user")
+
+      assert redirected_to(conn) == ~p"/"
+      assert Accounts.get_user(user.id) == nil
+    end
+
+    test "deletes user with subscription and payment transactions (CASCADE)", %{conn: conn, user: user} do
+      # Create subscription for the user
+      {:ok, subscription} =
+        %Subscription{}
+        |> Subscription.create_changeset(%{user_id: user.id})
+        |> Repo.insert()
+
+      # Create payment transaction for the user
+      {:ok, transaction} =
+        %PaymentTransaction{}
+        |> PaymentTransaction.create_changeset(%{
+          subscription_id: subscription.id,
+          user_id: user.id,
+          type: "initial",
+          amount: Decimal.new("19.00")
+        })
+        |> Repo.insert()
+
+      # Delete the user
+      conn = delete(conn, ~p"/user")
+
+      assert redirected_to(conn) == ~p"/"
+
+      # Verify user was deleted
+      assert Accounts.get_user(user.id) == nil
+
+      # Verify subscription was cascade deleted
+      assert Repo.get(Subscription, subscription.id) == nil
+
+      # Verify transaction was cascade deleted
+      assert Repo.get(PaymentTransaction, transaction.id) == nil
+    end
+
+    test "requires authentication", %{conn: conn} do
+      conn =
+        conn
+        |> delete_session(:user_id)
+        |> delete(~p"/user")
+
+      assert redirected_to(conn) == ~p"/login"
     end
   end
 end

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wykup Premium - Przetargowy Przegląd</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+          --navy-900: #0a1628;
+          --navy-800: #12233d;
+          --navy-700: #1a3052;
+          --navy-600: #234168;
+          --cream-50: #fefcf8;
+          --cream-100: #fdf8ed;
+          --cream-200: #f9f0db;
+          --cream-300: #f3e4c3;
+          --gold-500: #c9a227;
+          --gold-600: #b8922a;
+          --text-primary: #0a1628;
+          --text-secondary: #4a5568;
+          --error: #dc2626;
+          --error-light: #fef2f2;
+          --success: #16a34a;
+          --success-light: #f0fdf4;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'DM Sans', sans-serif; background-color: var(--cream-50); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+      header { background: rgba(254, 252, 248, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(10, 22, 40, 0.06); position: sticky; top: 0; z-index: 100; }
+      .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
+      .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+      .logo-icon { width: 44px; height: 44px; background: var(--cream-50); border: 2px solid var(--navy-600); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1); }
+      .logo-icon svg { width: 26px; height: 26px; color: var(--navy-700); }
+      .logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.35rem; color: var(--navy-800); }
+      .logo-text span { color: var(--gold-500); }
+      .header-nav { display: flex; align-items: center; gap: 16px; }
+      .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.25s ease; cursor: pointer; border: none; }
+      .btn-outline { background: transparent; color: var(--navy-700); border: 1.5px solid var(--navy-600); }
+      .btn-outline:hover { background: var(--navy-800); color: var(--cream-50); border-color: var(--navy-800); }
+      .btn-primary { background: linear-gradient(135deg, var(--navy-700), var(--navy-900)); color: var(--cream-50); box-shadow: 0 4px 14px rgba(10, 22, 40, 0.25); }
+      .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(10, 22, 40, 0.35); }
+      .btn-gold { background: linear-gradient(135deg, var(--gold-500), var(--gold-600)); color: var(--navy-900); font-weight: 700; box-shadow: 0 4px 14px rgba(201, 162, 39, 0.3); }
+      .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4); }
+      .btn-lg { padding: 16px 32px; font-size: 1.1rem; }
+      main { max-width: 600px; margin: 0 auto; padding: 40px 24px 80px; }
+      .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--navy-700); text-decoration: none; font-weight: 500; margin-bottom: 24px; }
+      .back-link:hover { color: var(--navy-900); }
+      .back-link svg { width: 20px; height: 20px; }
+      .card { background: white; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(10, 22, 40, 0.06); border: 1px solid var(--cream-200); overflow: hidden; }
+      .card-body { padding: 32px; }
+      .premium-header { text-align: center; margin-bottom: 32px; }
+      .premium-icon { width: 80px; height: 80px; background: linear-gradient(135deg, var(--gold-500), var(--gold-600)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+      .premium-icon svg { width: 40px; height: 40px; color: white; }
+      .premium-title { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; color: var(--navy-900); margin-bottom: 8px; }
+      .premium-price { font-size: 2.5rem; font-weight: 700; color: var(--navy-800); }
+      .premium-price span { font-size: 1rem; font-weight: 500; color: var(--text-secondary); }
+      .benefits-list { margin: 32px 0; }
+      .benefits-title { font-weight: 600; color: var(--navy-800); margin-bottom: 16px; font-size: 1rem; }
+      .benefit-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--cream-200); }
+      .benefit-item:last-child { border-bottom: none; }
+      .benefit-icon { width: 24px; height: 24px; background: var(--success-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+      .benefit-icon svg { width: 14px; height: 14px; color: var(--success); }
+      .benefit-text { color: var(--text-primary); font-size: 0.95rem; }
+      .payment-info { background: var(--cream-50); border-radius: 12px; padding: 20px; margin: 24px 0; }
+      .payment-info-title { font-weight: 600; color: var(--navy-800); margin-bottom: 8px; font-size: 0.9rem; }
+      .payment-info-text { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.7; }
+      .payment-form { text-align: center; }
+      .flash { padding: 16px 24px; border-radius: 8px; margin-bottom: 24px; font-weight: 500; }
+      .flash-info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+      .flash-error { background: var(--error-light); color: var(--error); border: 1px solid #fecaca; }
+      .secure-badge { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; color: var(--text-secondary); font-size: 0.85rem; }
+      .secure-badge svg { width: 16px; height: 16px; }
+      @media (max-width: 640px) {
+          main { padding: 24px 16px 60px; }
+          .card-body { padding: 24px; }
+          .premium-title { font-size: 1.5rem; }
+          .premium-price { font-size: 2rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
+        </a>
+        <nav class="header-nav">
+          <a href="/dashboard" class="btn btn-outline">Panel</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <a href="/dashboard" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Wróć do panelu
+      </a>
+
+      <%= if Phoenix.Flash.get(@flash, :info) do %>
+        <div class="flash flash-info"><%= Phoenix.Flash.get(@flash, :info) %></div>
+      <% end %>
+      <%= if Phoenix.Flash.get(@flash, :error) do %>
+        <div class="flash flash-error"><%= Phoenix.Flash.get(@flash, :error) %></div>
+      <% end %>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="premium-header">
+            <div class="premium-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </div>
+            <h1 class="premium-title">Plan Premium</h1>
+            <div class="premium-price">
+              <%= Decimal.round(@subscription_amount, 0) %> zł<span>/miesiąc</span>
+            </div>
+          </div>
+
+          <div class="benefits-list">
+            <h2 class="benefits-title">Co zyskujesz:</h2>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <span class="benefit-text"><strong>Nieograniczona liczba alertów</strong> - monitoruj wiele kategorii przetargów jednocześnie</span>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <span class="benefit-text"><strong>Wszystkie regiony</strong> - otrzymuj powiadomienia z całej Polski</span>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <span class="benefit-text"><strong>Własne słowa kluczowe</strong> - filtruj przetargi według specyficznych terminów</span>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <span class="benefit-text"><strong>Wiele branż</strong> - wybierz dowolną kombinację kategorii przetargów</span>
+            </div>
+          </div>
+
+          <div class="payment-info">
+            <h3 class="payment-info-title">Informacje o płatności</h3>
+            <p class="payment-info-text">
+              Płatność jest realizowana przez bezpieczny system Tpay.
+              Subskrypcja odnawia się automatycznie co miesiąc.
+              Możesz ją anulować w dowolnym momencie - dostęp Premium pozostanie aktywny do końca opłaconego okresu.
+            </p>
+          </div>
+
+          <div class="payment-form">
+            <form action="/dashboard/subscription" method="post">
+              <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+              <button type="submit" class="btn btn-gold btn-lg">
+                Wykup Premium za <%= Decimal.round(@subscription_amount, 0) %> zł/miesiąc
+              </button>
+            </form>
+
+            <div class="secure-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              Bezpieczna płatność przez Tpay
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

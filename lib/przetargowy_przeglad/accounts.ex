@@ -222,6 +222,38 @@ defmodule PrzetargowyPrzeglad.Accounts do
   end
 
   @doc """
+  Upgrades a user to premium plan.
+  Called when a subscription is activated.
+  """
+  def upgrade_to_premium(user_id) do
+    case get_user(user_id) do
+      nil ->
+        {:error, :not_found}
+
+      user ->
+        user
+        |> User.changeset(%{subscription_plan: "paid"})
+        |> Repo.update()
+    end
+  end
+
+  @doc """
+  Downgrades a user to free plan.
+  Called when a subscription expires or is cancelled.
+  """
+  def downgrade_to_free(user_id) do
+    case get_user(user_id) do
+      nil ->
+        {:error, :not_found}
+
+      user ->
+        user
+        |> User.changeset(%{subscription_plan: "free"})
+        |> Repo.update()
+    end
+  end
+
+  @doc """
   Gets a user by verification token.
   """
   def get_user_by_verification_token(token) do
