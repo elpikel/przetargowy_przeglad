@@ -1,278 +1,193 @@
-<!DOCTYPE html>
-<html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ustawienia - Przetargowy Przegląd</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      defer
-      data-domain="przetargowyprzeglad.pl"
-      src="https://plausible.przetargowyprzeglad.pl/js/script.hash.outbound-links.tagged-events.js"
-    >
-    </script>
-    <style>
-      :root {
-          --navy-900: #0a1628;
-          --navy-800: #12233d;
-          --navy-700: #1a3052;
-          --navy-600: #234168;
-          --cream-50: #fefcf8;
-          --cream-100: #fdf8ed;
-          --cream-200: #f9f0db;
-          --cream-300: #f3e4c3;
-          --gold-500: #c9a227;
-          --gold-600: #b8922a;
-          --text-primary: #0a1628;
-          --text-secondary: #4a5568;
-          --error: #dc2626;
-          --error-light: #fef2f2;
-          --success: #16a34a;
-      }
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font-family: 'DM Sans', sans-serif; background-color: var(--cream-50); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
-      header { background: rgba(254, 252, 248, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(10, 22, 40, 0.06); position: sticky; top: 0; z-index: 100; }
-      .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
-      .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-      .logo-icon { width: 44px; height: 44px; background: var(--cream-50); border: 2px solid var(--navy-600); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1); }
-      .logo-icon svg { width: 26px; height: 26px; color: var(--navy-700); }
-      .logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.35rem; color: var(--navy-800); }
-      .logo-text span { color: var(--gold-500); }
-      .header-user { display: none; align-items: center; gap: 16px; }
-      .user-email { font-size: 0.9rem; color: var(--text-secondary); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      @media (min-width: 900px) {
-        .header-user { display: flex; }
-        .hamburger-btn { display: none !important; }
-      }
-      .hamburger-btn { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s; }
-      .hamburger-btn:hover { background: var(--cream-200); }
-      .hamburger-btn svg { width: 24px; height: 24px; color: var(--navy-700); }
-      .mobile-menu-overlay { position: fixed; inset: 0; background: rgba(10, 22, 40, 0.5); z-index: 200; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
-      .mobile-menu-overlay.visible { opacity: 1; visibility: visible; }
-      .mobile-menu { position: fixed; top: 0; right: 0; bottom: 0; width: 280px; max-width: 85vw; background: var(--cream-50); z-index: 201; transform: translateX(100%); transition: transform 0.3s ease; box-shadow: -4px 0 20px rgba(10, 22, 40, 0.15); display: flex; flex-direction: column; }
-      .mobile-menu-overlay.visible .mobile-menu { transform: translateX(0); }
-      .mobile-menu-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--cream-200); }
-      .mobile-menu-close { background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 8px; }
-      .mobile-menu-close:hover { background: var(--cream-200); }
-      .mobile-menu-close svg { width: 24px; height: 24px; color: var(--navy-700); }
-      .mobile-menu-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-      .mobile-menu-user { padding: 16px; background: var(--cream-100); border-radius: 12px; margin-bottom: 8px; }
-      .mobile-menu-user-email { font-size: 0.9rem; color: var(--navy-800); font-weight: 500; word-break: break-all; }
-      .mobile-menu-link { display: block; padding: 12px 16px; border-radius: 8px; text-decoration: none; color: var(--navy-700); font-weight: 500; transition: background 0.2s; }
-      .mobile-menu-link:hover { background: var(--cream-200); }
-      .mobile-menu-btn { display: block; width: 100%; text-align: center; }
-      .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.25s ease; cursor: pointer; border: none; }
-      .btn-outline { background: transparent; color: var(--navy-700); border: 1.5px solid var(--navy-600); }
-      .btn-outline:hover { background: var(--navy-800); color: var(--cream-50); border-color: var(--navy-800); }
-      .btn-primary { background: linear-gradient(135deg, var(--navy-700), var(--navy-900)); color: var(--cream-50); box-shadow: 0 4px 14px rgba(10, 22, 40, 0.25); }
-      .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(10, 22, 40, 0.35); }
-      .btn-danger-outline { background: transparent; color: var(--error); border: 1.5px solid var(--error); }
-      .btn-danger-outline:hover { background: var(--error); color: white; }
-      .btn-danger { background: var(--error); color: white; }
-      .btn-danger:hover { background: #b91c1c; }
-      main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-      .page-header { margin-bottom: 40px; }
-      .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--navy-900); margin-bottom: 8px; }
-      .page-subtitle { color: var(--text-secondary); font-size: 1rem; }
-      .settings-section { background: white; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(10, 22, 40, 0.06); border: 1px solid var(--cream-200); overflow: hidden; }
-      .section-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; cursor: pointer; user-select: none; transition: background-color 0.2s ease; }
-      .section-header:hover { background-color: var(--cream-50); }
-      .section-header-left { display: flex; align-items: center; gap: 12px; }
-      .section-title { font-size: 1.1rem; font-weight: 600; color: var(--navy-800); }
-      .section-badge { background: var(--cream-100); border: 1px solid var(--cream-300); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--navy-700); }
-      .section-badge.premium { background: linear-gradient(135deg, var(--gold-500), var(--gold-600)); border: none; color: var(--navy-900); }
-      .collapse-icon { width: 24px; height: 24px; color: var(--text-secondary); transition: transform 0.3s ease; }
-      .settings-section.collapsed .collapse-icon { transform: rotate(-90deg); }
-      .section-content { padding: 0 24px 24px; }
-      .settings-section.collapsed .section-content { display: none; }
-      .section-divider { height: 1px; background: var(--cream-200); margin: 0 24px 24px; }
-      .settings-section.collapsed .section-divider { display: none; }
-      .form-group { margin-bottom: 24px; }
-      .form-group:last-child { margin-bottom: 0; }
-      .form-label { display: block; font-weight: 500; color: var(--navy-800); margin-bottom: 8px; font-size: 0.9rem; }
-      .form-hint { color: var(--text-secondary); font-size: 0.8rem; margin-top: 6px; }
-      .form-input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--cream-300); border-radius: 8px; font-size: 1rem; font-family: inherit; color: var(--text-primary); background: var(--cream-50); transition: all 0.2s ease; }
-      .form-input:focus { outline: none; border-color: var(--navy-600); background: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
-      .form-input:disabled { opacity: 0.7; cursor: not-allowed; }
-      .form-input.error { border-color: var(--error); background: var(--error-light); }
-      .form-input.error:focus { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1); }
-      .form-error { color: var(--error); font-size: 0.8rem; margin-top: 6px; display: none; }
-      .form-error.visible { display: block; }
-      .form-select { width: 100%; padding: 12px 16px; border: 1.5px solid var(--cream-300); border-radius: 8px; font-size: 1rem; font-family: inherit; color: var(--text-primary); background: var(--cream-50); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 44px; }
-      .form-select:focus { outline: none; border-color: var(--navy-600); background-color: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
-      .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px; }
-      .checkbox-item { display: flex; align-items: center; gap: 8px; }
-      .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--gold-500); cursor: pointer; flex-shrink: 0; }
-      .checkbox-item label { font-size: 0.9rem; color: var(--text-primary); cursor: pointer; user-select: none; }
-      .select-all-wrapper { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--cream-300); }
-      .select-all-wrapper .checkbox-item label { font-weight: 600; color: var(--navy-700); }
-      .keywords-container { border: 1.5px solid var(--cream-300); border-radius: 8px; background: var(--cream-50); padding: 12px; min-height: 80px; transition: all 0.2s ease; }
-      .keywords-container:focus-within { border-color: var(--navy-600); background: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
-      .keywords-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
-      .keyword-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--navy-700); color: white; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 500; }
-      .keyword-tag button { background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; padding: 0; display: flex; }
-      .keyword-tag button:hover { color: white; }
-      .keyword-tag button svg { width: 14px; height: 14px; }
-      .keyword-input { border: none; background: transparent; font-size: 0.95rem; font-family: inherit; color: var(--text-primary); width: 100%; padding: 4px 0; }
-      .keyword-input:focus { outline: none; }
-      .keyword-input::placeholder { color: var(--text-secondary); opacity: 0.6; }
-      .form-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--cream-200); }
-      .danger-zone { background: var(--error-light); border: 1px solid #fecaca; }
-      .danger-zone .section-header:hover { background-color: #fef2f2; }
-      .danger-zone .section-title { color: var(--error); }
-      .danger-zone .section-divider { background: #fecaca; }
-      .danger-description { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px; }
-      .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 22, 40, 0.5); display: none; align-items: center; justify-content: center; z-index: 200; padding: 24px; }
-      .modal-overlay.visible { display: flex; }
-      .modal { background: white; border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; box-shadow: 0 20px 60px rgba(10, 22, 40, 0.2); }
-      .modal-icon { width: 56px; height: 56px; background: var(--error-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-      .modal-icon svg { width: 28px; height: 28px; stroke: var(--error); }
-      .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--navy-900); text-align: center; margin-bottom: 12px; }
-      .modal-description { color: var(--text-secondary); text-align: center; margin-bottom: 24px; font-size: 0.95rem; }
-      .modal-actions { display: flex; gap: 12px; }
-      .modal-actions .btn { flex: 1; }
-      .toast { position: fixed; bottom: 24px; right: 24px; background: var(--navy-800); color: white; padding: 16px 24px; border-radius: 12px; display: none; align-items: center; gap: 12px; box-shadow: 0 8px 30px rgba(10, 22, 40, 0.2); z-index: 300; }
-      .toast.visible { display: flex; animation: slideIn 0.3s ease; }
-      @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-      .toast-icon { width: 24px; height: 24px; fill: var(--success); }
-      @media (max-width: 640px) {
-          .header-inner { padding: 12px 16px; }
-          .logo-text { font-size: 1.1rem; }
-          .user-email { display: none; }
-          main { padding: 24px 16px 60px; }
-          .page-title { font-size: 1.5rem; }
-          .section-header { padding: 16px 20px; }
-          .section-content { padding: 0 20px 20px; }
-          .section-divider { margin: 0 20px 20px; }
-          .checkbox-grid { grid-template-columns: 1fr; }
-          .modal-actions, .form-actions { flex-direction: column; }
-          .form-actions .btn { width: 100%; }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <div class="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M7.5 12H12.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <path
-                d="M7.5 15H10.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <circle
-                cx="16.5"
-                cy="14.5"
-                r="4"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M19.5 17.5L22 20"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
-        </a>
-        <div class="header-user">
-          <span class="user-email">{@current_user.email}</span>
-          <a href="/tenders" class="btn btn-primary">Szukaj przetargów</a>
-          <a href="/logout" class="btn btn-outline">Wyloguj się</a>
-        </div>
-        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-    </header>
+<Layouts.site
+  flash={@flash}
+  current_user={@current_user}
+  page_title="Ustawienia - Przetargowy Przegląd"
+  header_position="sticky"
+  show_footer={false}
+>
+  <:page_styles>
+    <link rel="stylesheet" href="/assets/css/dashboard.css" />
+  </:page_styles>
 
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-      <div class="mobile-menu">
-        <div class="mobile-menu-header">
-          <span class="logo-text" style="font-size: 1.1rem;">Przetargowy<span>Przegląd</span></span>
-          <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Zamknij menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-        <div class="mobile-menu-content">
-          <div class="mobile-menu-user">
-            <div class="mobile-menu-user-email">{@current_user.email}</div>
-          </div>
-          <a href="/tenders" class="btn btn-primary mobile-menu-btn">Szukaj przetargów</a>
-          <a href="/" class="mobile-menu-link">Strona główna</a>
-          <a href="/logout" class="mobile-menu-link">Wyloguj się</a>
-        </div>
-      </div>
+  <:nav>
+    <a href="/tenders">Szukaj przetargów</a>
+  </:nav>
+
+  <main>
+    <div class="page-header">
+      <h1 class="page-title">Ustawienia</h1>
+      <p class="page-subtitle">Zarządzaj swoim kontem i preferencjami przetargów</p>
     </div>
 
-    <main>
-      <div class="page-header">
-        <h1 class="page-title">Ustawienia</h1>
-        <p class="page-subtitle">Zarządzaj swoim kontem i preferencjami przetargów</p>
-      </div>
-
-      <%= if @current_user.subscription_plan == "free" do %>
-        <!-- Upgrade Banner for Free Users -->
-        <div class="settings-section" style="background: linear-gradient(135deg, #fdf8ed 0%, #f9f0db 100%); border: 2px solid #c9a227;">
-          <div class="section-content" style="padding: 24px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-              <div>
-                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: #0a1628; margin-bottom: 4px;">
-                  Odblokuj pełny potencjał
-                </h3>
-                <p style="color: #4a5568; font-size: 0.95rem; margin: 0;">
-                  Przejdź na Premium i korzystaj z nieograniczonych alertów, wielu regionów i własnych słów kluczowych.
-                </p>
-              </div>
-              <a href="/dashboard/subscription/new" class="btn" style="background: linear-gradient(135deg, #c9a227, #b8922a); color: #0a1628; font-weight: 700; padding: 12px 24px;">
-                Wykup Premium za 19 zł/mies.
-              </a>
+    <%= if @current_user.subscription_plan == "free" do %>
+      <!-- Upgrade Banner for Free Users -->
+      <div class="settings-section" style="background: linear-gradient(135deg, #fdf8ed 0%, #f9f0db 100%); border: 2px solid #c9a227;">
+        <div class="section-content" style="padding: 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: #0a1628; margin-bottom: 4px;">
+                Odblokuj pełny potencjał
+              </h3>
+              <p style="color: #4a5568; font-size: 0.95rem; margin: 0;">
+                Przejdź na Premium i korzystaj z nieograniczonych alertów, wielu regionów i własnych słów kluczowych.
+              </p>
             </div>
+            <a href="/dashboard/subscription/new" class="btn" style="background: linear-gradient(135deg, #c9a227, #b8922a); color: #0a1628; font-weight: 700; padding: 12px 24px;">
+              Wykup Premium za 19 zł/mies.
+            </a>
           </div>
         </div>
-      <% end %>
+      </div>
+    <% end %>
 
-      <%= if @current_user.subscription_plan == "free" do %>
-        <section class="settings-section" id="alertsFreeSection">
-          <div class="section-header" onclick="toggleSection('alertsFreeSection')">
+    <%= if @current_user.subscription_plan == "free" do %>
+      <section class="settings-section" id="alertsFreeSection">
+        <div class="section-header" onclick="toggleSection('alertsFreeSection')">
+          <div class="section-header-left">
+            <h2 class="section-title">Preferencje przetargów</h2>
+            <span class="section-badge">Plan Darmowy</span>
+          </div>
+          <svg
+            class="collapse-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+        <div class="section-divider"></div>
+        <div class="section-content">
+          <form id="alertsFormFree" action="/dashboard/alerts" method="POST">
+            <input
+              type="hidden"
+              name="_csrf_token"
+              value={Plug.CSRFProtection.get_csrf_token()}
+            />
+            <% current_tender_category =
+              @alert && (@alert.rules[:tender_category] || @alert.rules["tender_category"]) %>
+            <% current_region = @alert && (@alert.rules[:region] || @alert.rules["region"]) %>
+            <div class="form-group">
+              <label class="form-label">Rodzaj zamówienia</label>
+              <select name="tender_category" class="form-select" required>
+                <option value="">Wybierz rodzaj zamówienia</option>
+                <option value="Dostawy" selected={current_tender_category == "Dostawy"}>
+                  Dostawy
+                </option>
+                <option value="Usługi" selected={current_tender_category == "Usługi"}>
+                  Usługi
+                </option>
+                <option value="Roboty budowlane" selected={current_tender_category == "Roboty budowlane"}>
+                  Roboty budowlane
+                </option>
+              </select>
+              <p class="form-hint">W planie darmowym możesz wybrać jeden rodzaj zamówienia</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Region</label>
+              <select name="region" class="form-select" required>
+                <option value="">Wybierz województwo</option>
+                <option value="dolnoslaskie" selected={current_region == "dolnoslaskie"}>
+                  Dolnośląskie
+                </option>
+                <option
+                  value="kujawsko-pomorskie"
+                  selected={current_region == "kujawsko-pomorskie"}
+                >
+                  Kujawsko-pomorskie
+                </option>
+                <option value="lubelskie" selected={current_region == "lubelskie"}>
+                  Lubelskie
+                </option>
+                <option value="lubuskie" selected={current_region == "lubuskie"}>
+                  Lubuskie
+                </option>
+                <option value="lodzkie" selected={current_region == "lodzkie"}>Łódzkie</option>
+                <option value="malopolskie" selected={current_region == "malopolskie"}>
+                  Małopolskie
+                </option>
+                <option value="mazowieckie" selected={current_region == "mazowieckie"}>
+                  Mazowieckie
+                </option>
+                <option value="opolskie" selected={current_region == "opolskie"}>
+                  Opolskie
+                </option>
+                <option value="podkarpackie" selected={current_region == "podkarpackie"}>
+                  Podkarpackie
+                </option>
+                <option value="podlaskie" selected={current_region == "podlaskie"}>
+                  Podlaskie
+                </option>
+                <option value="pomorskie" selected={current_region == "pomorskie"}>
+                  Pomorskie
+                </option>
+                <option value="slaskie" selected={current_region == "slaskie"}>Śląskie</option>
+                <option value="swietokrzyskie" selected={current_region == "swietokrzyskie"}>
+                  Świętokrzyskie
+                </option>
+                <option
+                  value="warminsko-mazurskie"
+                  selected={current_region == "warminsko-mazurskie"}
+                >
+                  Warmińsko-mazurskie
+                </option>
+                <option value="wielkopolskie" selected={current_region == "wielkopolskie"}>
+                  Wielkopolskie
+                </option>
+                <option
+                  value="zachodniopomorskie"
+                  selected={current_region == "zachodniopomorskie"}
+                >
+                  Zachodniopomorskie
+                </option>
+              </select>
+              <p class="form-hint">W planie darmowym możesz wybrać jeden region</p>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    <% end %>
+
+    <%= if @current_user.subscription_plan == "paid" do %>
+      <!-- Subscription Status for Premium Users -->
+      <div class="settings-section" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #16a34a;">
+        <div class="section-content" style="padding: 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 40px; height: 40px; background: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <div>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #0a1628; margin: 0;">
+                  Plan Premium aktywny
+                </h3>
+                <p style="color: #4a5568; font-size: 0.85rem; margin: 0;">
+                  Korzystasz z pełnego dostępu do wszystkich funkcji
+                </p>
+              </div>
+            </div>
+            <a href="/dashboard/subscription" class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 16px;">
+              Zarządzaj subskrypcją
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <%= for {alert, index} <- Enum.with_index(@alerts) do %>
+        <% alert_industries = (alert.rules[:industries] || alert.rules["industries"]) || [] %>
+        <% alert_regions = (alert.rules[:regions] || alert.rules["regions"]) || [] %>
+        <% alert_keywords = (alert.rules[:keywords] || alert.rules["keywords"]) || [] %>
+        <section class="settings-section" id={"alertsPremiumSection-#{index}"}>
+          <div class="section-header" onclick={"toggleSection('alertsPremiumSection-#{index}')"}>
             <div class="section-header-left">
-              <h2 class="section-title">Preferencje przetargów</h2>
-              <span class="section-badge">Plan Darmowy</span>
+              <h2 class="section-title">Alert #{index + 1}</h2>
+              <span class="section-badge premium">Plan Premium</span>
             </div>
             <svg
               class="collapse-icon"
@@ -286,807 +201,640 @@
           </div>
           <div class="section-divider"></div>
           <div class="section-content">
-            <form id="alertsFormFree" action="/dashboard/alerts" method="POST">
+            <form id={"alertsFormPremium-#{index}"} action="/dashboard/alerts" method="POST">
               <input
                 type="hidden"
                 name="_csrf_token"
                 value={Plug.CSRFProtection.get_csrf_token()}
               />
-              <% current_tender_category =
-                @alert && (@alert.rules[:tender_category] || @alert.rules["tender_category"]) %>
-              <% current_region = @alert && (@alert.rules[:region] || @alert.rules["region"]) %>
-              <div class="form-group">
-                <label class="form-label">Rodzaj zamówienia</label>
-                <select name="tender_category" class="form-select" required>
-                  <option value="">Wybierz rodzaj zamówienia</option>
-                  <option value="Dostawy" selected={current_tender_category == "Dostawy"}>
-                    Dostawy
-                  </option>
-                  <option value="Usługi" selected={current_tender_category == "Usługi"}>
-                    Usługi
-                  </option>
-                  <option value="Roboty budowlane" selected={current_tender_category == "Roboty budowlane"}>
-                    Roboty budowlane
-                  </option>
-                </select>
-                <p class="form-hint">W planie darmowym możesz wybrać jeden rodzaj zamówienia</p>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Region</label>
-                <select name="region" class="form-select" required>
-                  <option value="">Wybierz województwo</option>
-                  <option value="dolnoslaskie" selected={current_region == "dolnoslaskie"}>
-                    Dolnośląskie
-                  </option>
-                  <option
-                    value="kujawsko-pomorskie"
-                    selected={current_region == "kujawsko-pomorskie"}
-                  >
-                    Kujawsko-pomorskie
-                  </option>
-                  <option value="lubelskie" selected={current_region == "lubelskie"}>
-                    Lubelskie
-                  </option>
-                  <option value="lubuskie" selected={current_region == "lubuskie"}>
-                    Lubuskie
-                  </option>
-                  <option value="lodzkie" selected={current_region == "lodzkie"}>Łódzkie</option>
-                  <option value="malopolskie" selected={current_region == "malopolskie"}>
-                    Małopolskie
-                  </option>
-                  <option value="mazowieckie" selected={current_region == "mazowieckie"}>
-                    Mazowieckie
-                  </option>
-                  <option value="opolskie" selected={current_region == "opolskie"}>
-                    Opolskie
-                  </option>
-                  <option value="podkarpackie" selected={current_region == "podkarpackie"}>
-                    Podkarpackie
-                  </option>
-                  <option value="podlaskie" selected={current_region == "podlaskie"}>
-                    Podlaskie
-                  </option>
-                  <option value="pomorskie" selected={current_region == "pomorskie"}>
-                    Pomorskie
-                  </option>
-                  <option value="slaskie" selected={current_region == "slaskie"}>Śląskie</option>
-                  <option value="swietokrzyskie" selected={current_region == "swietokrzyskie"}>
-                    Świętokrzyskie
-                  </option>
-                  <option
-                    value="warminsko-mazurskie"
-                    selected={current_region == "warminsko-mazurskie"}
-                  >
-                    Warmińsko-mazurskie
-                  </option>
-                  <option value="wielkopolskie" selected={current_region == "wielkopolskie"}>
-                    Wielkopolskie
-                  </option>
-                  <option
-                    value="zachodniopomorskie"
-                    selected={current_region == "zachodniopomorskie"}
-                  >
-                    Zachodniopomorskie
-                  </option>
-                </select>
-                <p class="form-hint">W planie darmowym możesz wybrać jeden region</p>
-              </div>
-              <div class="form-actions">
-                <%!-- <a href="/work-in-progress" class="btn btn-outline">Przejdź na Premium</a> --%>
-                <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-              </div>
-            </form>
-          </div>
-        </section>
-      <% end %>
-
-      <%= if @current_user.subscription_plan == "paid" do %>
-        <!-- Subscription Status for Premium Users -->
-        <div class="settings-section" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #16a34a;">
-          <div class="section-content" style="padding: 24px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 40px; height: 40px; background: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <div>
-                  <h3 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #0a1628; margin: 0;">
-                    Plan Premium aktywny
-                  </h3>
-                  <p style="color: #4a5568; font-size: 0.85rem; margin: 0;">
-                    Korzystasz z pełnego dostępu do wszystkich funkcji
-                  </p>
+              <input type="hidden" name="alert_id" value={alert.id} />
+            <div class="form-group">
+              <label class="form-label">Branże</label>
+              <div class="select-all-wrapper">
+                <div class="checkbox-item">
+                  <input type="checkbox" id={"select-all-industries-#{index}"} />
+                  <label for={"select-all-industries-#{index}"}>Zaznacz wszystkie</label>
                 </div>
               </div>
-              <a href="/dashboard/subscription" class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 16px;">
-                Zarządzaj subskrypcją
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <%= for {alert, index} <- Enum.with_index(@alerts) do %>
-          <% alert_industries = (alert.rules[:industries] || alert.rules["industries"]) || [] %>
-          <% alert_regions = (alert.rules[:regions] || alert.rules["regions"]) || [] %>
-          <% alert_keywords = (alert.rules[:keywords] || alert.rules["keywords"]) || [] %>
-          <section class="settings-section" id={"alertsPremiumSection-#{index}"}>
-            <div class="section-header" onclick={"toggleSection('alertsPremiumSection-#{index}')"}>
-              <div class="section-header-left">
-                <h2 class="section-title">Alert #{index + 1}</h2>
-                <span class="section-badge premium">Plan Premium</span>
-              </div>
-              <svg
-                class="collapse-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="section-divider"></div>
-            <div class="section-content">
-              <form id={"alertsFormPremium-#{index}"} action="/dashboard/alerts" method="POST">
-                <input
-                  type="hidden"
-                  name="_csrf_token"
-                  value={Plug.CSRFProtection.get_csrf_token()}
-                />
-                <input type="hidden" name="alert_id" value={alert.id} />
-              <div class="form-group">
-                <label class="form-label">Branże</label>
-                <div class="select-all-wrapper">
-                  <div class="checkbox-item">
-                    <input type="checkbox" id={"select-all-industries-#{index}"} />
-                    <label for={"select-all-industries-#{index}"}>Zaznacz wszystkie</label>
-                  </div>
-                </div>
-                <div class="checkbox-grid" id={"industries-grid-#{index}"}>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-budownictwo"
-                      name="industries[]"
-                      value="budownictwo"
-                      checked={"budownictwo" in alert_industries}
-                    /><label for="ind-budownictwo">Budownictwo</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-it"
-                      name="industries[]"
-                      value="it"
-                      checked={"it" in alert_industries}
-                    /><label for="ind-it">IT i telekomunikacja</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-medycyna"
-                      name="industries[]"
-                      value="medycyna"
-                      checked={"medycyna" in alert_industries}
-                    /><label for="ind-medycyna">Medycyna i farmacja</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-transport"
-                      name="industries[]"
-                      value="transport"
-                      checked={"transport" in alert_industries}
-                    /><label for="ind-transport">Transport i logistyka</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-energia"
-                      name="industries[]"
-                      value="energia"
-                      checked={"energia" in alert_industries}
-                    /><label for="ind-energia">Energia i paliwa</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-edukacja"
-                      name="industries[]"
-                      value="edukacja"
-                      checked={"edukacja" in alert_industries}
-                    /><label for="ind-edukacja">Edukacja</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-administracja"
-                      name="industries[]"
-                      value="administracja"
-                      checked={"administracja" in alert_industries}
-                    /><label for="ind-administracja">Administracja publiczna</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-ochrona"
-                      name="industries[]"
-                      value="ochrona"
-                      checked={"ochrona" in alert_industries}
-                    /><label for="ind-ochrona">Ochrona i bezpieczeństwo</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-zywnosc"
-                      name="industries[]"
-                      value="zywnosc"
-                      checked={"zywnosc" in alert_industries}
-                    /><label for="ind-zywnosc">Żywność i catering</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-srodowisko"
-                      name="industries[]"
-                      value="srodowisko"
-                      checked={"srodowisko" in alert_industries}
-                    /><label for="ind-srodowisko">Ochrona środowiska</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-finanse"
-                      name="industries[]"
-                      value="finanse"
-                      checked={"finanse" in alert_industries}
-                    /><label for="ind-finanse">Finanse i ubezpieczenia</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-marketing"
-                      name="industries[]"
-                      value="marketing"
-                      checked={"marketing" in alert_industries}
-                    /><label for="ind-marketing">Marketing i reklama</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="ind-inne"
-                      name="industries[]"
-                      value="inne"
-                      checked={"inne" in alert_industries}
-                    /><label for="ind-inne">Inne</label>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Regiony</label>
-                <div class="select-all-wrapper">
-                  <div class="checkbox-item">
-                    <input type="checkbox" id={"select-all-regions-#{index}"} />
-                    <label for={"select-all-regions-#{index}"}>Cała Polska</label>
-                  </div>
-                </div>
-                <div class="checkbox-grid" id={"regions-grid-#{index}"}>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-dolnoslaskie"
-                      name="regions[]"
-                      value="dolnoslaskie"
-                      checked={"dolnoslaskie" in alert_regions}
-                    /><label for="reg-dolnoslaskie">Dolnośląskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-kujawsko-pomorskie"
-                      name="regions[]"
-                      value="kujawsko-pomorskie"
-                      checked={"kujawsko-pomorskie" in alert_regions}
-                    /><label for="reg-kujawsko-pomorskie">Kujawsko-pomorskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-lubelskie"
-                      name="regions[]"
-                      value="lubelskie"
-                      checked={"lubelskie" in alert_regions}
-                    /><label for="reg-lubelskie">Lubelskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-lubuskie"
-                      name="regions[]"
-                      value="lubuskie"
-                      checked={"lubuskie" in alert_regions}
-                    /><label for="reg-lubuskie">Lubuskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-lodzkie"
-                      name="regions[]"
-                      value="lodzkie"
-                      checked={"lodzkie" in alert_regions}
-                    /><label for="reg-lodzkie">Łódzkie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-malopolskie"
-                      name="regions[]"
-                      value="malopolskie"
-                      checked={"malopolskie" in alert_regions}
-                    /><label for="reg-malopolskie">Małopolskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-mazowieckie"
-                      name="regions[]"
-                      value="mazowieckie"
-                      checked={"mazowieckie" in alert_regions}
-                    /><label for="reg-mazowieckie">Mazowieckie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-opolskie"
-                      name="regions[]"
-                      value="opolskie"
-                      checked={"opolskie" in alert_regions}
-                    /><label for="reg-opolskie">Opolskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-podkarpackie"
-                      name="regions[]"
-                      value="podkarpackie"
-                      checked={"podkarpackie" in alert_regions}
-                    /><label for="reg-podkarpackie">Podkarpackie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-podlaskie"
-                      name="regions[]"
-                      value="podlaskie"
-                      checked={"podlaskie" in alert_regions}
-                    /><label for="reg-podlaskie">Podlaskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-pomorskie"
-                      name="regions[]"
-                      value="pomorskie"
-                      checked={"pomorskie" in alert_regions}
-                    /><label for="reg-pomorskie">Pomorskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-slaskie"
-                      name="regions[]"
-                      value="slaskie"
-                      checked={"slaskie" in alert_regions}
-                    /><label for="reg-slaskie">Śląskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-swietokrzyskie"
-                      name="regions[]"
-                      value="swietokrzyskie"
-                      checked={"swietokrzyskie" in alert_regions}
-                    /><label for="reg-swietokrzyskie">Świętokrzyskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-warminsko-mazurskie"
-                      name="regions[]"
-                      value="warminsko-mazurskie"
-                      checked={"warminsko-mazurskie" in alert_regions}
-                    /><label for="reg-warminsko-mazurskie">Warmińsko-mazurskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-wielkopolskie"
-                      name="regions[]"
-                      value="wielkopolskie"
-                      checked={"wielkopolskie" in alert_regions}
-                    /><label for="reg-wielkopolskie">Wielkopolskie</label>
-                  </div>
-                  <div class="checkbox-item">
-                    <input
-                      type="checkbox"
-                      id="reg-zachodniopomorskie"
-                      name="regions[]"
-                      value="zachodniopomorskie"
-                      checked={"zachodniopomorskie" in alert_regions}
-                    /><label for="reg-zachodniopomorskie">Zachodniopomorskie</label>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Słowa kluczowe</label>
-                <div class="keyword-input-row" style="display: flex; gap: 8px; margin-bottom: 12px;">
+              <div class="checkbox-grid" id={"industries-grid-#{index}"}>
+                <div class="checkbox-item">
                   <input
-                    type="text"
-                    class="form-input"
-                    id={"keyword-input-#{index}"}
-                    placeholder="Wpisz słowo kluczowe"
-                    data-index={index}
-                    style="flex: 1;"
-                  />
-                  <button
-                    type="button"
-                    class="btn btn-outline"
-                    id={"add-keyword-btn-#{index}"}
-                    style="white-space: nowrap;"
-                  >
-                    + Dodaj
-                  </button>
+                    type="checkbox"
+                    id="ind-budownictwo"
+                    name="industries[]"
+                    value="budownictwo"
+                    checked={"budownictwo" in alert_industries}
+                  /><label for="ind-budownictwo">Budownictwo</label>
                 </div>
-                <div class="keywords-list" id={"keywords-list-#{index}"} style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 32px;"></div>
-                <input
-                  type="hidden"
-                  name="keywords"
-                  id={"keywords-hidden-#{index}"}
-                  value={Enum.join(alert_keywords, ",")}
-                />
-                <p class="form-hint">np. "oprogramowanie", "remont dróg", "catering szkolny"</p>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-it"
+                    name="industries[]"
+                    value="it"
+                    checked={"it" in alert_industries}
+                  /><label for="ind-it">IT i telekomunikacja</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-medycyna"
+                    name="industries[]"
+                    value="medycyna"
+                    checked={"medycyna" in alert_industries}
+                  /><label for="ind-medycyna">Medycyna i farmacja</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-transport"
+                    name="industries[]"
+                    value="transport"
+                    checked={"transport" in alert_industries}
+                  /><label for="ind-transport">Transport i logistyka</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-energia"
+                    name="industries[]"
+                    value="energia"
+                    checked={"energia" in alert_industries}
+                  /><label for="ind-energia">Energia i paliwa</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-edukacja"
+                    name="industries[]"
+                    value="edukacja"
+                    checked={"edukacja" in alert_industries}
+                  /><label for="ind-edukacja">Edukacja</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-administracja"
+                    name="industries[]"
+                    value="administracja"
+                    checked={"administracja" in alert_industries}
+                  /><label for="ind-administracja">Administracja publiczna</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-ochrona"
+                    name="industries[]"
+                    value="ochrona"
+                    checked={"ochrona" in alert_industries}
+                  /><label for="ind-ochrona">Ochrona i bezpieczeństwo</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-zywnosc"
+                    name="industries[]"
+                    value="zywnosc"
+                    checked={"zywnosc" in alert_industries}
+                  /><label for="ind-zywnosc">Żywność i catering</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-srodowisko"
+                    name="industries[]"
+                    value="srodowisko"
+                    checked={"srodowisko" in alert_industries}
+                  /><label for="ind-srodowisko">Ochrona środowiska</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-finanse"
+                    name="industries[]"
+                    value="finanse"
+                    checked={"finanse" in alert_industries}
+                  /><label for="ind-finanse">Finanse i ubezpieczenia</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-marketing"
+                    name="industries[]"
+                    value="marketing"
+                    checked={"marketing" in alert_industries}
+                  /><label for="ind-marketing">Marketing i reklama</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="ind-inne"
+                    name="industries[]"
+                    value="inne"
+                    checked={"inne" in alert_industries}
+                  /><label for="ind-inne">Inne</label>
+                </div>
               </div>
-              <div class="form-actions">
-                <%= if length(@alerts) > 1 do %>
-                  <button
-                    type="button"
-                    class="btn btn-danger-outline"
-                    onclick={"showDeleteAlertModal(#{alert.id})"}
-                  >
-                    Usuń alert
-                  </button>
-                <% end %>
-                <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-              </div>
-            </form>
-          </div>
-        </section>
-        <% end %>
-
-        <!-- Add New Alert Button -->
-        <div style="text-align: center; margin-bottom: 24px;">
-          <form action="/dashboard/alerts/new" method="POST" style="display: inline;">
-            <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
-            <button type="submit" class="btn btn-primary">
-              + Dodaj nowy alert
-            </button>
-          </form>
-        </div>
-      <% end %>
-
-<!-- Account Section -->
-      <section class="settings-section" id="accountSection">
-        <div class="section-header" onclick="toggleSection('accountSection')">
-          <div class="section-header-left">
-            <h2 class="section-title">Konto</h2>
-          </div>
-          <svg
-            class="collapse-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </div>
-        <div class="section-divider"></div>
-        <div class="section-content">
-          <div class="form-group">
-            <label class="form-label">Adres e-mail</label>
-            <input
-              type="email"
-              class="form-input"
-              value={@current_user.email}
-              disabled
-            />
-            <p class="form-hint">Aby zmienić adres e-mail, skontaktuj się z nami</p>
-          </div>
-          <.form
-            :let={f}
-            for={@password_changeset}
-            as={:password_form}
-            action="/dashboard/password"
-            id="passwordForm"
-          >
-            <div class="form-group">
-              <label class="form-label" for="password_form_password">Nowe hasło</label>
-              <input
-                type="password"
-                id="password_form_password"
-                name="password_form[password]"
-                class={"form-input #{if f.errors[:password], do: "error"}"}
-                placeholder="Minimum 8 znaków"
-                minlength="8"
-                required
-              />
-              <%= if error = f.errors[:password] do %>
-                <p class="form-error visible">{elem(error, 0)}</p>
-              <% end %>
             </div>
             <div class="form-group">
-              <label class="form-label" for="password_form_password_confirmation">
-                Powtórz hasło
-              </label>
+              <label class="form-label">Regiony</label>
+              <div class="select-all-wrapper">
+                <div class="checkbox-item">
+                  <input type="checkbox" id={"select-all-regions-#{index}"} />
+                  <label for={"select-all-regions-#{index}"}>Cała Polska</label>
+                </div>
+              </div>
+              <div class="checkbox-grid" id={"regions-grid-#{index}"}>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-dolnoslaskie"
+                    name="regions[]"
+                    value="dolnoslaskie"
+                    checked={"dolnoslaskie" in alert_regions}
+                  /><label for="reg-dolnoslaskie">Dolnośląskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-kujawsko-pomorskie"
+                    name="regions[]"
+                    value="kujawsko-pomorskie"
+                    checked={"kujawsko-pomorskie" in alert_regions}
+                  /><label for="reg-kujawsko-pomorskie">Kujawsko-pomorskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-lubelskie"
+                    name="regions[]"
+                    value="lubelskie"
+                    checked={"lubelskie" in alert_regions}
+                  /><label for="reg-lubelskie">Lubelskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-lubuskie"
+                    name="regions[]"
+                    value="lubuskie"
+                    checked={"lubuskie" in alert_regions}
+                  /><label for="reg-lubuskie">Lubuskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-lodzkie"
+                    name="regions[]"
+                    value="lodzkie"
+                    checked={"lodzkie" in alert_regions}
+                  /><label for="reg-lodzkie">Łódzkie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-malopolskie"
+                    name="regions[]"
+                    value="malopolskie"
+                    checked={"malopolskie" in alert_regions}
+                  /><label for="reg-malopolskie">Małopolskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-mazowieckie"
+                    name="regions[]"
+                    value="mazowieckie"
+                    checked={"mazowieckie" in alert_regions}
+                  /><label for="reg-mazowieckie">Mazowieckie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-opolskie"
+                    name="regions[]"
+                    value="opolskie"
+                    checked={"opolskie" in alert_regions}
+                  /><label for="reg-opolskie">Opolskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-podkarpackie"
+                    name="regions[]"
+                    value="podkarpackie"
+                    checked={"podkarpackie" in alert_regions}
+                  /><label for="reg-podkarpackie">Podkarpackie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-podlaskie"
+                    name="regions[]"
+                    value="podlaskie"
+                    checked={"podlaskie" in alert_regions}
+                  /><label for="reg-podlaskie">Podlaskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-pomorskie"
+                    name="regions[]"
+                    value="pomorskie"
+                    checked={"pomorskie" in alert_regions}
+                  /><label for="reg-pomorskie">Pomorskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-slaskie"
+                    name="regions[]"
+                    value="slaskie"
+                    checked={"slaskie" in alert_regions}
+                  /><label for="reg-slaskie">Śląskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-swietokrzyskie"
+                    name="regions[]"
+                    value="swietokrzyskie"
+                    checked={"swietokrzyskie" in alert_regions}
+                  /><label for="reg-swietokrzyskie">Świętokrzyskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-warminsko-mazurskie"
+                    name="regions[]"
+                    value="warminsko-mazurskie"
+                    checked={"warminsko-mazurskie" in alert_regions}
+                  /><label for="reg-warminsko-mazurskie">Warmińsko-mazurskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-wielkopolskie"
+                    name="regions[]"
+                    value="wielkopolskie"
+                    checked={"wielkopolskie" in alert_regions}
+                  /><label for="reg-wielkopolskie">Wielkopolskie</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="reg-zachodniopomorskie"
+                    name="regions[]"
+                    value="zachodniopomorskie"
+                    checked={"zachodniopomorskie" in alert_regions}
+                  /><label for="reg-zachodniopomorskie">Zachodniopomorskie</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Słowa kluczowe</label>
+              <div class="keyword-input-row" style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <input
+                  type="text"
+                  class="form-input"
+                  id={"keyword-input-#{index}"}
+                  placeholder="Wpisz słowo kluczowe"
+                  data-index={index}
+                  style="flex: 1;"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline"
+                  id={"add-keyword-btn-#{index}"}
+                  style="white-space: nowrap;"
+                >
+                  + Dodaj
+                </button>
+              </div>
+              <div class="keywords-list" id={"keywords-list-#{index}"} style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 32px;"></div>
               <input
-                type="password"
-                id="password_form_password_confirmation"
-                name="password_form[password_confirmation]"
-                class={"form-input #{if f.errors[:password_confirmation], do: "error"}"}
-                placeholder="Powtórz nowe hasło"
-                required
+                type="hidden"
+                name="keywords"
+                id={"keywords-hidden-#{index}"}
+                value={Enum.join(alert_keywords, ",")}
               />
-              <%= if error = f.errors[:password_confirmation] do %>
-                <p class="form-error visible">{elem(error, 0)}</p>
-              <% end %>
+              <p class="form-hint">np. "oprogramowanie", "remont dróg", "catering szkolny"</p>
             </div>
             <div class="form-actions">
-              <button type="submit" class="btn btn-primary" id="changePasswordBtn">
-                Zmień hasło
-              </button>
+              <%= if length(@alerts) > 1 do %>
+                <button
+                  type="button"
+                  class="btn btn-danger-outline"
+                  onclick={"showDeleteAlertModal(#{alert.id})"}
+                >
+                  Usuń alert
+                </button>
+              <% end %>
+              <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
             </div>
-          </.form>
+          </form>
         </div>
       </section>
-      
-<!-- Danger Zone -->
-      <section class="settings-section danger-zone" id="dangerSection">
-        <div class="section-header" onclick="toggleSection('dangerSection')">
-          <div class="section-header-left">
-            <h2 class="section-title">Strefa niebezpieczna</h2>
-          </div>
-          <svg
-            class="collapse-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </div>
-        <div class="section-divider"></div>
-        <div class="section-content">
-          <p class="danger-description">
-            Po usunięciu konta wszystkie Twoje dane zostaną trwale usunięte. Tej operacji nie można cofnąć.
-          </p>
-          <button type="button" class="btn btn-danger-outline" id="deleteAccountBtn">
-            Usuń konto
+      <% end %>
+
+      <!-- Add New Alert Button -->
+      <div style="text-align: center; margin-bottom: 24px;">
+        <form action="/dashboard/alerts/new" method="POST" style="display: inline;">
+          <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+          <button type="submit" class="btn btn-primary">
+            + Dodaj nowy alert
           </button>
+        </form>
+      </div>
+    <% end %>
+
+    <!-- Account Section -->
+    <section class="settings-section" id="accountSection">
+      <div class="section-header" onclick="toggleSection('accountSection')">
+        <div class="section-header-left">
+          <h2 class="section-title">Konto</h2>
         </div>
-      </section>
-    </main>
-    
-<!-- Delete Modal -->
-    <div class="modal-overlay" id="deleteModal">
-      <div class="modal">
-        <div class="modal-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 6h18"></path>
-            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
-            <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-            <line x1="10" y1="11" x2="10" y2="17"></line>
-            <line x1="14" y1="11" x2="14" y2="17"></line>
-          </svg>
+        <svg
+          class="collapse-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+      <div class="section-divider"></div>
+      <div class="section-content">
+        <div class="form-group">
+          <label class="form-label">Adres e-mail</label>
+          <input
+            type="email"
+            class="form-input"
+            value={@current_user.email}
+            disabled
+          />
+          <p class="form-hint">Aby zmienić adres e-mail, skontaktuj się z nami</p>
         </div>
-        <h3 class="modal-title">Usuń konto</h3>
-        <p class="modal-description">
-          Czy na pewno chcesz usunąć swoje konto? Wszystkie dane zostaną trwale usunięte. Tej operacji nie można cofnąć.
-        </p>
-        <.form for={} action="/user" method="delete">
-          <div class="modal-actions">
-            <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Anuluj</button>
-            <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Usuń konto</button>
+        <.form
+          :let={f}
+          for={@password_changeset}
+          as={:password_form}
+          action="/dashboard/password"
+          id="passwordForm"
+        >
+          <div class="form-group">
+            <label class="form-label" for="password_form_password">Nowe hasło</label>
+            <input
+              type="password"
+              id="password_form_password"
+              name="password_form[password]"
+              class={"form-input #{if f.errors[:password], do: "error"}"}
+              placeholder="Minimum 8 znaków"
+              minlength="8"
+              required
+            />
+            <%= if error = f.errors[:password] do %>
+              <p class="form-error visible">{elem(error, 0)}</p>
+            <% end %>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password_form_password_confirmation">
+              Powtórz hasło
+            </label>
+            <input
+              type="password"
+              id="password_form_password_confirmation"
+              name="password_form[password_confirmation]"
+              class={"form-input #{if f.errors[:password_confirmation], do: "error"}"}
+              placeholder="Powtórz nowe hasło"
+              required
+            />
+            <%= if error = f.errors[:password_confirmation] do %>
+              <p class="form-error visible">{elem(error, 0)}</p>
+            <% end %>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="changePasswordBtn">
+              Zmień hasło
+            </button>
           </div>
         </.form>
       </div>
-    </div>
+    </section>
 
-    <!-- Delete Alert Modal -->
-    <div class="modal-overlay" id="deleteAlertModal">
-      <div class="modal">
-        <div class="modal-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 6h18"></path>
-            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
-            <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-          </svg>
+    <!-- Danger Zone -->
+    <section class="settings-section danger-zone" id="dangerSection">
+      <div class="section-header" onclick="toggleSection('dangerSection')">
+        <div class="section-header-left">
+          <h2 class="section-title">Strefa niebezpieczna</h2>
         </div>
-        <h3 class="modal-title">Usuń alert</h3>
-        <p class="modal-description">
-          Czy na pewno chcesz usunąć ten alert? Tej operacji nie można cofnąć.
-        </p>
-        <form id="deleteAlertForm" action="" method="POST">
-          <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
-          <input type="hidden" name="_method" value="delete" />
-          <div class="modal-actions">
-            <button type="button" class="btn btn-outline" onclick="hideDeleteAlertModal()">Anuluj</button>
-            <button type="submit" class="btn btn-danger">Usuń alert</button>
-          </div>
-        </form>
+        <svg
+          class="collapse-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
       </div>
+      <div class="section-divider"></div>
+      <div class="section-content">
+        <p class="danger-description">
+          Po usunięciu konta wszystkie Twoje dane zostaną trwale usunięte. Tej operacji nie można cofnąć.
+        </p>
+        <button type="button" class="btn btn-danger-outline" id="deleteAccountBtn">
+          Usuń konto
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18"></path>
+          <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
+          <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+          <line x1="10" y1="11" x2="10" y2="17"></line>
+          <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+      </div>
+      <h3 class="modal-title">Usuń konto</h3>
+      <p class="modal-description">
+        Czy na pewno chcesz usunąć swoje konto? Wszystkie dane zostaną trwale usunięte. Tej operacji nie można cofnąć.
+      </p>
+      <.form for={} action="/user" method="delete">
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Anuluj</button>
+          <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Usuń konto</button>
+        </div>
+      </.form>
     </div>
+  </div>
 
-<!-- Toast -->
-    <div class="toast" id="toast">
-      <svg class="toast-icon" viewBox="0 0 24 24">
-        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span>Zmiany zostały zapisane</span>
+  <!-- Delete Alert Modal -->
+  <div class="modal-overlay" id="deleteAlertModal">
+    <div class="modal">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18"></path>
+          <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
+          <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+        </svg>
+      </div>
+      <h3 class="modal-title">Usuń alert</h3>
+      <p class="modal-description">
+        Czy na pewno chcesz usunąć ten alert? Tej operacji nie można cofnąć.
+      </p>
+      <form id="deleteAlertForm" action="" method="POST">
+        <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+        <input type="hidden" name="_method" value="delete" />
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="hideDeleteAlertModal()">Anuluj</button>
+          <button type="submit" class="btn btn-danger">Usuń alert</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <script>
-      // Mobile menu toggle
-      const hamburgerBtn = document.getElementById('hamburgerBtn');
-      const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-      const mobileMenuClose = document.getElementById('mobileMenuClose');
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <svg class="toast-icon" viewBox="0 0 24 24">
+      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Zmiany zostały zapisane</span>
+  </div>
 
-      function openMobileMenu() {
-        mobileMenuOverlay.classList.add('visible');
-        document.body.style.overflow = 'hidden';
-      }
+  <script>
+    function toggleSection(sectionId) {
+        document.getElementById(sectionId).classList.toggle('collapsed');
+    }
 
-      function closeMobileMenu() {
-        mobileMenuOverlay.classList.remove('visible');
-        document.body.style.overflow = '';
-      }
-
-      hamburgerBtn.addEventListener('click', openMobileMenu);
-      mobileMenuClose.addEventListener('click', closeMobileMenu);
-      mobileMenuOverlay.addEventListener('click', function(e) {
-        if (e.target === mobileMenuOverlay) {
-          closeMobileMenu();
+    // Initialize all alert forms (supports multiple alerts for premium users)
+    function initAlertForm(index) {
+        // Select all industries for this alert
+        const selectAllInd = document.getElementById('select-all-industries-' + index);
+        const indGrid = document.getElementById('industries-grid-' + index);
+        if (selectAllInd && indGrid) {
+            const indCbs = indGrid.querySelectorAll('input[type="checkbox"]');
+            selectAllInd.addEventListener('change', function() { indCbs.forEach(cb => cb.checked = this.checked); });
+            indCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllInd.checked = [...indCbs].every(c => c.checked); }); });
         }
-      });
 
-      function toggleSection(sectionId) {
-          document.getElementById(sectionId).classList.toggle('collapsed');
-      }
+        // Select all regions for this alert
+        const selectAllReg = document.getElementById('select-all-regions-' + index);
+        const regGrid = document.getElementById('regions-grid-' + index);
+        if (selectAllReg && regGrid) {
+            const regCbs = regGrid.querySelectorAll('input[type="checkbox"]');
+            selectAllReg.addEventListener('change', function() { regCbs.forEach(cb => cb.checked = this.checked); });
+            regCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllReg.checked = [...regCbs].every(c => c.checked); }); });
+        }
 
-      // Initialize all alert forms (supports multiple alerts for premium users)
-      function initAlertForm(index) {
-          // Select all industries for this alert
-          const selectAllInd = document.getElementById('select-all-industries-' + index);
-          const indGrid = document.getElementById('industries-grid-' + index);
-          if (selectAllInd && indGrid) {
-              const indCbs = indGrid.querySelectorAll('input[type="checkbox"]');
-              selectAllInd.addEventListener('change', function() { indCbs.forEach(cb => cb.checked = this.checked); });
-              indCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllInd.checked = [...indCbs].every(c => c.checked); }); });
-          }
+        // Keywords for this alert
+        const kwInput = document.getElementById('keyword-input-' + index);
+        const kwBtn = document.getElementById('add-keyword-btn-' + index);
+        const kwList = document.getElementById('keywords-list-' + index);
+        const kwHidden = document.getElementById('keywords-hidden-' + index);
 
-          // Select all regions for this alert
-          const selectAllReg = document.getElementById('select-all-regions-' + index);
-          const regGrid = document.getElementById('regions-grid-' + index);
-          if (selectAllReg && regGrid) {
-              const regCbs = regGrid.querySelectorAll('input[type="checkbox"]');
-              selectAllReg.addEventListener('change', function() { regCbs.forEach(cb => cb.checked = this.checked); });
-              regCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllReg.checked = [...regCbs].every(c => c.checked); }); });
-          }
+        if (kwInput && kwBtn && kwList && kwHidden) {
+            let keywords = kwHidden.value ? kwHidden.value.split(',').filter(k => k.trim()) : [];
 
-          // Keywords for this alert
-          const kwInput = document.getElementById('keyword-input-' + index);
-          const kwBtn = document.getElementById('add-keyword-btn-' + index);
-          const kwList = document.getElementById('keywords-list-' + index);
-          const kwHidden = document.getElementById('keywords-hidden-' + index);
+            function updateKwHidden() { kwHidden.value = keywords.join(','); }
 
-          if (kwInput && kwBtn && kwList && kwHidden) {
-              let keywords = kwHidden.value ? kwHidden.value.split(',').filter(k => k.trim()) : [];
+            function renderKw() {
+                if (keywords.length === 0) {
+                    kwList.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.85rem;">Brak słów kluczowych</span>';
+                    return;
+                }
+                kwList.innerHTML = keywords.map(kw => '<span class="keyword-tag">' + kw + '<button type="button" data-keyword="' + kw + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></span>').join('');
+                // Re-attach click handlers for remove buttons
+                kwList.querySelectorAll('button[data-keyword]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        keywords = keywords.filter(k => k !== this.dataset.keyword);
+                        renderKw();
+                        updateKwHidden();
+                    });
+                });
+            }
 
-              function updateKwHidden() { kwHidden.value = keywords.join(','); }
+            function addKw(kw) {
+                kw = kw.trim().toLowerCase();
+                if (kw && !keywords.includes(kw)) {
+                    keywords.push(kw);
+                    renderKw();
+                    updateKwHidden();
+                }
+            }
 
-              function renderKw() {
-                  if (keywords.length === 0) {
-                      kwList.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.85rem;">Brak słów kluczowych</span>';
-                      return;
-                  }
-                  kwList.innerHTML = keywords.map(kw => '<span class="keyword-tag">' + kw + '<button type="button" data-keyword="' + kw + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></span>').join('');
-                  // Re-attach click handlers for remove buttons
-                  kwList.querySelectorAll('button[data-keyword]').forEach(btn => {
-                      btn.addEventListener('click', function() {
-                          keywords = keywords.filter(k => k !== this.dataset.keyword);
-                          renderKw();
-                          updateKwHidden();
-                      });
-                  });
-              }
+            // Add keyword on button click
+            kwBtn.addEventListener('click', function() {
+                addKw(kwInput.value);
+                kwInput.value = '';
+                kwInput.focus();
+            });
 
-              function addKw(kw) {
-                  kw = kw.trim().toLowerCase();
-                  if (kw && !keywords.includes(kw)) {
-                      keywords.push(kw);
-                      renderKw();
-                      updateKwHidden();
-                  }
-              }
+            // Add keyword on Enter key
+            kwInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addKw(this.value);
+                    this.value = '';
+                }
+            });
 
-              // Add keyword on button click
-              kwBtn.addEventListener('click', function() {
-                  addKw(kwInput.value);
-                  kwInput.value = '';
-                  kwInput.focus();
-              });
+            renderKw();
+        }
+    }
 
-              // Add keyword on Enter key
-              kwInput.addEventListener('keydown', function(e) {
-                  if (e.key === 'Enter') {
-                      e.preventDefault();
-                      addKw(this.value);
-                      this.value = '';
-                  }
-              });
+    // Initialize all alert forms (find how many exist)
+    let alertIndex = 0;
+    while (document.getElementById('industries-grid-' + alertIndex)) {
+        initAlertForm(alertIndex);
+        alertIndex++;
+    }
 
-              renderKw();
-          }
-      }
+    // Modal - Delete Account
+    const modal = document.getElementById('deleteModal');
+    document.getElementById('deleteAccountBtn').addEventListener('click', () => modal.classList.add('visible'));
+    document.getElementById('cancelDeleteBtn').addEventListener('click', () => modal.classList.remove('visible'));
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('visible'); });
 
-      // Initialize all alert forms (find how many exist)
-      let alertIndex = 0;
-      while (document.getElementById('industries-grid-' + alertIndex)) {
-          initAlertForm(alertIndex);
-          alertIndex++;
-      }
+    // Modal - Delete Alert
+    const deleteAlertModal = document.getElementById('deleteAlertModal');
+    const deleteAlertForm = document.getElementById('deleteAlertForm');
+    window.showDeleteAlertModal = function(alertId) {
+        deleteAlertForm.action = '/dashboard/alerts/' + alertId;
+        deleteAlertModal.classList.add('visible');
+    };
+    window.hideDeleteAlertModal = function() {
+        deleteAlertModal.classList.remove('visible');
+    };
+    if (deleteAlertModal) {
+        deleteAlertModal.addEventListener('click', e => { if (e.target === deleteAlertModal) hideDeleteAlertModal(); });
+    }
 
-      // Modal - Delete Account
-      const modal = document.getElementById('deleteModal');
-      document.getElementById('deleteAccountBtn').addEventListener('click', () => modal.classList.add('visible'));
-      document.getElementById('cancelDeleteBtn').addEventListener('click', () => modal.classList.remove('visible'));
-      modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('visible'); });
+    // Toast
+    function showToast() { const t = document.getElementById('toast'); t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 3000); }
 
-      // Modal - Delete Alert
-      const deleteAlertModal = document.getElementById('deleteAlertModal');
-      const deleteAlertForm = document.getElementById('deleteAlertForm');
-      window.showDeleteAlertModal = function(alertId) {
-          deleteAlertForm.action = '/dashboard/alerts/' + alertId;
-          deleteAlertModal.classList.add('visible');
-      };
-      window.hideDeleteAlertModal = function() {
-          deleteAlertModal.classList.remove('visible');
-      };
-      if (deleteAlertModal) {
-          deleteAlertModal.addEventListener('click', e => { if (e.target === deleteAlertModal) hideDeleteAlertModal(); });
-      }
+    // Password form client-side validation
+    const passwordForm = document.getElementById('passwordForm');
+    const passwordInput = document.getElementById('password_form_password');
+    const passwordConfirmInput = document.getElementById('password_form_password_confirmation');
 
-      // Toast
-      function showToast() { const t = document.getElementById('toast'); t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 3000); }
+    if (passwordForm && passwordInput && passwordConfirmInput) {
+        passwordInput.addEventListener('input', () => {
+            const isValid = passwordInput.value.length >= 8 || passwordInput.value.length === 0;
+            passwordInput.classList.toggle('error', !isValid);
+        });
 
-      // Password form client-side validation
-      const passwordForm = document.getElementById('passwordForm');
-      const passwordInput = document.getElementById('password_form_password');
-      const passwordConfirmInput = document.getElementById('password_form_password_confirmation');
-
-      if (passwordForm && passwordInput && passwordConfirmInput) {
-          passwordInput.addEventListener('input', () => {
-              const isValid = passwordInput.value.length >= 8 || passwordInput.value.length === 0;
-              passwordInput.classList.toggle('error', !isValid);
-          });
-
-          passwordConfirmInput.addEventListener('input', () => {
-              const isMatch = passwordInput.value === passwordConfirmInput.value || passwordConfirmInput.value.length === 0;
-              passwordConfirmInput.classList.toggle('error', !isMatch);
-          });
-      }
-    </script>
-  </body>
-</html>
+        passwordConfirmInput.addEventListener('input', () => {
+            const isMatch = passwordInput.value === passwordConfirmInput.value || passwordConfirmInput.value.length === 0;
+            passwordConfirmInput.classList.toggle('error', !isMatch);
+        });
+    }
+  </script>
+</Layouts.site>

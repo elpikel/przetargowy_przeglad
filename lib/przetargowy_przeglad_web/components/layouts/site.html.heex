@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <title><%= @page_title || "Przetargowy Przegląd" %></title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/css/site.css" />
+    <script
+      defer
+      data-domain="przetargowyprzeglad.pl"
+      src="https://plausible.przetargowyprzeglad.pl/js/script.hash.outbound-links.tagged-events.js"
+    >
+    </script>
+    <.page_header_styles />
+    <%= if assigns[:page_styles] do %>
+      {render_slot(@page_styles)}
+    <% end %>
+  </head>
+  <body>
+    <.page_header
+      current_user={assigns[:current_user]}
+      position={assigns[:header_position] || "sticky"}
+      hide_default_cta={assigns[:cta] != nil}
+    >
+      <:nav>
+        <%= if assigns[:nav] do %>
+          {render_slot(@nav)}
+        <% end %>
+      </:nav>
+      <:cta>
+        <%= if assigns[:cta] do %>
+          {render_slot(@cta)}
+        <% end %>
+      </:cta>
+    </.page_header>
+
+    <%= if Phoenix.Flash.get(@flash, :info) do %>
+      <div class="container" style="padding-top: 24px;">
+        <div class="flash flash-info"><%= Phoenix.Flash.get(@flash, :info) %></div>
+      </div>
+    <% end %>
+    <%= if Phoenix.Flash.get(@flash, :error) do %>
+      <div class="container" style="padding-top: 24px;">
+        <div class="flash flash-error"><%= Phoenix.Flash.get(@flash, :error) %></div>
+      </div>
+    <% end %>
+
+    {render_slot(@inner_block)}
+
+    <%= if assigns[:show_footer] != false do %>
+      <.page_footer />
+    <% end %>
+
+    <.page_header_script />
+  </body>
+</html>

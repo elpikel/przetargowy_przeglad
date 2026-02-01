@@ -86,6 +86,8 @@ defmodule PrzetargowyPrzegladWeb do
       import Phoenix.HTML
       # Core UI components
       import PrzetargowyPrzegladWeb.CoreComponents
+      # Site-wide components (header, footer)
+      import PrzetargowyPrzegladWeb.SiteComponents
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS

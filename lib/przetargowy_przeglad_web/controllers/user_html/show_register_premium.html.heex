@@ -1,755 +1,235 @@
-<!DOCTYPE html>
-<html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rejestracja Premium - Przetargowy Przegląd</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      defer
-      data-domain="przetargowyprzeglad.pl"
-      src="https://plausible.przetargowyprzeglad.pl/js/script.hash.outbound-links.tagged-events.js"
-    >
-    </script>
-    <style>
-      :root {
-          --navy-900: #0a1628;
-          --navy-800: #12233d;
-          --navy-700: #1a3052;
-          --navy-600: #234168;
-          --navy-500: #2d527d;
-          --cream-50: #fefcf8;
-          --cream-100: #fdf8ed;
-          --cream-200: #f9f0db;
-          --cream-300: #f3e4c3;
-          --cream-400: #e8d4a8;
-          --gold-500: #c9a227;
-          --gold-600: #b8922a;
-          --text-primary: #0a1628;
-          --text-secondary: #4a5568;
-          --text-light: #f8f5f0;
-          --error: #dc2626;
-          --success: #16a34a;
-      }
-
-      * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-      }
-
-      html {
-          height: 100%;
-      }
-
-      body {
-          font-family: 'DM Sans', sans-serif;
-          background-color: var(--cream-50);
-          color: var(--text-primary);
-          line-height: 1.6;
-          min-height: 100%;
-          display: flex;
-          flex-direction: column;
-      }
-
-      /* Header */
-      header {
-          background: rgba(254, 252, 248, 0.92);
-          backdrop-filter: blur(12px);
-          border-bottom: 1px solid rgba(10, 22, 40, 0.06);
-      }
-
-      .header-inner {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 16px 24px;
-          max-width: 1200px;
-          margin: 0 auto;
-      }
-
-      .logo {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          text-decoration: none;
-      }
-
-      .logo-icon {
-          width: 44px;
-          height: 44px;
-          background: var(--cream-50);
-          border: 2px solid var(--navy-600);
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1);
-      }
-
-      .logo-icon svg {
-          width: 26px;
-          height: 26px;
-          color: var(--navy-700);
-      }
-
-      .logo-text {
-          font-family: 'Playfair Display', serif;
-          font-weight: 700;
-          font-size: 1.35rem;
-          color: var(--navy-800);
-          letter-spacing: -0.02em;
-      }
-
-      .logo-text span {
-          color: var(--gold-500);
-      }
-
-      /* Main content */
-      main {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 40px 24px;
-      }
-
-      .register-container {
-          width: 100%;
-          max-width: 480px;
-      }
-
-      .register-card {
-          background: white;
-          border-radius: 16px;
-          padding: 40px;
-          box-shadow: 0 10px 40px rgba(10, 22, 40, 0.08), 0 1px 3px rgba(10, 22, 40, 0.04);
-          border: 1px solid var(--cream-200);
-      }
-
-      .register-header {
-          text-align: center;
-          margin-bottom: 32px;
-      }
-
-      .register-header h1 {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.75rem;
-          font-weight: 700;
-          color: var(--navy-900);
-          margin-bottom: 8px;
-      }
-
-      .register-header p {
-          color: var(--text-secondary);
-          font-size: 0.95rem;
-      }
-
-      .plan-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
-          border: none;
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 0.8rem;
-          font-weight: 600;
-          color: white;
-          margin-top: 12px;
-      }
-
-      .plan-badge svg {
-          width: 14px;
-          height: 14px;
-          fill: white;
-      }
-
-      .form-section {
-          margin-bottom: 28px;
-      }
-
-      .form-section-title {
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: var(--navy-700);
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          margin-bottom: 16px;
-          padding-bottom: 8px;
-          border-bottom: 1px solid var(--cream-200);
-      }
-
-      .form-group {
-          margin-bottom: 18px;
-      }
-
-      .form-group:last-child {
-          margin-bottom: 0;
-      }
-
-      .form-label {
-          display: block;
-          font-weight: 500;
-          color: var(--navy-800);
-          margin-bottom: 8px;
-          font-size: 0.9rem;
-      }
-
-      .form-label .required {
-          color: var(--error);
-      }
-
-      .form-input {
-          width: 100%;
-          padding: 14px 16px;
-          border: 1.5px solid var(--cream-300);
-          border-radius: 8px;
-          font-size: 1rem;
-          font-family: inherit;
-          color: var(--text-primary);
-          background: var(--cream-50);
-          transition: all 0.2s ease;
-      }
-
-      .form-input:focus {
-          outline: none;
-          border-color: var(--navy-600);
-          background: white;
-          box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1);
-      }
-
-      .form-input::placeholder {
-          color: var(--text-secondary);
-          opacity: 0.6;
-      }
-
-      .form-input.error {
-          border-color: var(--error);
-      }
-
-      .form-select {
-          width: 100%;
-          padding: 14px 16px;
-          border: 1.5px solid var(--cream-300);
-          border-radius: 8px;
-          font-size: 1rem;
-          font-family: inherit;
-          color: var(--text-primary);
-          background: var(--cream-50);
-          transition: all 0.2s ease;
-          cursor: pointer;
-          appearance: none;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-position: right 16px center;
-          padding-right: 44px;
-      }
-
-      .form-select:focus {
-          outline: none;
-          border-color: var(--navy-600);
-          background-color: white;
-          box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1);
-      }
-
-      .form-hint {
-          color: var(--text-secondary);
-          font-size: 0.8rem;
-          margin-top: 6px;
-      }
-
-      .form-error {
-          color: var(--error);
-          font-size: 0.85rem;
-          margin-top: 6px;
-      }
-
-      .password-strength {
-          margin-top: 8px;
-      }
-
-      .password-strength-bar {
-          height: 4px;
-          background: var(--cream-200);
-          border-radius: 2px;
-          overflow: hidden;
-      }
-
-      .password-strength-fill {
-          height: 100%;
-          width: 0%;
-          transition: all 0.3s ease;
-          border-radius: 2px;
-      }
-
-      .password-strength-fill.weak {
-          width: 33%;
-          background: var(--error);
-      }
-
-      .password-strength-fill.medium {
-          width: 66%;
-          background: var(--gold-500);
-      }
-
-      .password-strength-fill.strong {
-          width: 100%;
-          background: var(--success);
-      }
-
-      .password-strength-text {
-          font-size: 0.75rem;
-          margin-top: 4px;
-          color: var(--text-secondary);
-      }
-
-      .terms-checkbox {
-          display: flex;
-          align-items: flex-start;
-          gap: 10px;
-          margin: 24px 0;
-      }
-
-      .terms-checkbox input[type="checkbox"] {
-          width: 18px;
-          height: 18px;
-          accent-color: var(--navy-700);
-          cursor: pointer;
-          margin-top: 2px;
-          flex-shrink: 0;
-      }
-
-      .terms-checkbox label {
-          font-size: 0.9rem;
-          color: var(--text-secondary);
-          cursor: pointer;
-      }
-
-      .terms-checkbox a {
-          color: var(--navy-600);
-          text-decoration: none;
-          font-weight: 500;
-      }
-
-      .terms-checkbox a:hover {
-          text-decoration: underline;
-      }
-
-      .btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 14px 24px;
-          border-radius: 8px;
-          font-weight: 600;
-          font-size: 1rem;
-          text-decoration: none;
-          transition: all 0.25s ease;
-          cursor: pointer;
-          border: none;
-          width: 100%;
-      }
-
-      .btn-primary {
-          background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
-          color: white;
-          box-shadow: 0 4px 14px rgba(201, 162, 39, 0.35);
-      }
-
-      .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(201, 162, 39, 0.45);
-      }
-
-      .btn-primary:active {
-          transform: translateY(0);
-      }
-
-      .btn-primary:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          transform: none;
-      }
-
-      .divider {
-          display: flex;
-          align-items: center;
-          margin: 28px 0;
-      }
-
-      .divider::before,
-      .divider::after {
-          content: '';
-          flex: 1;
-          height: 1px;
-          background: var(--cream-300);
-      }
-
-      .divider span {
-          padding: 0 16px;
-          color: var(--text-secondary);
-          font-size: 0.85rem;
-      }
-
-      .login-link {
-          text-align: center;
-      }
-
-      .login-link p {
-          color: var(--text-secondary);
-          font-size: 0.95rem;
-      }
-
-      .login-link a {
-          color: var(--navy-600);
-          text-decoration: none;
-          font-weight: 600;
-          transition: color 0.2s ease;
-      }
-
-      .login-link a:hover {
-          color: var(--navy-800);
-          text-decoration: underline;
-      }
-
-      /* Footer */
-      footer {
-          padding: 24px;
-          text-align: center;
-          border-top: 1px solid var(--cream-200);
-      }
-
-      .footer-links {
-          display: flex;
-          justify-content: center;
-          gap: 24px;
-      }
-
-      .footer-links a {
-          color: var(--text-secondary);
-          text-decoration: none;
-          font-size: 0.85rem;
-          transition: color 0.2s ease;
-      }
-
-      .footer-links a:hover {
-          color: var(--navy-700);
-      }
-
-      /* Responsive */
-      @media (max-width: 480px) {
-          .register-card {
-              padding: 28px 24px;
-          }
-
-          .register-header h1 {
-              font-size: 1.5rem;
-          }
-
-          .logo-text {
-              font-size: 1.15rem;
-          }
-
-          .footer-links {
-              flex-direction: column;
-              gap: 12px;
-          }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Header -->
-    <header>
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <div class="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M7.5 12H12.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <path
-                d="M7.5 15H10.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <circle
-                cx="16.5"
-                cy="14.5"
-                r="4"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M19.5 17.5L22 20"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
-        </a>
-      </div>
-    </header>
-
-<!-- Main content -->
-    <main>
-      <div class="register-container">
-        <div class="register-card">
-          <div class="register-header">
-            <h1>Utwórz konto Premium</h1>
-            <p>Pełny dostęp do wszystkich przetargów</p>
-            <div class="plan-badge">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z" />
-              </svg>
-              Plan Premium
-            </div>
-          </div>
-
-          <.form :let={f} for={@changeset} action={~p"/register/premium"} method="post">
-            <div class="form-section">
-              <div class="form-section-title">Dane logowania</div>
-
-              <div class="form-group">
-                <label for={f[:email].id} class="form-label">
-                  Adres e-mail <span class="required">*</span>
-                </label>
-                <input
-                  type="email"
-                  id={f[:email].id}
-                  name={f[:email].name}
-                  value={f[:email].value}
-                  class={"form-input #{if f[:email].errors != [], do: "error"}"}
-                  placeholder="jan@firma.pl"
-                  autocomplete="email"
-                />
-                <p class="form-hint">Na ten adres będziemy wysyłać newsletter</p>
-                <p :for={{msg, _opts} <- f[:email].errors} class="form-error">{msg}</p>
-              </div>
-
-              <div class="form-group">
-                <label for={f[:password].id} class="form-label">
-                  Hasło <span class="required">*</span>
-                </label>
-                <input
-                  type="password"
-                  id={f[:password].id}
-                  name={f[:password].name}
-                  value={f[:password].value}
-                  class={"form-input #{if f[:password].errors != [], do: "error"}"}
-                  placeholder="Min. 8 znaków"
-                  autocomplete="new-password"
-                />
-                <div class="password-strength">
-                  <div class="password-strength-bar">
-                    <div class="password-strength-fill" id="strengthFill"></div>
-                  </div>
-                  <p class="password-strength-text" id="strengthText"></p>
-                </div>
-                <p :for={{msg, _opts} <- f[:password].errors} class="form-error">{msg}</p>
-              </div>
-
-              <div class="form-group">
-                <label for={f[:password_confirmation].id} class="form-label">
-                  Potwierdź hasło <span class="required">*</span>
-                </label>
-                <input
-                  type="password"
-                  id={f[:password_confirmation].id}
-                  name={f[:password_confirmation].name}
-                  value={f[:password_confirmation].value}
-                  class={"form-input #{if f[:password_confirmation].errors != [], do: "error"}"}
-                  placeholder="Powtórz hasło"
-                  autocomplete="new-password"
-                />
-                <p :for={{msg, _opts} <- f[:password_confirmation].errors} class="form-error">
-                  {msg}
-                </p>
-              </div>
-            </div>
-
-            <div class="form-section">
-              <div class="form-section-title">Preferencje przetargów</div>
-
-              <div class="form-group">
-                <label for={f[:tender_category].id} class="form-label">
-                  Rodzaj zamówienia <span class="required">*</span>
-                </label>
-                <select
-                  id={f[:tender_category].id}
-                  name={f[:tender_category].name}
-                  class={"form-select #{if f[:tender_category].errors != [], do: "error"}"}
-                >
-                  <option value="">Wybierz rodzaj zamówienia</option>
-                  <option value="Dostawy" selected={f[:tender_category].value == "Dostawy"}>
-                    Dostawy
-                  </option>
-                  <option value="Usługi" selected={f[:tender_category].value == "Usługi"}>
-                    Usługi
-                  </option>
-                  <option value="Roboty budowlane" selected={f[:tender_category].value == "Roboty budowlane"}>
-                    Roboty budowlane
-                  </option>
-                </select>
-                <p :for={{msg, _opts} <- f[:tender_category].errors} class="form-error">{msg}</p>
-              </div>
-
-              <div class="form-group">
-                <label for={f[:region].id} class="form-label">
-                  Region <span class="required">*</span>
-                </label>
-                <select
-                  id={f[:region].id}
-                  name={f[:region].name}
-                  class={"form-select #{if f[:region].errors != [], do: "error"}"}
-                >
-                  <option value="">Wybierz województwo</option>
-                  <option value="dolnoslaskie" selected={f[:region].value == "dolnoslaskie"}>
-                    Dolnośląskie
-                  </option>
-                  <option
-                    value="kujawsko-pomorskie"
-                    selected={f[:region].value == "kujawsko-pomorskie"}
-                  >
-                    Kujawsko-pomorskie
-                  </option>
-                  <option value="lubelskie" selected={f[:region].value == "lubelskie"}>
-                    Lubelskie
-                  </option>
-                  <option value="lubuskie" selected={f[:region].value == "lubuskie"}>
-                    Lubuskie
-                  </option>
-                  <option value="lodzkie" selected={f[:region].value == "lodzkie"}>
-                    Łódzkie
-                  </option>
-                  <option value="malopolskie" selected={f[:region].value == "malopolskie"}>
-                    Małopolskie
-                  </option>
-                  <option value="mazowieckie" selected={f[:region].value == "mazowieckie"}>
-                    Mazowieckie
-                  </option>
-                  <option value="opolskie" selected={f[:region].value == "opolskie"}>
-                    Opolskie
-                  </option>
-                  <option value="podkarpackie" selected={f[:region].value == "podkarpackie"}>
-                    Podkarpackie
-                  </option>
-                  <option value="podlaskie" selected={f[:region].value == "podlaskie"}>
-                    Podlaskie
-                  </option>
-                  <option value="pomorskie" selected={f[:region].value == "pomorskie"}>
-                    Pomorskie
-                  </option>
-                  <option value="slaskie" selected={f[:region].value == "slaskie"}>
-                    Śląskie
-                  </option>
-                  <option value="swietokrzyskie" selected={f[:region].value == "swietokrzyskie"}>
-                    Świętokrzyskie
-                  </option>
-                  <option
-                    value="warminsko-mazurskie"
-                    selected={f[:region].value == "warminsko-mazurskie"}
-                  >
-                    Warmińsko-mazurskie
-                  </option>
-                  <option value="wielkopolskie" selected={f[:region].value == "wielkopolskie"}>
-                    Wielkopolskie
-                  </option>
-                  <option
-                    value="zachodniopomorskie"
-                    selected={f[:region].value == "zachodniopomorskie"}
-                  >
-                    Zachodniopomorskie
-                  </option>
-                </select>
-                <p :for={{msg, _opts} <- f[:region].errors} class="form-error">{msg}</p>
-              </div>
-
-              <div class="form-group">
-                <label for={f[:keyword].id} class="form-label">
-                  Słowo kluczowe
-                </label>
-                <input
-                  type="text"
-                  id={f[:keyword].id}
-                  name={f[:keyword].name}
-                  value={f[:keyword].value}
-                  class={"form-input #{if f[:keyword].errors != [], do: "error"}"}
-                  placeholder="np. oprogramowanie, meble, remont"
-                />
-                <p class="form-hint">Filtruj przetargi po słowie kluczowym</p>
-                <p :for={{msg, _opts} <- f[:keyword].errors} class="form-error">{msg}</p>
-              </div>
-            </div>
-
-            <div class="terms-checkbox">
-              <input
-                type="hidden"
-                name={f[:terms].name}
-                value="false"
-              />
-              <input
-                type="checkbox"
-                id={f[:terms].id}
-                name={f[:terms].name}
-                value="true"
-                checked={f[:terms].value == true}
-              />
-              <label for={f[:terms].id}>
-                Akceptuję <a href="/regulamin" target="_blank">Regulamin</a>
-                oraz <a href="/polityka-prywatnosci" target="_blank">Politykę Prywatności</a>
-              </label>
-            </div>
-            <p :for={{msg, _opts} <- f[:terms].errors} class="form-error">{msg}</p>
-
-            <button type="submit" class="btn btn-primary">Zarejestruj się</button>
-          </.form>
-
-          <div class="divider">
-            <span>lub</span>
-          </div>
-
-          <div class="login-link">
-            <p>Masz już konto? <a href="/login">Zaloguj się</a></p>
-          </div>
+<Layouts.site
+  flash={@flash}
+  current_user={nil}
+  page_title="Rejestracja Premium - Przetargowy Przegląd"
+  header_position="sticky"
+  show_footer={false}
+>
+  <:page_styles>
+    <link rel="stylesheet" href="/assets/css/auth.css" />
+  </:page_styles>
+
+  <:cta></:cta>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Utwórz konto Premium</h1>
+        <p>Pełny dostęp do wszystkich przetargów</p>
+        <div class="plan-badge premium">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z" />
+          </svg>
+          Plan Premium
         </div>
       </div>
-    </main>
 
-<!-- Footer -->
-    <footer>
-      <div class="footer-links">
-        <a href="/rules">Regulamin</a>
-        <a href="/privacy-policy">Polityka prywatności</a>
-        <a href="mailto:kontakt@przetargowyprzeglad.pl">Kontakt</a>
+      <.form :let={f} for={@changeset} action={~p"/register/premium"} method="post">
+        <div class="form-section">
+          <div class="form-section-title">Dane logowania</div>
+
+          <div class="form-group">
+            <label for={f[:email].id} class="form-label">
+              Adres e-mail <span class="required">*</span>
+            </label>
+            <input
+              type="email"
+              id={f[:email].id}
+              name={f[:email].name}
+              value={f[:email].value}
+              class={"form-input #{if f[:email].errors != [], do: "error"}"}
+              placeholder="jan@firma.pl"
+              autocomplete="email"
+            />
+            <p class="form-hint">Na ten adres będziemy wysyłać newsletter</p>
+            <p :for={{msg, _opts} <- f[:email].errors} class="form-error">{msg}</p>
+          </div>
+
+          <div class="form-group">
+            <label for={f[:password].id} class="form-label">
+              Hasło <span class="required">*</span>
+            </label>
+            <input
+              type="password"
+              id={f[:password].id}
+              name={f[:password].name}
+              value={f[:password].value}
+              class={"form-input #{if f[:password].errors != [], do: "error"}"}
+              placeholder="Min. 8 znaków"
+              autocomplete="new-password"
+            />
+            <div class="password-strength">
+              <div class="password-strength-bar">
+                <div class="password-strength-fill" id="strengthFill"></div>
+              </div>
+              <p class="password-strength-text" id="strengthText"></p>
+            </div>
+            <p :for={{msg, _opts} <- f[:password].errors} class="form-error">{msg}</p>
+          </div>
+
+          <div class="form-group">
+            <label for={f[:password_confirmation].id} class="form-label">
+              Potwierdź hasło <span class="required">*</span>
+            </label>
+            <input
+              type="password"
+              id={f[:password_confirmation].id}
+              name={f[:password_confirmation].name}
+              value={f[:password_confirmation].value}
+              class={"form-input #{if f[:password_confirmation].errors != [], do: "error"}"}
+              placeholder="Powtórz hasło"
+              autocomplete="new-password"
+            />
+            <p :for={{msg, _opts} <- f[:password_confirmation].errors} class="form-error">
+              {msg}
+            </p>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Preferencje przetargów</div>
+
+          <div class="form-group">
+            <label for={f[:tender_category].id} class="form-label">
+              Rodzaj zamówienia <span class="required">*</span>
+            </label>
+            <select
+              id={f[:tender_category].id}
+              name={f[:tender_category].name}
+              class={"form-select #{if f[:tender_category].errors != [], do: "error"}"}
+            >
+              <option value="">Wybierz rodzaj zamówienia</option>
+              <option value="Dostawy" selected={f[:tender_category].value == "Dostawy"}>
+                Dostawy
+              </option>
+              <option value="Usługi" selected={f[:tender_category].value == "Usługi"}>
+                Usługi
+              </option>
+              <option value="Roboty budowlane" selected={f[:tender_category].value == "Roboty budowlane"}>
+                Roboty budowlane
+              </option>
+            </select>
+            <p :for={{msg, _opts} <- f[:tender_category].errors} class="form-error">{msg}</p>
+          </div>
+
+          <div class="form-group">
+            <label for={f[:region].id} class="form-label">
+              Region <span class="required">*</span>
+            </label>
+            <select
+              id={f[:region].id}
+              name={f[:region].name}
+              class={"form-select #{if f[:region].errors != [], do: "error"}"}
+            >
+              <option value="">Wybierz województwo</option>
+              <option value="dolnoslaskie" selected={f[:region].value == "dolnoslaskie"}>
+                Dolnośląskie
+              </option>
+              <option
+                value="kujawsko-pomorskie"
+                selected={f[:region].value == "kujawsko-pomorskie"}
+              >
+                Kujawsko-pomorskie
+              </option>
+              <option value="lubelskie" selected={f[:region].value == "lubelskie"}>
+                Lubelskie
+              </option>
+              <option value="lubuskie" selected={f[:region].value == "lubuskie"}>
+                Lubuskie
+              </option>
+              <option value="lodzkie" selected={f[:region].value == "lodzkie"}>
+                Łódzkie
+              </option>
+              <option value="malopolskie" selected={f[:region].value == "malopolskie"}>
+                Małopolskie
+              </option>
+              <option value="mazowieckie" selected={f[:region].value == "mazowieckie"}>
+                Mazowieckie
+              </option>
+              <option value="opolskie" selected={f[:region].value == "opolskie"}>
+                Opolskie
+              </option>
+              <option value="podkarpackie" selected={f[:region].value == "podkarpackie"}>
+                Podkarpackie
+              </option>
+              <option value="podlaskie" selected={f[:region].value == "podlaskie"}>
+                Podlaskie
+              </option>
+              <option value="pomorskie" selected={f[:region].value == "pomorskie"}>
+                Pomorskie
+              </option>
+              <option value="slaskie" selected={f[:region].value == "slaskie"}>
+                Śląskie
+              </option>
+              <option value="swietokrzyskie" selected={f[:region].value == "swietokrzyskie"}>
+                Świętokrzyskie
+              </option>
+              <option
+                value="warminsko-mazurskie"
+                selected={f[:region].value == "warminsko-mazurskie"}
+              >
+                Warmińsko-mazurskie
+              </option>
+              <option value="wielkopolskie" selected={f[:region].value == "wielkopolskie"}>
+                Wielkopolskie
+              </option>
+              <option
+                value="zachodniopomorskie"
+                selected={f[:region].value == "zachodniopomorskie"}
+              >
+                Zachodniopomorskie
+              </option>
+            </select>
+            <p :for={{msg, _opts} <- f[:region].errors} class="form-error">{msg}</p>
+          </div>
+
+          <div class="form-group">
+            <label for={f[:keyword].id} class="form-label">
+              Słowo kluczowe
+            </label>
+            <input
+              type="text"
+              id={f[:keyword].id}
+              name={f[:keyword].name}
+              value={f[:keyword].value}
+              class={"form-input #{if f[:keyword].errors != [], do: "error"}"}
+              placeholder="np. oprogramowanie, meble, remont"
+            />
+            <p class="form-hint">Filtruj przetargi po słowie kluczowym</p>
+            <p :for={{msg, _opts} <- f[:keyword].errors} class="form-error">{msg}</p>
+          </div>
+        </div>
+
+        <div class="terms-checkbox">
+          <input
+            type="hidden"
+            name={f[:terms].name}
+            value="false"
+          />
+          <input
+            type="checkbox"
+            id={f[:terms].id}
+            name={f[:terms].name}
+            value="true"
+            checked={f[:terms].value == true}
+          />
+          <label for={f[:terms].id}>
+            Akceptuję <a href="/regulamin" target="_blank">Regulamin</a>
+            oraz <a href="/polityka-prywatnosci" target="_blank">Politykę Prywatności</a>
+          </label>
+        </div>
+        <p :for={{msg, _opts} <- f[:terms].errors} class="form-error">{msg}</p>
+
+        <button type="submit" class="btn btn-gold">Zarejestruj się</button>
+      </.form>
+
+      <div class="auth-divider">
+        <span>lub</span>
       </div>
-    </footer>
-  </body>
-</html>
+
+      <div class="auth-link">
+        <p>Masz już konto? <a href="/login">Zaloguj się</a></p>
+      </div>
+    </div>
+  </div>
+</Layouts.site>

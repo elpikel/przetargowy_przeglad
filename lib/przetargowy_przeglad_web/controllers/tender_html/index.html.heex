@@ -1,438 +1,188 @@
-<!DOCTYPE html>
-<html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wyszukaj przetargi - Przetargowy Przegląd</title>
+<Layouts.site
+  flash={@flash}
+  current_user={@current_user}
+  page_title="Wyszukaj przetargi - Przetargowy Przegląd"
+  header_position="sticky"
+  show_footer={false}
+>
+  <:page_styles>
+    <link rel="stylesheet" href="/assets/css/tenders.css" />
     <meta
       name="description"
       content="Przeszukaj bazę przetargów publicznych z całej Polski. Znajdź aktualne ogłoszenia o zamówieniach publicznych."
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      defer
-      data-domain="przetargowyprzeglad.pl"
-      src="https://plausible.przetargowyprzeglad.pl/js/script.hash.outbound-links.tagged-events.js"
-    >
-    </script>
-    <style>
-      :root {
-        --navy-900: #0a1628;
-        --navy-800: #12233d;
-        --navy-700: #1a3052;
-        --navy-600: #234168;
-        --cream-50: #fefcf8;
-        --cream-100: #fdf8ed;
-        --cream-200: #f9f0db;
-        --cream-300: #f3e4c3;
-        --gold-500: #c9a227;
-        --gold-600: #b8922a;
-        --text-primary: #0a1628;
-        --text-secondary: #4a5568;
-        --success: #16a34a;
-      }
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font-family: 'DM Sans', sans-serif; background-color: var(--cream-50); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
-      header { background: rgba(254, 252, 248, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(10, 22, 40, 0.06); position: sticky; top: 0; z-index: 100; }
-      .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
-      .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-      .logo-icon { width: 44px; height: 44px; background: var(--cream-50); border: 2px solid var(--navy-600); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1); }
-      .logo-icon svg { width: 26px; height: 26px; color: var(--navy-700); }
-      .logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.35rem; color: var(--navy-800); }
-      .logo-text span { color: var(--gold-500); }
-      .header-nav { display: flex; align-items: center; gap: 16px; }
-      .header-nav-desktop { display: none; }
-      @media (min-width: 768px) {
-        .header-nav-desktop { display: flex; align-items: center; gap: 16px; }
-        .hamburger-btn { display: none !important; }
-      }
-      .hamburger-btn { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s; }
-      .hamburger-btn:hover { background: var(--cream-200); }
-      .hamburger-btn svg { width: 24px; height: 24px; color: var(--navy-700); }
-      .mobile-menu-overlay { position: fixed; inset: 0; background: rgba(10, 22, 40, 0.5); z-index: 200; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
-      .mobile-menu-overlay.visible { opacity: 1; visibility: visible; }
-      .mobile-menu { position: fixed; top: 0; right: 0; bottom: 0; width: 280px; max-width: 85vw; background: var(--cream-50); z-index: 201; transform: translateX(100%); transition: transform 0.3s ease; box-shadow: -4px 0 20px rgba(10, 22, 40, 0.15); display: flex; flex-direction: column; }
-      .mobile-menu-overlay.visible .mobile-menu { transform: translateX(0); }
-      .mobile-menu-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--cream-200); }
-      .mobile-menu-close { background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 8px; }
-      .mobile-menu-close:hover { background: var(--cream-200); }
-      .mobile-menu-close svg { width: 24px; height: 24px; color: var(--navy-700); }
-      .mobile-menu-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-      .mobile-menu-user { padding: 16px; background: var(--cream-100); border-radius: 12px; margin-bottom: 8px; }
-      .mobile-menu-user-email { font-size: 0.9rem; color: var(--navy-800); font-weight: 500; word-break: break-all; }
-      .mobile-menu-link { display: block; padding: 12px 16px; border-radius: 8px; text-decoration: none; color: var(--navy-700); font-weight: 500; transition: background 0.2s; }
-      .mobile-menu-link:hover { background: var(--cream-200); }
-      .mobile-menu-btn { display: block; width: 100%; text-align: center; }
-      .user-email { font-size: 0.85rem; color: var(--text-secondary); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.25s ease; cursor: pointer; border: none; }
-      .btn-outline { background: transparent; color: var(--navy-700); border: 1.5px solid var(--navy-600); }
-      .btn-outline:hover { background: var(--navy-800); color: var(--cream-50); border-color: var(--navy-800); }
-      .btn-primary { background: linear-gradient(135deg, var(--navy-700), var(--navy-900)); color: var(--cream-50); box-shadow: 0 4px 14px rgba(10, 22, 40, 0.25); }
-      .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(10, 22, 40, 0.35); }
-      .btn-search { padding: 12px 24px; font-size: 1rem; border: 1.5px solid var(--navy-900); }
-      main { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
-      .page-header { margin-bottom: 32px; }
-      .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--navy-900); margin-bottom: 8px; }
-      .page-subtitle { color: var(--text-secondary); font-size: 1rem; }
+  </:page_styles>
 
-      /* Search Form */
-      .search-section { background: white; border-radius: 16px; padding: 24px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(10, 22, 40, 0.06); border: 1px solid var(--cream-200); }
-      .search-form { display: grid; grid-template-columns: 1fr; gap: 16px; }
-      @media (min-width: 768px) {
-        .search-form { grid-template-columns: 2fr 1fr 1fr auto; align-items: end; }
-      }
-      .form-group { display: flex; flex-direction: column; gap: 6px; }
-      .form-label { font-weight: 500; color: var(--navy-800); font-size: 0.85rem; }
-      .form-input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--cream-300); border-radius: 8px; font-size: 1rem; font-family: inherit; color: var(--text-primary); background: var(--cream-50); transition: all 0.2s ease; }
-      .form-input:focus { outline: none; border-color: var(--navy-600); background: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
-      .form-select { width: 100%; padding: 12px 16px; border: 1.5px solid var(--cream-300); border-radius: 8px; font-size: 1rem; font-family: inherit; color: var(--text-primary); background: var(--cream-50); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 44px; }
-      .form-select:focus { outline: none; border-color: var(--navy-600); background-color: white; box-shadow: 0 0 0 3px rgba(35, 65, 104, 0.1); }
-
-      /* Results */
-      .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-      .results-count { color: var(--text-secondary); font-size: 0.95rem; }
-      .results-count strong { color: var(--navy-800); }
-
-      .tender-list { display: flex; flex-direction: column; gap: 16px; }
-      .tender-card { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 2px 12px rgba(10, 22, 40, 0.04); border: 1px solid var(--cream-200); transition: all 0.2s ease; }
-      .tender-card:hover { box-shadow: 0 4px 20px rgba(10, 22, 40, 0.08); border-color: var(--cream-300); }
-      .tender-title { font-weight: 600; color: var(--navy-800); font-size: 1.05rem; margin-bottom: 12px; line-height: 1.4; }
-      .tender-meta { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 12px; }
-      .tender-meta-item { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; color: var(--text-secondary); }
-      .tender-meta-item svg { width: 16px; height: 16px; color: var(--navy-600); flex-shrink: 0; }
-      .tender-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--cream-200); }
-      .tender-deadline { font-size: 0.85rem; color: var(--text-secondary); }
-      .tender-deadline strong { color: var(--navy-800); }
-      .tender-value { font-weight: 600; color: var(--success); font-size: 0.95rem; }
-      .tender-link { font-size: 0.9rem; font-weight: 600; color: var(--navy-700); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
-      .tender-link:hover { color: var(--gold-500); }
-      .tender-link svg { width: 16px; height: 16px; }
-
-      /* Empty State */
-      .empty-state { text-align: center; padding: 60px 24px; background: white; border-radius: 16px; border: 1px solid var(--cream-200); }
-      .empty-state-icon { width: 64px; height: 64px; margin: 0 auto 20px; color: var(--cream-300); }
-      .empty-state-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy-800); margin-bottom: 8px; }
-      .empty-state-text { color: var(--text-secondary); }
-
-      /* Pagination */
-      .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 32px; }
-      .pagination-btn { padding: 10px 16px; border: 1.5px solid var(--cream-300); border-radius: 8px; background: white; color: var(--navy-700); font-weight: 500; text-decoration: none; transition: all 0.2s ease; }
-      .pagination-btn:hover { border-color: var(--navy-600); background: var(--cream-50); }
-      .pagination-btn.active { background: var(--navy-700); color: white; border-color: var(--navy-700); }
-      .pagination-btn.disabled { opacity: 0.5; pointer-events: none; }
-      .pagination-info { color: var(--text-secondary); font-size: 0.9rem; padding: 0 12px; }
-
-      @media (max-width: 640px) {
-        .header-inner { padding: 12px 16px; }
-        .logo-text { font-size: 1.1rem; }
-        main { padding: 24px 16px 60px; }
-        .page-title { font-size: 1.5rem; }
-        .search-form { gap: 12px; }
-        .tender-meta { flex-direction: column; gap: 8px; }
-        .tender-footer { flex-direction: column; gap: 12px; align-items: flex-start; }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <div class="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M7.5 12H12.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <path
-                d="M7.5 15H10.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <circle
-                cx="16.5"
-                cy="14.5"
-                r="4"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M19.5 17.5L22 20"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
-        </a>
-        <nav class="header-nav">
-          <!-- Desktop Navigation -->
-          <div class="header-nav-desktop">
-            <%= if @current_user do %>
-              <span class="user-email">{@current_user.email}</span>
-              <a href="/dashboard" class="btn btn-primary">Ustawienia</a>
-            <% else %>
-              <a href="/login" class="btn btn-outline">Zaloguj się</a>
-              <a href="/register" class="btn btn-primary">Zarejestruj się</a>
-            <% end %>
-          </div>
-          <!-- Hamburger Button (Mobile) -->
-          <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-          </button>
-        </nav>
-      </div>
-    </header>
-
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-      <div class="mobile-menu">
-        <div class="mobile-menu-header">
-          <span class="logo-text" style="font-size: 1.1rem;">Przetargowy<span>Przegląd</span></span>
-          <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Zamknij menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-        <div class="mobile-menu-content">
-          <%= if @current_user do %>
-            <div class="mobile-menu-user">
-              <div class="mobile-menu-user-email">{@current_user.email}</div>
-            </div>
-            <a href="/dashboard" class="btn btn-primary mobile-menu-btn">Ustawienia</a>
-            <a href="/logout" class="mobile-menu-link">Wyloguj się</a>
-          <% else %>
-            <a href="/login" class="btn btn-outline mobile-menu-btn">Zaloguj się</a>
-            <a href="/register" class="btn btn-primary mobile-menu-btn">Zarejestruj się</a>
-          <% end %>
-          <a href="/" class="mobile-menu-link">Strona główna</a>
-          <a href="/tenders" class="mobile-menu-link">Wyszukaj przetargi</a>
-        </div>
-      </div>
+  <main>
+    <div class="page-header">
+      <h1 class="page-title">Wyszukaj przetargi</h1>
+      <p class="page-subtitle">
+        Przeszukaj bazę aktualnych ogłoszeń o zamówieniach publicznych
+      </p>
     </div>
 
-    <main>
-      <div class="page-header">
-        <h1 class="page-title">Wyszukaj przetargi</h1>
-        <p class="page-subtitle">
-          Przeszukaj bazę aktualnych ogłoszeń o zamówieniach publicznych
-        </p>
-      </div>
-
-      <section class="search-section">
-        <form class="search-form" method="get" action="/tenders">
-          <div class="form-group">
-            <label class="form-label" for="search-query">Szukaj</label>
-            <input
-              type="text"
-              id="search-query"
-              name="q"
-              class="form-input"
-              placeholder="Wpisz słowo kluczowe..."
-              value={@query}
-            />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="search-region">Region</label>
-            <select id="search-region" name="region" class="form-select">
-              <option value="">Wszystkie regiony</option>
-              <option value="dolnoslaskie" selected={@region == "dolnoslaskie"}>
-                Dolnośląskie
-              </option>
-              <option value="kujawsko-pomorskie" selected={@region == "kujawsko-pomorskie"}>
-                Kujawsko-pomorskie
-              </option>
-              <option value="lubelskie" selected={@region == "lubelskie"}>Lubelskie</option>
-              <option value="lubuskie" selected={@region == "lubuskie"}>Lubuskie</option>
-              <option value="lodzkie" selected={@region == "lodzkie"}>Łódzkie</option>
-              <option value="malopolskie" selected={@region == "malopolskie"}>Małopolskie</option>
-              <option value="mazowieckie" selected={@region == "mazowieckie"}>Mazowieckie</option>
-              <option value="opolskie" selected={@region == "opolskie"}>Opolskie</option>
-              <option value="podkarpackie" selected={@region == "podkarpackie"}>
-                Podkarpackie
-              </option>
-              <option value="podlaskie" selected={@region == "podlaskie"}>Podlaskie</option>
-              <option value="pomorskie" selected={@region == "pomorskie"}>Pomorskie</option>
-              <option value="slaskie" selected={@region == "slaskie"}>Śląskie</option>
-              <option value="swietokrzyskie" selected={@region == "swietokrzyskie"}>
-                Świętokrzyskie
-              </option>
-              <option value="warminsko-mazurskie" selected={@region == "warminsko-mazurskie"}>
-                Warmińsko-mazurskie
-              </option>
-              <option value="wielkopolskie" selected={@region == "wielkopolskie"}>
-                Wielkopolskie
-              </option>
-              <option value="zachodniopomorskie" selected={@region == "zachodniopomorskie"}>
-                Zachodniopomorskie
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="search-type">Rodzaj</label>
-            <select id="search-type" name="order_type" class="form-select">
-              <option value="">Wszystkie rodzaje</option>
-              <option value="Delivery" selected={@order_type == "Delivery"}>Dostawy</option>
-              <option value="Services" selected={@order_type == "Services"}>Usługi</option>
-              <option value="Works" selected={@order_type == "Works"}>Roboty budowlane</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary btn-search">Szukaj</button>
-        </form>
-      </section>
-
-      <div class="results-header">
-        <p class="results-count">
-          Znaleziono <strong>{@total_count}</strong> przetargów
-        </p>
-      </div>
-
-      <%= if @notices == [] do %>
-        <div class="empty-state">
-          <svg
-            class="empty-state-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="M21 21l-4.35-4.35" />
-          </svg>
-          <h2 class="empty-state-title">Brak wyników</h2>
-          <p class="empty-state-text">Spróbuj zmienić kryteria wyszukiwania</p>
+    <section class="search-section">
+      <form class="search-form" method="get" action="/tenders">
+        <div class="form-group">
+          <label class="form-label" for="search-query">Szukaj</label>
+          <input
+            type="text"
+            id="search-query"
+            name="q"
+            class="form-input"
+            placeholder="Wpisz słowo kluczowe..."
+            value={@query}
+          />
         </div>
-      <% else %>
-        <div class="tender-list">
-          <%= for notice <- @notices do %>
-            <article class="tender-card">
-              <h2 class="tender-title">{truncate_text(notice.order_object, 200)}</h2>
-              <div class="tender-meta">
-                <div class="tender-meta-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 21h18" /><path d="M5 21V7l8-4v18" /><path d="M19 21V11l-6-4" />
-                  </svg>
-                  <span>{notice.organization_name}</span>
-                </div>
-                <div class="tender-meta-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                  <span>{notice.organization_city}</span>
-                </div>
-                <div class="tender-meta-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                  <span>{format_date(notice.publication_date)}</span>
-                </div>
+        <div class="form-group">
+          <label class="form-label" for="search-region">Region</label>
+          <select id="search-region" name="region" class="form-select">
+            <option value="">Wszystkie regiony</option>
+            <option value="dolnoslaskie" selected={@region == "dolnoslaskie"}>
+              Dolnośląskie
+            </option>
+            <option value="kujawsko-pomorskie" selected={@region == "kujawsko-pomorskie"}>
+              Kujawsko-pomorskie
+            </option>
+            <option value="lubelskie" selected={@region == "lubelskie"}>Lubelskie</option>
+            <option value="lubuskie" selected={@region == "lubuskie"}>Lubuskie</option>
+            <option value="lodzkie" selected={@region == "lodzkie"}>Łódzkie</option>
+            <option value="malopolskie" selected={@region == "malopolskie"}>Małopolskie</option>
+            <option value="mazowieckie" selected={@region == "mazowieckie"}>Mazowieckie</option>
+            <option value="opolskie" selected={@region == "opolskie"}>Opolskie</option>
+            <option value="podkarpackie" selected={@region == "podkarpackie"}>
+              Podkarpackie
+            </option>
+            <option value="podlaskie" selected={@region == "podlaskie"}>Podlaskie</option>
+            <option value="pomorskie" selected={@region == "pomorskie"}>Pomorskie</option>
+            <option value="slaskie" selected={@region == "slaskie"}>Śląskie</option>
+            <option value="swietokrzyskie" selected={@region == "swietokrzyskie"}>
+              Świętokrzyskie
+            </option>
+            <option value="warminsko-mazurskie" selected={@region == "warminsko-mazurskie"}>
+              Warmińsko-mazurskie
+            </option>
+            <option value="wielkopolskie" selected={@region == "wielkopolskie"}>
+              Wielkopolskie
+            </option>
+            <option value="zachodniopomorskie" selected={@region == "zachodniopomorskie"}>
+              Zachodniopomorskie
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="search-type">Rodzaj</label>
+          <select id="search-type" name="order_type" class="form-select">
+            <option value="">Wszystkie rodzaje</option>
+            <option value="Delivery" selected={@order_type == "Delivery"}>Dostawy</option>
+            <option value="Services" selected={@order_type == "Services"}>Usługi</option>
+            <option value="Works" selected={@order_type == "Works"}>Roboty budowlane</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-search">Szukaj</button>
+      </form>
+    </section>
+
+    <div class="results-header">
+      <p class="results-count">
+        Znaleziono <strong>{@total_count}</strong> przetargów
+      </p>
+    </div>
+
+    <%= if @notices == [] do %>
+      <div class="empty-state">
+        <svg
+          class="empty-state-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        <h2 class="empty-state-title">Brak wyników</h2>
+        <p class="empty-state-text">Spróbuj zmienić kryteria wyszukiwania</p>
+      </div>
+    <% else %>
+      <div class="tender-list">
+        <%= for notice <- @notices do %>
+          <article class="tender-card">
+            <h2 class="tender-title">{truncate_text(notice.order_object, 200)}</h2>
+            <div class="tender-meta">
+              <div class="tender-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21h18" /><path d="M5 21V7l8-4v18" /><path d="M19 21V11l-6-4" />
+                </svg>
+                <span>{notice.organization_name}</span>
               </div>
-              <div class="tender-footer">
-                <div>
-                  <span class="tender-deadline">
-                    Termin: <strong>{format_date(notice.submitting_offers_date)}</strong>
+              <div class="tender-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>{notice.organization_city}</span>
+              </div>
+              <div class="tender-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>{format_date(notice.publication_date)}</span>
+              </div>
+            </div>
+            <div class="tender-footer">
+              <div>
+                <span class="tender-deadline">
+                  Termin: <strong>{format_date(notice.submitting_offers_date)}</strong>
+                </span>
+                <%= if notice.estimated_value do %>
+                  <span class="tender-value" style="margin-left: 16px;">
+                    {format_value(notice.estimated_value)} PLN
                   </span>
-                  <%= if notice.estimated_value do %>
-                    <span class="tender-value" style="margin-left: 16px;">
-                      {format_value(notice.estimated_value)} PLN
-                    </span>
-                  <% end %>
-                </div>
-                <a
-                  href={"https://ezamowienia.gov.pl/mp-client/search/list/#{notice.tender_id}"}
-                  target="_blank"
-                  rel="noopener"
-                  class="tender-link"
-                >
-                  Zobacz szczegóły
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </a>
+                <% end %>
               </div>
-            </article>
-          <% end %>
-        </div>
-
-        <%= if @total_pages > 1 do %>
-          <nav class="pagination">
-            <%= if @page > 1 do %>
-              <a href={build_url(@query, @region, @order_type, @page - 1)} class="pagination-btn">
-                &larr; Poprzednia
+              <a
+                href={"https://ezamowienia.gov.pl/mp-client/search/list/#{notice.tender_id}"}
+                target="_blank"
+                rel="noopener"
+                class="tender-link"
+              >
+                Zobacz szczegóły
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
               </a>
-            <% else %>
-              <span class="pagination-btn disabled">&larr; Poprzednia</span>
-            <% end %>
-
-            <span class="pagination-info">Strona {@page} z {@total_pages}</span>
-
-            <%= if @page < @total_pages do %>
-              <a href={build_url(@query, @region, @order_type, @page + 1)} class="pagination-btn">
-                Następna &rarr;
-              </a>
-            <% else %>
-              <span class="pagination-btn disabled">Następna &rarr;</span>
-            <% end %>
-          </nav>
+            </div>
+          </article>
         <% end %>
+      </div>
+
+      <%= if @total_pages > 1 do %>
+        <nav class="pagination">
+          <%= if @page > 1 do %>
+            <a href={build_url(@query, @region, @order_type, @page - 1)} class="pagination-btn">
+              &larr; Poprzednia
+            </a>
+          <% else %>
+            <span class="pagination-btn disabled">&larr; Poprzednia</span>
+          <% end %>
+
+          <span class="pagination-info">Strona {@page} z {@total_pages}</span>
+
+          <%= if @page < @total_pages do %>
+            <a href={build_url(@query, @region, @order_type, @page + 1)} class="pagination-btn">
+              Następna &rarr;
+            </a>
+          <% else %>
+            <span class="pagination-btn disabled">Następna &rarr;</span>
+          <% end %>
+        </nav>
       <% end %>
-    </main>
-
-    <script>
-      // Mobile menu toggle
-      const hamburgerBtn = document.getElementById('hamburgerBtn');
-      const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-      const mobileMenuClose = document.getElementById('mobileMenuClose');
-
-      function openMobileMenu() {
-        mobileMenuOverlay.classList.add('visible');
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeMobileMenu() {
-        mobileMenuOverlay.classList.remove('visible');
-        document.body.style.overflow = '';
-      }
-
-      hamburgerBtn.addEventListener('click', openMobileMenu);
-      mobileMenuClose.addEventListener('click', closeMobileMenu);
-      mobileMenuOverlay.addEventListener('click', function(e) {
-        if (e.target === mobileMenuOverlay) {
-          closeMobileMenu();
-        }
-      });
-    </script>
-  </body>
-</html>
+    <% end %>
+  </main>
+</Layouts.site>

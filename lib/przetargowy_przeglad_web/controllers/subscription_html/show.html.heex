@@ -1,247 +1,141 @@
-<!DOCTYPE html>
-<html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Subskrypcja - Przetargowy Przegląd</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-          --navy-900: #0a1628;
-          --navy-800: #12233d;
-          --navy-700: #1a3052;
-          --navy-600: #234168;
-          --cream-50: #fefcf8;
-          --cream-100: #fdf8ed;
-          --cream-200: #f9f0db;
-          --cream-300: #f3e4c3;
-          --gold-500: #c9a227;
-          --gold-600: #b8922a;
-          --text-primary: #0a1628;
-          --text-secondary: #4a5568;
-          --error: #dc2626;
-          --error-light: #fef2f2;
-          --success: #16a34a;
-          --success-light: #f0fdf4;
-      }
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font-family: 'DM Sans', sans-serif; background-color: var(--cream-50); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
-      header { background: rgba(254, 252, 248, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(10, 22, 40, 0.06); position: sticky; top: 0; z-index: 100; }
-      .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
-      .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-      .logo-icon { width: 44px; height: 44px; background: var(--cream-50); border: 2px solid var(--navy-600); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1); }
-      .logo-icon svg { width: 26px; height: 26px; color: var(--navy-700); }
-      .logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.35rem; color: var(--navy-800); }
-      .logo-text span { color: var(--gold-500); }
-      .header-nav { display: flex; align-items: center; gap: 16px; }
-      .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.25s ease; cursor: pointer; border: none; }
-      .btn-outline { background: transparent; color: var(--navy-700); border: 1.5px solid var(--navy-600); }
-      .btn-outline:hover { background: var(--navy-800); color: var(--cream-50); border-color: var(--navy-800); }
-      .btn-primary { background: linear-gradient(135deg, var(--navy-700), var(--navy-900)); color: var(--cream-50); box-shadow: 0 4px 14px rgba(10, 22, 40, 0.25); }
-      .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(10, 22, 40, 0.35); }
-      .btn-danger-outline { background: transparent; color: var(--error); border: 1.5px solid var(--error); }
-      .btn-danger-outline:hover { background: var(--error); color: white; }
-      main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-      .page-header { margin-bottom: 40px; }
-      .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--navy-900); margin-bottom: 8px; }
-      .page-subtitle { color: var(--text-secondary); font-size: 1rem; }
-      .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--navy-700); text-decoration: none; font-weight: 500; margin-bottom: 24px; }
-      .back-link:hover { color: var(--navy-900); }
-      .back-link svg { width: 20px; height: 20px; }
-      .card { background: white; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(10, 22, 40, 0.06); border: 1px solid var(--cream-200); overflow: hidden; }
-      .card-header { padding: 24px; border-bottom: 1px solid var(--cream-200); }
-      .card-title { font-size: 1.1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 4px; }
-      .card-body { padding: 24px; }
-      .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-      .status-active { background: var(--success-light); color: var(--success); }
-      .status-pending { background: #fffbeb; color: #d97706; }
-      .status-cancelled { background: var(--cream-100); color: var(--text-secondary); }
-      .status-expired, .status-failed { background: var(--error-light); color: var(--error); }
-      .subscription-info { display: grid; gap: 20px; }
-      .info-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--cream-200); }
-      .info-row:last-child { border-bottom: none; }
-      .info-label { color: var(--text-secondary); font-size: 0.9rem; }
-      .info-value { font-weight: 600; color: var(--navy-800); }
-      .cancel-notice { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; margin-top: 16px; font-size: 0.9rem; color: #92400e; }
-      .empty-state { text-align: center; padding: 48px 24px; }
-      .empty-state-icon { width: 64px; height: 64px; background: var(--cream-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-      .empty-state-icon svg { width: 32px; height: 32px; color: var(--navy-600); }
-      .empty-state-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--navy-900); margin-bottom: 8px; }
-      .empty-state-text { color: var(--text-secondary); margin-bottom: 24px; }
-      .card-actions { padding: 24px; border-top: 1px solid var(--cream-200); display: flex; gap: 12px; justify-content: flex-end; }
-      .transactions-table { width: 100%; border-collapse: collapse; }
-      .transactions-table th { text-align: left; padding: 12px 16px; background: var(--cream-50); font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-      .transactions-table td { padding: 16px; border-bottom: 1px solid var(--cream-200); }
-      .transactions-table tr:last-child td { border-bottom: none; }
-      .transaction-status { font-weight: 600; font-size: 0.9rem; }
-      .transaction-status.completed { color: var(--success); }
-      .transaction-status.pending { color: #d97706; }
-      .transaction-status.failed { color: var(--error); }
-      .flash { padding: 16px 24px; border-radius: 8px; margin-bottom: 24px; font-weight: 500; }
-      .flash-info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-      .flash-error { background: var(--error-light); color: var(--error); border: 1px solid #fecaca; }
-      @media (max-width: 640px) {
-          main { padding: 24px 16px 60px; }
-          .page-title { font-size: 1.5rem; }
-          .card-header, .card-body, .card-actions { padding: 16px; }
-          .transactions-table { font-size: 0.9rem; }
-          .transactions-table th, .transactions-table td { padding: 12px 8px; }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <div class="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
-            </svg>
+<Layouts.site
+  flash={@flash}
+  current_user={@current_user}
+  page_title="Subskrypcja - Przetargowy Przegląd"
+  header_position="sticky"
+  show_footer={false}
+>
+  <:page_styles>
+    <link rel="stylesheet" href="/assets/css/subscription.css" />
+  </:page_styles>
+
+  <:nav>
+    <a href="/tenders">Szukaj przetargów</a>
+  </:nav>
+
+  <main>
+    <a href="/dashboard" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Wróć do ustawień
+    </a>
+
+    <div class="page-header">
+      <h1 class="page-title">Subskrypcja Premium</h1>
+      <p class="page-subtitle">Zarządzaj swoją subskrypcją i płatnościami</p>
+    </div>
+
+    <%= if @subscription do %>
+      <div class="card">
+        <div class="card-header">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="card-title">Status subskrypcji</h2>
+            <span class={"status-badge status-#{@subscription.status}"}>
+              <%= format_status(@subscription.status) %>
+            </span>
           </div>
-          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
-        </a>
-        <nav class="header-nav">
-          <a href="/dashboard" class="btn btn-outline">Panel</a>
-        </nav>
-      </div>
-    </header>
-
-    <main>
-      <a href="/dashboard" class="back-link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5M12 19l-7-7 7-7" />
-        </svg>
-        Wróć do panelu
-      </a>
-
-      <div class="page-header">
-        <h1 class="page-title">Subskrypcja Premium</h1>
-        <p class="page-subtitle">Zarządzaj swoją subskrypcją i płatnościami</p>
-      </div>
-
-      <%= if Phoenix.Flash.get(@flash, :info) do %>
-        <div class="flash flash-info"><%= Phoenix.Flash.get(@flash, :info) %></div>
-      <% end %>
-      <%= if Phoenix.Flash.get(@flash, :error) do %>
-        <div class="flash flash-error"><%= Phoenix.Flash.get(@flash, :error) %></div>
-      <% end %>
-
-      <%= if @subscription do %>
-        <div class="card">
-          <div class="card-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h2 class="card-title">Status subskrypcji</h2>
-              <span class={"status-badge status-#{@subscription.status}"}>
-                <%= format_status(@subscription.status) %>
-              </span>
+        </div>
+        <div class="card-body">
+          <div class="subscription-info">
+            <div class="info-row">
+              <span class="info-label">Plan</span>
+              <span class="info-value">Premium</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Cena miesięczna</span>
+              <span class="info-value"><%= format_amount(@subscription.amount) %></span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Początek okresu</span>
+              <span class="info-value"><%= format_date(@subscription.current_period_start) %></span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Koniec okresu</span>
+              <span class="info-value"><%= format_date(@subscription.current_period_end) %></span>
             </div>
           </div>
-          <div class="card-body">
-            <div class="subscription-info">
-              <div class="info-row">
-                <span class="info-label">Plan</span>
-                <span class="info-value">Premium</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Cena miesięczna</span>
-                <span class="info-value"><%= format_amount(@subscription.amount) %></span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Początek okresu</span>
-                <span class="info-value"><%= format_date(@subscription.current_period_start) %></span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Koniec okresu</span>
-                <span class="info-value"><%= format_date(@subscription.current_period_end) %></span>
-              </div>
-            </div>
 
-            <%= if @subscription.cancel_at_period_end do %>
-              <div class="cancel-notice">
-                Twoja subskrypcja została anulowana i wygaśnie <%= format_date(@subscription.current_period_end) %>.
-                Dostęp Premium pozostanie aktywny do końca okresu rozliczeniowego.
-              </div>
-            <% end %>
-          </div>
-
-          <%= if @subscription.status == "active" and not @subscription.cancel_at_period_end do %>
-            <div class="card-actions">
-              <form action="/dashboard/subscription" method="post">
-                <input type="hidden" name="_method" value="delete" />
-                <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
-                <button type="submit" class="btn btn-danger-outline" onclick="return confirm('Czy na pewno chcesz anulować subskrypcję? Dostęp Premium pozostanie aktywny do końca okresu rozliczeniowego.')">
-                  Anuluj subskrypcję
-                </button>
-              </form>
-            </div>
-          <% end %>
-
-          <%= if @subscription.status == "active" and @subscription.cancel_at_period_end do %>
-            <div class="card-actions">
-              <form action="/dashboard/subscription/reactivate" method="post">
-                <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
-                <button type="submit" class="btn btn-primary">
-                  Wznów subskrypcję
-                </button>
-              </form>
+          <%= if @subscription.cancel_at_period_end do %>
+            <div class="cancel-notice">
+              Twoja subskrypcja została anulowana i wygaśnie <%= format_date(@subscription.current_period_end) %>.
+              Dostęp Premium pozostanie aktywny do końca okresu rozliczeniowego.
             </div>
           <% end %>
         </div>
-      <% else %>
-        <div class="card">
-          <div class="card-body">
-            <div class="empty-state">
-              <div class="empty-state-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
-                </svg>
-              </div>
-              <h3 class="empty-state-title">Brak aktywnej subskrypcji</h3>
-              <p class="empty-state-text">Wykup subskrypcję Premium, aby uzyskać pełny dostęp do wszystkich funkcji.</p>
-              <a href="/dashboard/subscription/new" class="btn btn-primary">Wykup Premium za <%= format_amount(@subscription_amount) %>/miesiąc</a>
+
+        <%= if @subscription.status == "active" and not @subscription.cancel_at_period_end do %>
+          <div class="card-actions">
+            <form action="/dashboard/subscription" method="post">
+              <input type="hidden" name="_method" value="delete" />
+              <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+              <button type="submit" class="btn btn-danger-outline" onclick="return confirm('Czy na pewno chcesz anulować subskrypcję? Dostęp Premium pozostanie aktywny do końca okresu rozliczeniowego.')">
+                Anuluj subskrypcję
+              </button>
+            </form>
+          </div>
+        <% end %>
+
+        <%= if @subscription.status == "active" and @subscription.cancel_at_period_end do %>
+          <div class="card-actions">
+            <form action="/dashboard/subscription/reactivate" method="post">
+              <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+              <button type="submit" class="btn btn-primary">
+                Wznów subskrypcję
+              </button>
+            </form>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="card">
+        <div class="card-body">
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
+              </svg>
             </div>
+            <h3 class="empty-state-title">Brak aktywnej subskrypcji</h3>
+            <p class="empty-state-text">Wykup subskrypcję Premium, aby uzyskać pełny dostęp do wszystkich funkcji.</p>
+            <a href="/dashboard/subscription/new" class="btn btn-primary">Wykup Premium za <%= format_amount(@subscription_amount) %>/miesiąc</a>
           </div>
         </div>
-      <% end %>
+      </div>
+    <% end %>
 
-      <%= if length(@transactions) > 0 do %>
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">Historia płatności</h2>
-          </div>
-          <div class="card-body" style="padding: 0;">
-            <table class="transactions-table">
-              <thead>
+    <%= if length(@transactions) > 0 do %>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Historia płatności</h2>
+        </div>
+        <div class="card-body" style="padding: 0;">
+          <table class="transactions-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Typ</th>
+                <th>Kwota</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for transaction <- @transactions do %>
                 <tr>
-                  <th>Data</th>
-                  <th>Typ</th>
-                  <th>Kwota</th>
-                  <th>Status</th>
+                  <td><%= format_datetime(transaction.inserted_at) %></td>
+                  <td><%= format_transaction_type(transaction.type) %></td>
+                  <td><%= format_amount(transaction.amount) %></td>
+                  <td>
+                    <span class={"transaction-status #{transaction.status}"}>
+                      <%= format_transaction_status(transaction.status) %>
+                    </span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                <%= for transaction <- @transactions do %>
-                  <tr>
-                    <td><%= format_datetime(transaction.inserted_at) %></td>
-                    <td><%= format_transaction_type(transaction.type) %></td>
-                    <td><%= format_amount(transaction.amount) %></td>
-                    <td>
-                      <span class={"transaction-status #{transaction.status}"}>
-                        <%= format_transaction_status(transaction.status) %>
-                      </span>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
+              <% end %>
+            </tbody>
+          </table>
         </div>
-      <% end %>
-    </main>
-  </body>
-</html>
+      </div>
+    <% end %>
+  </main>
+</Layouts.site>

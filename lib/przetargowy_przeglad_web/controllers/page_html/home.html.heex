@@ -1186,103 +1186,18 @@
           }
       }
     </style>
+    <.page_header_styles />
   </head>
   <body>
-    <!-- Header -->
-    <header>
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <div class="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Document -->
-              <path
-                d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <!-- Document lines -->
-              <path
-                d="M7.5 12H12.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <path
-                d="M7.5 15H10.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <!-- Magnifying glass -->
-              <circle
-                cx="16.5"
-                cy="14.5"
-                r="4"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M19.5 17.5L22 20"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
-        </a>
-        <nav>
-          <a href="/tenders">Szukaj przetargów</a>
-          <a href="#jak-dziala">Jak to działa</a>
-          <a href="#cennik">Cennik</a>
-          <a href="#kontakt">Kontakt</a>
-        </nav>
-        <div class="header-cta">
-          <%= if @current_user do %>
-            <span class="user-email">{@current_user.email}</span>
-            <a href="/dashboard" class="btn btn-primary">Ustawienia</a>
-          <% else %>
-            <a href="/login" class="btn btn-outline">Zaloguj się</a>
-            <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
-          <% end %>
-        </div>
-        <div class="hamburger" id="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    </header>
-    
-<!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobile-menu">
-      <%= if @current_user do %>
-        <div class="mobile-menu-user">
-          <span class="mobile-menu-user-email">{@current_user.email}</span>
-        </div>
-        <a href="/dashboard" class="btn btn-primary">Ustawienia</a>
-        <a href="/logout" class="mobile-link">Wyloguj się</a>
-      <% else %>
-        <a href="/login" class="btn btn-outline">Zaloguj się</a>
-        <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
-      <% end %>
-      <a href="/tenders" class="mobile-link">Szukaj przetargów</a>
-      <a href="#jak-dziala" class="mobile-link">Jak to działa</a>
-      <a href="#cennik" class="mobile-link">Cennik</a>
-      <a href="#kontakt" class="mobile-link">Kontakt</a>
-    </div>
-    
+    <.page_header current_user={@current_user} position="fixed">
+      <:nav>
+        <a href="/tenders">Szukaj przetargów</a>
+        <a href="#jak-dziala">Jak to działa</a>
+        <a href="#cennik">Cennik</a>
+        <a href="#kontakt">Kontakt</a>
+      </:nav>
+    </.page_header>
+
 <!-- Hero Section -->
     <section class="hero">
       <div class="container">
@@ -1661,35 +1576,7 @@
         </div>
       </div>
     </footer>
-    
-<!-- Mobile Menu Script -->
-    <script>
-      const hamburger = document.getElementById('hamburger');
-      const mobileMenu = document.getElementById('mobile-menu');
-      const mobileLinks = document.querySelectorAll('.mobile-link');
 
-      function closeMenu() {
-          hamburger.classList.remove('active');
-          mobileMenu.classList.remove('active');
-          document.body.style.overflow = '';
-      }
-
-      hamburger.addEventListener('click', () => {
-          hamburger.classList.toggle('active');
-          mobileMenu.classList.toggle('active');
-          document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-      });
-
-      mobileLinks.forEach(link => {
-          link.addEventListener('click', closeMenu);
-      });
-
-      // Close menu on resize to larger screen
-      window.addEventListener('resize', () => {
-          if (window.innerWidth > 640) {
-              closeMenu();
-          }
-      });
-    </script>
+    <.page_header_script />
   </body>
 </html>

@@ -1,452 +1,78 @@
-<!DOCTYPE html>
-<html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rejestracja zakończona - Przetargowy Przegląd</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      defer
-      data-domain="przetargowyprzeglad.pl"
-      src="https://plausible.przetargowyprzeglad.pl/js/script.hash.outbound-links.tagged-events.js"
-    >
-    </script>
-    <style>
-      :root {
-          --navy-900: #0a1628;
-          --navy-800: #12233d;
-          --navy-700: #1a3052;
-          --navy-600: #234168;
-          --navy-500: #2d527d;
-          --cream-50: #fefcf8;
-          --cream-100: #fdf8ed;
-          --cream-200: #f9f0db;
-          --cream-300: #f3e4c3;
-          --cream-400: #e8d4a8;
-          --gold-500: #c9a227;
-          --gold-600: #b8922a;
-          --text-primary: #0a1628;
-          --text-secondary: #4a5568;
-          --text-light: #f8f5f0;
-          --success: #16a34a;
-      }
+<Layouts.site
+  flash={@flash}
+  current_user={nil}
+  page_title="Rejestracja zakończona - Przetargowy Przegląd"
+  header_position="sticky"
+  show_footer={false}
+>
+  <:page_styles>
+    <link rel="stylesheet" href="/assets/css/registration-success.css" />
+  </:page_styles>
 
-      * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-      }
-
-      html {
-          height: 100%;
-      }
-
-      body {
-          font-family: 'DM Sans', sans-serif;
-          background-color: var(--cream-50);
-          color: var(--text-primary);
-          line-height: 1.6;
-          min-height: 100%;
-          display: flex;
-          flex-direction: column;
-      }
-
-      /* Header */
-      header {
-          background: rgba(254, 252, 248, 0.92);
-          backdrop-filter: blur(12px);
-          border-bottom: 1px solid rgba(10, 22, 40, 0.06);
-      }
-
-      .header-inner {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 16px 24px;
-          max-width: 1200px;
-          margin: 0 auto;
-      }
-
-      .logo {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          text-decoration: none;
-      }
-
-      .logo-icon {
-          width: 44px;
-          height: 44px;
-          background: var(--cream-50);
-          border: 2px solid var(--navy-600);
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1);
-      }
-
-      .logo-icon svg {
-          width: 26px;
-          height: 26px;
-          color: var(--navy-700);
-      }
-
-      .logo-text {
-          font-family: 'Playfair Display', serif;
-          font-weight: 700;
-          font-size: 1.35rem;
-          color: var(--navy-800);
-          letter-spacing: -0.02em;
-      }
-
-      .logo-text span {
-          color: var(--gold-500);
-      }
-
-      /* Main content */
-      main {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 40px 24px;
-      }
-
-      .success-container {
-          width: 100%;
-          max-width: 560px;
-      }
-
-      .success-card {
-          background: white;
-          border-radius: 16px;
-          padding: 48px 40px;
-          box-shadow: 0 10px 40px rgba(10, 22, 40, 0.08), 0 1px 3px rgba(10, 22, 40, 0.04);
-          border: 1px solid var(--cream-200);
-          text-align: center;
-      }
-
-      .success-icon {
-          width: 80px;
-          height: 80px;
-          background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 24px;
-          box-shadow: 0 4px 16px rgba(22, 163, 74, 0.2);
-      }
-
-      .success-icon svg {
-          width: 48px;
-          height: 48px;
-          color: var(--success);
-      }
-
-      .success-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 2rem;
-          font-weight: 700;
-          color: var(--navy-900);
-          margin-bottom: 16px;
-      }
-
-      .success-message {
-          color: var(--text-secondary);
-          font-size: 1.05rem;
-          margin-bottom: 32px;
-          line-height: 1.7;
-      }
-
-      .email-info {
-          background: var(--cream-100);
-          border: 1px solid var(--cream-300);
-          border-radius: 12px;
-          padding: 20px;
-          margin-bottom: 32px;
-      }
-
-      .email-info-title {
-          font-weight: 600;
-          color: var(--navy-800);
-          margin-bottom: 8px;
-          font-size: 0.95rem;
-      }
-
-      .email-info-text {
-          color: var(--text-secondary);
-          font-size: 0.9rem;
-      }
-
-      .steps {
-          text-align: left;
-          margin-bottom: 32px;
-      }
-
-      .steps-title {
-          font-weight: 600;
-          color: var(--navy-800);
-          margin-bottom: 16px;
-          font-size: 1rem;
-      }
-
-      .step {
-          display: flex;
-          gap: 12px;
-          margin-bottom: 12px;
-          align-items: flex-start;
-      }
-
-      .step-number {
-          width: 28px;
-          height: 28px;
-          background: var(--navy-700);
-          color: var(--cream-50);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 600;
-          font-size: 0.85rem;
-          flex-shrink: 0;
-      }
-
-      .step-text {
-          color: var(--text-secondary);
-          font-size: 0.95rem;
-          padding-top: 4px;
-      }
-
-      .btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 14px 32px;
-          border-radius: 8px;
-          font-weight: 600;
-          font-size: 1rem;
-          text-decoration: none;
-          transition: all 0.25s ease;
-          cursor: pointer;
-          border: none;
-      }
-
-      .btn-primary {
-          background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
-          color: var(--cream-50);
-          box-shadow: 0 4px 14px rgba(10, 22, 40, 0.25);
-      }
-
-      .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(10, 22, 40, 0.35);
-      }
-
-      .btn-secondary {
-          background: var(--cream-100);
-          color: var(--navy-700);
-          border: 1px solid var(--cream-300);
-          margin-top: 12px;
-      }
-
-      .btn-secondary:hover {
-          background: var(--cream-200);
-      }
-
-      .divider {
-          display: flex;
-          align-items: center;
-          margin: 24px 0;
-      }
-
-      .divider::before,
-      .divider::after {
-          content: '';
-          flex: 1;
-          height: 1px;
-          background: var(--cream-300);
-      }
-
-      .divider span {
-          padding: 0 16px;
-          color: var(--text-secondary);
-          font-size: 0.85rem;
-      }
-
-      /* Footer */
-      footer {
-          padding: 24px;
-          text-align: center;
-          border-top: 1px solid var(--cream-200);
-      }
-
-      .footer-links {
-          display: flex;
-          justify-content: center;
-          gap: 24px;
-      }
-
-      .footer-links a {
-          color: var(--text-secondary);
-          text-decoration: none;
-          font-size: 0.85rem;
-          transition: color 0.2s ease;
-      }
-
-      .footer-links a:hover {
-          color: var(--navy-700);
-      }
-
-      /* Responsive */
-      @media (max-width: 480px) {
-          .success-card {
-              padding: 36px 28px;
-          }
-
-          .success-title {
-              font-size: 1.65rem;
-          }
-
-          .logo-text {
-              font-size: 1.15rem;
-          }
-
-          .footer-links {
-              flex-direction: column;
-              gap: 12px;
-          }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Header -->
-    <header>
-      <div class="header-inner">
-        <a href="/" class="logo">
-          <div class="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M6 3C5.44772 3 5 3.44772 5 4V20C5 20.5523 5.44772 21 6 21H15C15.5523 21 16 20.5523 16 20V8L11 3H6Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M11 3V7C11 7.55228 11.4477 8 12 8H16"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M7.5 12H12.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <path
-                d="M7.5 15H10.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <circle
-                cx="16.5"
-                cy="14.5"
-                r="4"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M19.5 17.5L22 20"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <span class="logo-text">Przetargowy<span>Przegląd</span></span>
-        </a>
-      </div>
-    </header>
-    
-<!-- Main content -->
-    <main>
-      <div class="success-container">
-        <div class="success-card">
-          <div class="success-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M20 6L9 17L4 12"
-                stroke="currentColor"
-                stroke-width="3"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-
-          <h1 class="success-title">Rejestracja zakończona!</h1>
-
-          <p class="success-message">
-            Twoje konto zostało utworzone pomyślnie. Aby aktywować konto i rozpocząć korzystanie z Przetargowego Przeglądu, musisz potwierdzić swój adres e-mail.
-          </p>
-
-          <div class="email-info">
-            <div class="email-info-title">Sprawdź swoją skrzynkę e-mail</div>
-            <div class="email-info-text">
-              Wysłaliśmy wiadomość z linkiem aktywacyjnym na podany przez Ciebie adres.
-            </div>
-          </div>
-
-          <div class="steps">
-            <div class="steps-title">Co dalej?</div>
-            <div class="step">
-              <div class="step-number">1</div>
-              <div class="step-text">Otwórz swoją skrzynkę pocztową</div>
-            </div>
-            <div class="step">
-              <div class="step-number">2</div>
-              <div class="step-text">Znajdź wiadomość od Przetargowego Przeglądu</div>
-            </div>
-            <div class="step">
-              <div class="step-number">3</div>
-              <div class="step-text">Kliknij w link aktywacyjny</div>
-            </div>
-            <div class="step">
-              <div class="step-number">4</div>
-              <div class="step-text">Zacznij otrzymywać przetargi!</div>
-            </div>
-          </div>
-
-          <a href="/login" class="btn btn-primary">Przejdź do logowania</a>
-
-          <div class="divider">
-            <span>lub</span>
-          </div>
-
-          <a href="/" class="btn btn-secondary">Wróć do strony głównej</a>
+  <main>
+    <div class="success-container">
+      <div class="success-card">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M20 6L9 17L4 12"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
         </div>
+
+        <h1 class="success-title">Rejestracja zakończona!</h1>
+
+        <p class="success-message">
+          Twoje konto zostało utworzone pomyślnie. Aby aktywować konto i rozpocząć korzystanie z Przetargowego Przeglądu, musisz potwierdzić swój adres e-mail.
+        </p>
+
+        <div class="email-info">
+          <div class="email-info-title">Sprawdź swoją skrzynkę e-mail</div>
+          <div class="email-info-text">
+            Wysłaliśmy wiadomość z linkiem aktywacyjnym na podany przez Ciebie adres.
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="steps-title">Co dalej?</div>
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-text">Otwórz swoją skrzynkę pocztową</div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-text">Znajdź wiadomość od Przetargowego Przeglądu</div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-text">Kliknij w link aktywacyjny</div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-text">Zacznij otrzymywać przetargi!</div>
+          </div>
+        </div>
+
+        <a href="/login" class="btn btn-primary btn-lg">Przejdź do logowania</a>
+
+        <div class="divider">
+          <span>lub</span>
+        </div>
+
+        <a href="/" class="btn btn-secondary btn-lg">Wróć do strony głównej</a>
       </div>
-    </main>
-    
-<!-- Footer -->
-    <footer>
-      <div class="footer-links">
-        <a href="/rules">Regulamin</a>
-        <a href="/privacy-policy">Polityka prywatności</a>
-        <a href="mailto:kontakt@przetargowyprzeglad.pl">Kontakt</a>
-      </div>
-    </footer>
-  </body>
-</html>
+    </div>
+  </main>
+
+  <footer style="padding: 24px; text-align: center; border-top: 1px solid var(--cream-200);">
+    <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+      <a href="/rules" style="color: var(--text-secondary); text-decoration: none; font-size: 0.85rem;">Regulamin</a>
+      <a href="/privacy-policy" style="color: var(--text-secondary); text-decoration: none; font-size: 0.85rem;">Polityka prywatności</a>
+      <a href="mailto:kontakt@przetargowyprzeglad.pl" style="color: var(--text-secondary); text-decoration: none; font-size: 0.85rem;">Kontakt</a>
+    </div>
+  </footer>
+</Layouts.site>
