@@ -101,6 +101,21 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionControllerTest do
       assert response =~ "została anulowana"
     end
 
+    test "shows reactivate button for cancelled subscription", %{conn: conn, user: user} do
+      subscription = create_subscription(user, "active")
+
+      {:ok, _} =
+        subscription
+        |> Ecto.Changeset.change(%{cancel_at_period_end: true, cancelled_at: DateTime.truncate(DateTime.utc_now(), :second)})
+        |> Repo.update()
+
+      conn = get(conn, ~p"/dashboard/subscription")
+
+      response = html_response(conn, 200)
+      assert response =~ "Wznów subskrypcję"
+      refute response =~ "Anuluj subskrypcję"
+    end
+
     test "shows payment history when transactions exist", %{conn: conn, user: user} do
       subscription = create_subscription(user)
       transaction = create_transaction(subscription, user)
@@ -178,6 +193,48 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionControllerTest do
 
       assert redirected_to(conn) == ~p"/dashboard/subscription/new"
       assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "błąd"
+    end
+  end
+
+  describe "POST /dashboard/subscription/reactivate" do
+    test "reactivates a cancelled subscription", %{conn: conn, user: user} do
+      subscription = create_subscription(user, "active")
+
+      # First cancel the subscription
+      {:ok, _} =
+        subscription
+        |> Ecto.Changeset.change(%{
+          cancel_at_period_end: true,
+          cancelled_at: DateTime.truncate(DateTime.utc_now(), :second)
+        })
+        |> Repo.update()
+
+      # Now reactivate
+      conn = post(conn, ~p"/dashboard/subscription/reactivate")
+
+      assert redirected_to(conn) == ~p"/dashboard/subscription"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "wznowiona"
+
+      # Check subscription was reactivated
+      updated_subscription = Payments.get_user_subscription(user.id)
+      assert updated_subscription.cancel_at_period_end == false
+      assert updated_subscription.cancelled_at == nil
+    end
+
+    test "returns error when user has no subscription", %{conn: conn} do
+      conn = post(conn, ~p"/dashboard/subscription/reactivate")
+
+      assert redirected_to(conn) == ~p"/dashboard/subscription"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "Nie masz aktywnej"
+    end
+
+    test "returns error when subscription is not marked for cancellation", %{conn: conn, user: user} do
+      _subscription = create_subscription(user, "active")
+
+      conn = post(conn, ~p"/dashboard/subscription/reactivate")
+
+      assert redirected_to(conn) == ~p"/dashboard/subscription"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "Nie można wznowić"
     end
   end
 

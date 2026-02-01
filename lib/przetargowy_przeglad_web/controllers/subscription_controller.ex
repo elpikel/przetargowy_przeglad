@@ -102,6 +102,38 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionController do
   end
 
   @doc """
+  Reactivates a cancelled subscription.
+  Only works if the subscription was set to cancel at period end but is still active.
+  """
+  def reactivate(conn, _params) do
+    user = conn.assigns.current_user
+
+    case Payments.reactivate_user_subscription(user.id) do
+      {:ok, _subscription} ->
+        conn
+        |> put_flash(:info, "Subskrypcja została wznowiona. Automatyczne odnowienie zostało włączone.")
+        |> redirect(to: ~p"/dashboard/subscription")
+
+      {:error, :no_subscription} ->
+        conn
+        |> put_flash(:error, "Nie masz aktywnej subskrypcji.")
+        |> redirect(to: ~p"/dashboard/subscription")
+
+      {:error, :cannot_reactivate} ->
+        conn
+        |> put_flash(:error, "Nie można wznowić tej subskrypcji.")
+        |> redirect(to: ~p"/dashboard/subscription")
+
+      {:error, reason} ->
+        Logger.error("Failed to reactivate subscription: #{inspect(reason)}")
+
+        conn
+        |> put_flash(:error, "Nie udało się wznowić subskrypcji. Spróbuj ponownie później.")
+        |> redirect(to: ~p"/dashboard/subscription")
+    end
+  end
+
+  @doc """
   Handles successful return from Tpay.
   Note: The actual subscription activation happens via webhook.
   """

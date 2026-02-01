@@ -306,6 +306,30 @@ defmodule PrzetargowyPrzeglad.Payments do
   end
 
   @doc """
+  Reactivates a cancelled subscription.
+  Only works if the subscription was set to cancel at period end but is still active.
+  """
+  def reactivate_subscription(subscription) do
+    if subscription.status == "active" and subscription.cancel_at_period_end do
+      subscription
+      |> Subscription.reactivate_changeset()
+      |> Repo.update()
+    else
+      {:error, :cannot_reactivate}
+    end
+  end
+
+  @doc """
+  Reactivates a user's subscription by user ID.
+  """
+  def reactivate_user_subscription(user_id) do
+    case get_user_subscription(user_id) do
+      nil -> {:error, :no_subscription}
+      subscription -> reactivate_subscription(subscription)
+    end
+  end
+
+  @doc """
   Expires a subscription and downgrades the user.
   """
   def expire_subscription(subscription) do

@@ -96,6 +96,17 @@ defmodule PrzetargowyPrzeglad.Payments.Subscription do
   end
 
   @doc """
+  Changeset for reactivating a cancelled subscription.
+  Only works if the subscription was set to cancel at period end but is still active.
+  """
+  def reactivate_changeset(subscription) do
+    subscription
+    |> change()
+    |> put_change(:cancelled_at, nil)
+    |> put_change(:cancel_at_period_end, false)
+  end
+
+  @doc """
   Changeset for expiring a subscription.
   """
   def expire_changeset(subscription) do

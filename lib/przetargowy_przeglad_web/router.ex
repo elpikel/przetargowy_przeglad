@@ -49,6 +49,7 @@ defmodule PrzetargowyPrzegladWeb.Router do
     get "/dashboard/subscription/new", SubscriptionController, :new
     post "/dashboard/subscription", SubscriptionController, :create
     delete "/dashboard/subscription", SubscriptionController, :cancel
+    post "/dashboard/subscription/reactivate", SubscriptionController, :reactivate
     get "/dashboard/subscription/success", SubscriptionController, :payment_success
     get "/dashboard/subscription/error", SubscriptionController, :payment_error
 

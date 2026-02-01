@@ -180,6 +180,17 @@
               </form>
             </div>
           <% end %>
+
+          <%= if @subscription.status == "active" and @subscription.cancel_at_period_end do %>
+            <div class="card-actions">
+              <form action="/dashboard/subscription/reactivate" method="post">
+                <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+                <button type="submit" class="btn btn-primary">
+                  Wznów subskrypcję
+                </button>
+              </form>
+            </div>
+          <% end %>
         </div>
       <% else %>
         <div class="card">
