@@ -440,8 +440,8 @@
                 <label class="form-label">Branże</label>
                 <div class="select-all-wrapper">
                   <div class="checkbox-item">
-                    <input type="checkbox" id="select-all-industries" />
-                    <label for="select-all-industries">Zaznacz wszystkie</label>
+                    <input type="checkbox" id={"select-all-industries-#{index}"} />
+                    <label for={"select-all-industries-#{index}"}>Zaznacz wszystkie</label>
                   </div>
                 </div>
                 <div class="checkbox-grid" id={"industries-grid-#{index}"}>
@@ -568,8 +568,8 @@
                 <label class="form-label">Regiony</label>
                 <div class="select-all-wrapper">
                   <div class="checkbox-item">
-                    <input type="checkbox" id="select-all-regions" />
-                    <label for="select-all-regions">Cała Polska</label>
+                    <input type="checkbox" id={"select-all-regions-#{index}"} />
+                    <label for={"select-all-regions-#{index}"}>Cała Polska</label>
                   </div>
                 </div>
                 <div class="checkbox-grid" id={"regions-grid-#{index}"}>
@@ -721,16 +721,25 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Słowa kluczowe</label>
-                <div class="keywords-container" id={"keywords-container-#{index}"}>
-                  <div class="keywords-list" id={"keywords-list-#{index}"}></div>
+                <div class="keyword-input-row" style="display: flex; gap: 8px; margin-bottom: 12px;">
                   <input
                     type="text"
-                    class="keyword-input"
+                    class="form-input"
                     id={"keyword-input-#{index}"}
-                    placeholder="Wpisz słowo kluczowe i naciśnij Enter"
+                    placeholder="Wpisz słowo kluczowe"
                     data-index={index}
+                    style="flex: 1;"
                   />
+                  <button
+                    type="button"
+                    class="btn btn-outline"
+                    id={"add-keyword-btn-#{index}"}
+                    style="white-space: nowrap;"
+                  >
+                    + Dodaj
+                  </button>
                 </div>
+                <div class="keywords-list" id={"keywords-list-#{index}"} style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 32px;"></div>
                 <input
                   type="hidden"
                   name="keywords"
@@ -956,35 +965,88 @@
           document.getElementById(sectionId).classList.toggle('collapsed');
       }
 
-      // Select all industries
-      const selectAllInd = document.getElementById('select-all-industries');
-      const indCbs = document.querySelectorAll('#industries-grid input[type="checkbox"]');
-      if (selectAllInd) {
-          selectAllInd.addEventListener('change', function() { indCbs.forEach(cb => cb.checked = this.checked); });
-          indCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllInd.checked = [...indCbs].every(c => c.checked); }); });
+      // Initialize all alert forms (supports multiple alerts for premium users)
+      function initAlertForm(index) {
+          // Select all industries for this alert
+          const selectAllInd = document.getElementById('select-all-industries-' + index);
+          const indGrid = document.getElementById('industries-grid-' + index);
+          if (selectAllInd && indGrid) {
+              const indCbs = indGrid.querySelectorAll('input[type="checkbox"]');
+              selectAllInd.addEventListener('change', function() { indCbs.forEach(cb => cb.checked = this.checked); });
+              indCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllInd.checked = [...indCbs].every(c => c.checked); }); });
+          }
+
+          // Select all regions for this alert
+          const selectAllReg = document.getElementById('select-all-regions-' + index);
+          const regGrid = document.getElementById('regions-grid-' + index);
+          if (selectAllReg && regGrid) {
+              const regCbs = regGrid.querySelectorAll('input[type="checkbox"]');
+              selectAllReg.addEventListener('change', function() { regCbs.forEach(cb => cb.checked = this.checked); });
+              regCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllReg.checked = [...regCbs].every(c => c.checked); }); });
+          }
+
+          // Keywords for this alert
+          const kwInput = document.getElementById('keyword-input-' + index);
+          const kwBtn = document.getElementById('add-keyword-btn-' + index);
+          const kwList = document.getElementById('keywords-list-' + index);
+          const kwHidden = document.getElementById('keywords-hidden-' + index);
+
+          if (kwInput && kwBtn && kwList && kwHidden) {
+              let keywords = kwHidden.value ? kwHidden.value.split(',').filter(k => k.trim()) : [];
+
+              function updateKwHidden() { kwHidden.value = keywords.join(','); }
+
+              function renderKw() {
+                  if (keywords.length === 0) {
+                      kwList.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.85rem;">Brak słów kluczowych</span>';
+                      return;
+                  }
+                  kwList.innerHTML = keywords.map(kw => '<span class="keyword-tag">' + kw + '<button type="button" data-keyword="' + kw + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></span>').join('');
+                  // Re-attach click handlers for remove buttons
+                  kwList.querySelectorAll('button[data-keyword]').forEach(btn => {
+                      btn.addEventListener('click', function() {
+                          keywords = keywords.filter(k => k !== this.dataset.keyword);
+                          renderKw();
+                          updateKwHidden();
+                      });
+                  });
+              }
+
+              function addKw(kw) {
+                  kw = kw.trim().toLowerCase();
+                  if (kw && !keywords.includes(kw)) {
+                      keywords.push(kw);
+                      renderKw();
+                      updateKwHidden();
+                  }
+              }
+
+              // Add keyword on button click
+              kwBtn.addEventListener('click', function() {
+                  addKw(kwInput.value);
+                  kwInput.value = '';
+                  kwInput.focus();
+              });
+
+              // Add keyword on Enter key
+              kwInput.addEventListener('keydown', function(e) {
+                  if (e.key === 'Enter') {
+                      e.preventDefault();
+                      addKw(this.value);
+                      this.value = '';
+                  }
+              });
+
+              renderKw();
+          }
       }
 
-      // Select all regions
-      const selectAllReg = document.getElementById('select-all-regions');
-      const regCbs = document.querySelectorAll('#regions-grid input[type="checkbox"]');
-      if (selectAllReg) {
-          selectAllReg.addEventListener('change', function() { regCbs.forEach(cb => cb.checked = this.checked); });
-          regCbs.forEach(cb => { cb.addEventListener('change', function() { selectAllReg.checked = [...regCbs].every(c => c.checked); }); });
+      // Initialize all alert forms (find how many exist)
+      let alertIndex = 0;
+      while (document.getElementById('industries-grid-' + alertIndex)) {
+          initAlertForm(alertIndex);
+          alertIndex++;
       }
-
-      // Keywords
-      const kwInput = document.getElementById('keyword-input');
-      const kwList = document.getElementById('keywords-list');
-      const kwHidden = document.getElementById('keywords-hidden');
-      let keywords = kwHidden && kwHidden.value ? kwHidden.value.split(',').filter(k => k.trim()) : [];
-      function updateKwHidden() { if (kwHidden) kwHidden.value = keywords.join(','); }
-      function addKw(kw) { kw = kw.trim().toLowerCase(); if (kw && !keywords.includes(kw)) { keywords.push(kw); renderKw(); updateKwHidden(); } }
-      window.removeKw = function(kw) { keywords = keywords.filter(k => k !== kw); renderKw(); updateKwHidden(); }
-      function renderKw() {
-          if (kwList) kwList.innerHTML = keywords.map(kw => '<span class="keyword-tag">' + kw + '<button type="button" onclick="removeKw(\'' + kw + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></span>').join('');
-      }
-      if (kwInput) kwInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); addKw(this.value); this.value = ''; } });
-      renderKw();
 
       // Modal - Delete Account
       const modal = document.getElementById('deleteModal');
