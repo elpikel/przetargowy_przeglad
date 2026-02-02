@@ -47,6 +47,7 @@ defmodule PrzetargowyPrzegladWeb.DashboardController do
 
   def create_alert(conn, params) do
     user = conn.assigns.current_user
+    redirect_path = params["redirect_to"] || ~p"/dashboard"
 
     # Only premium users can have multiple alerts
     if user.subscription_plan == "paid" do
@@ -55,19 +56,19 @@ defmodule PrzetargowyPrzegladWeb.DashboardController do
       case Accounts.create_alert(%{user_id: user.id, rules: rules}) do
         {:ok, _alert} ->
           conn
-          |> put_flash(:info, "Alert został dodany")
-          |> redirect(to: ~p"/dashboard")
+          |> put_flash(:info, "✓ Alert został dodany pomyślnie")
+          |> redirect(to: redirect_path)
 
         {:error, _changeset} ->
           conn
           |> put_flash(:error, "Nie udało się dodać alertu")
-          |> redirect(to: ~p"/dashboard")
+          |> redirect(to: redirect_path)
       end
     else
       # Free users can only have one alert
       conn
       |> put_flash(:error, "Funkcja dostępna tylko w planie Premium")
-      |> redirect(to: ~p"/dashboard")
+      |> redirect(to: redirect_path)
     end
   end
 

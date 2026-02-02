@@ -334,7 +334,7 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
           min-height: 40px;
         }
       }
-      @media (max-width: 900px) {
+      @media (max-width: 1050px) {
         .header-inner {
           justify-content: space-between;
         }
@@ -391,7 +391,7 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
         });
 
         window.addEventListener('resize', () => {
-          if (window.innerWidth > 900) {
+          if (window.innerWidth > 1050) {
             closeMenu();
           }
         });

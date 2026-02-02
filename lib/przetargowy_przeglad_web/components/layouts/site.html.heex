@@ -45,12 +45,34 @@
 
     <%= if Phoenix.Flash.get(@flash, :info) do %>
       <div class="container" style="padding-top: 24px;">
-        <div class="flash flash-info"><%= Phoenix.Flash.get(@flash, :info) %></div>
+        <div class="flash flash-info" id="flash-info">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="width: 20px; height: 20px; flex-shrink: 0;"
+          >
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span><%= Phoenix.Flash.get(@flash, :info) %></span>
+        </div>
       </div>
     <% end %>
     <%= if Phoenix.Flash.get(@flash, :error) do %>
       <div class="container" style="padding-top: 24px;">
-        <div class="flash flash-error"><%= Phoenix.Flash.get(@flash, :error) %></div>
+        <div class="flash flash-error" id="flash-error">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="width: 20px; height: 20px; flex-shrink: 0;"
+          >
+            <path d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <span><%= Phoenix.Flash.get(@flash, :error) %></span>
+        </div>
       </div>
     <% end %>
 
@@ -61,5 +83,22 @@
     <% end %>
 
     <.page_header_script />
+
+    <script>
+      // Auto-dismiss flash messages
+      (function() {
+        const flashInfo = document.getElementById('flash-info');
+        if (flashInfo) {
+          setTimeout(() => {
+            flashInfo.style.opacity = '0';
+            flashInfo.style.transform = 'translateY(-20px)';
+            flashInfo.style.transition = 'all 0.3s ease-out';
+            setTimeout(() => {
+              flashInfo.remove();
+            }, 300);
+          }, 5000);
+        }
+      })();
+    </script>
   </body>
 </html>

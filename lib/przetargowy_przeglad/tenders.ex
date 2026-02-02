@@ -33,16 +33,16 @@ defmodule PrzetargowyPrzeglad.Tenders do
 
   ## Options
     * `:query` - text search in order_object and organization_name
-    * `:region` - filter by organization_province code
-    * `:order_type` - filter by order type (Delivery, Services, Works)
+    * `:regions` - list of regions to filter by (or single region string for backwards compatibility)
+    * `:order_types` - list of order types (Delivery, Services, Works) or single string
     * `:notice_type` - filter by notice type (default: ContractNotice)
     * `:page` - page number (default: 1)
     * `:per_page` - results per page (default: 20)
   """
   def search_tender_notices(opts \\ []) do
     query = Keyword.get(opts, :query)
-    region = Keyword.get(opts, :region)
-    order_type = Keyword.get(opts, :order_type)
+    regions = normalize_to_list(Keyword.get(opts, :regions))
+    order_types = normalize_to_list(Keyword.get(opts, :order_types))
     notice_type = Keyword.get(opts, :notice_type, "ContractNotice")
     page = Keyword.get(opts, :page, 1)
     per_page = Keyword.get(opts, :per_page, 20)
@@ -69,16 +69,16 @@ defmodule PrzetargowyPrzeglad.Tenders do
       end
 
     base_query =
-      if region && region != "" do
-        province_code = region_to_province_code(region)
-        where(base_query, [tender_notice: tn], tn.organization_province == ^province_code)
+      if regions != [] do
+        province_codes = Enum.map(regions, &region_to_province_code/1) |> Enum.filter(& &1)
+        where(base_query, [tender_notice: tn], tn.organization_province in ^province_codes)
       else
         base_query
       end
 
     base_query =
-      if order_type && order_type != "" do
-        where(base_query, [tender_notice: tn], tn.order_type == ^order_type)
+      if order_types != [] do
+        where(base_query, [tender_notice: tn], tn.order_type in ^order_types)
       else
         base_query
       end
@@ -105,6 +105,11 @@ defmodule PrzetargowyPrzeglad.Tenders do
       total_pages: total_pages
     }
   end
+
+  defp normalize_to_list(nil), do: []
+  defp normalize_to_list(""), do: []
+  defp normalize_to_list(list) when is_list(list), do: Enum.filter(list, &(&1 != "" && &1 != nil))
+  defp normalize_to_list(value) when is_binary(value), do: [value]
 
   defp region_to_province_code(region) do
     case region do

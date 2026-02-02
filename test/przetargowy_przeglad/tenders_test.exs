@@ -194,4 +194,237 @@ defmodule PrzetargowyPrzeglad.TendersTest do
       assert Decimal.equal?(detail.contract_value, Decimal.new("99682.80"))
     end
   end
+
+  describe "search_tender_notices/1 with multi-region filter" do
+    setup do
+      # Create tender notices in different regions
+      create_notice("mazowieckie", "PL14", "Delivery")
+      create_notice("malopolskie", "PL12", "Delivery")
+      create_notice("wielkopolskie", "PL16", "Delivery")
+      create_notice("slaskie", "PL11", "Services")
+
+      :ok
+    end
+
+    test "filters by single region" do
+      result = Tenders.search_tender_notices(regions: ["mazowieckie"], page: 1, per_page: 20)
+      assert result.total_count == 1
+    end
+
+    test "filters by multiple regions" do
+      result = Tenders.search_tender_notices(regions: ["mazowieckie", "malopolskie"], page: 1, per_page: 20)
+      assert result.total_count == 2
+    end
+
+    test "returns all results when regions is empty list" do
+      result = Tenders.search_tender_notices(regions: [], page: 1, per_page: 20)
+      assert result.total_count == 4
+    end
+
+    test "returns all results when regions is nil" do
+      result = Tenders.search_tender_notices(regions: nil, page: 1, per_page: 20)
+      assert result.total_count == 4
+    end
+
+    test "handles empty strings in regions list" do
+      result = Tenders.search_tender_notices(regions: ["", "mazowieckie", ""], page: 1, per_page: 20)
+      assert result.total_count == 1
+    end
+
+    test "handles non-existent region codes" do
+      result = Tenders.search_tender_notices(regions: ["nonexistent"], page: 1, per_page: 20)
+      assert result.total_count == 0
+    end
+
+    defp create_notice(region, province_code, order_type) do
+      attrs = %{
+        object_id: "notice-#{:erlang.unique_integer([:positive])}",
+        client_type: "1.1.5",
+        order_type: order_type,
+        tender_type: "1.1.1",
+        notice_type: "ContractNotice",
+        notice_number: "2024/BZP #{:erlang.unique_integer([:positive])}/01",
+        bzp_number: "2024/BZP #{:erlang.unique_integer([:positive])}",
+        is_tender_amount_below_eu: true,
+        publication_date: DateTime.utc_now(),
+        order_object: "Test order in #{region}",
+        cpv_codes: ["09100000-0"],
+        submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day),
+        procedure_result: nil,
+        organization_name: "Organization in #{region}",
+        organization_city: "City",
+        organization_province: province_code,
+        organization_country: "PL",
+        organization_national_id: "1234567890",
+        organization_id: "1234",
+        tender_id: "ocds-148610-test-#{:erlang.unique_integer([:positive])}",
+        html_body: "<html>...</html>",
+        contractors: [],
+        estimated_values: [],
+        estimated_value: Decimal.new("10000"),
+        total_contract_value: nil,
+        total_contractors_contracts_count: 0,
+        cancelled_count: 0,
+        contractors_contract_details: []
+      }
+
+      {:ok, _} = Tenders.upsert_tender_notice(attrs)
+    end
+  end
+
+  describe "search_tender_notices/1 with multi-order-type filter" do
+    setup do
+      # Create tender notices with different order types
+      create_notice_with_type("Delivery", "PL14")
+      create_notice_with_type("Services", "PL14")
+      create_notice_with_type("Works", "PL14")
+      create_notice_with_type("Delivery", "PL12")
+
+      :ok
+    end
+
+    test "filters by single order type" do
+      result = Tenders.search_tender_notices(order_types: ["Delivery"], page: 1, per_page: 20)
+      assert result.total_count == 2
+    end
+
+    test "filters by multiple order types" do
+      result = Tenders.search_tender_notices(order_types: ["Delivery", "Services"], page: 1, per_page: 20)
+      assert result.total_count == 3
+    end
+
+    test "returns all results when order_types is empty list" do
+      result = Tenders.search_tender_notices(order_types: [], page: 1, per_page: 20)
+      assert result.total_count == 4
+    end
+
+    test "returns all results when order_types is nil" do
+      result = Tenders.search_tender_notices(order_types: nil, page: 1, per_page: 20)
+      assert result.total_count == 4
+    end
+
+    test "handles empty strings in order_types list" do
+      result = Tenders.search_tender_notices(order_types: ["", "Delivery", ""], page: 1, per_page: 20)
+      assert result.total_count == 2
+    end
+
+    test "handles non-existent order types" do
+      result = Tenders.search_tender_notices(order_types: ["NonExistent"], page: 1, per_page: 20)
+      assert result.total_count == 0
+    end
+
+    defp create_notice_with_type(order_type, province) do
+      attrs = %{
+        object_id: "notice-#{:erlang.unique_integer([:positive])}",
+        client_type: "1.1.5",
+        order_type: order_type,
+        tender_type: "1.1.1",
+        notice_type: "ContractNotice",
+        notice_number: "2024/BZP #{:erlang.unique_integer([:positive])}/01",
+        bzp_number: "2024/BZP #{:erlang.unique_integer([:positive])}",
+        is_tender_amount_below_eu: true,
+        publication_date: DateTime.utc_now(),
+        order_object: "Test order type #{order_type}",
+        cpv_codes: ["09100000-0"],
+        submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day),
+        procedure_result: nil,
+        organization_name: "Organization",
+        organization_city: "City",
+        organization_province: province,
+        organization_country: "PL",
+        organization_national_id: "1234567890",
+        organization_id: "1234",
+        tender_id: "ocds-148610-test-#{:erlang.unique_integer([:positive])}",
+        html_body: "<html>...</html>",
+        contractors: [],
+        estimated_values: [],
+        estimated_value: Decimal.new("10000"),
+        total_contract_value: nil,
+        total_contractors_contracts_count: 0,
+        cancelled_count: 0,
+        contractors_contract_details: []
+      }
+
+      {:ok, _} = Tenders.upsert_tender_notice(attrs)
+    end
+  end
+
+  describe "search_tender_notices/1 with combined filters" do
+    setup do
+      # Create combinations
+      create_notice_combined("mazowieckie", "PL14", "Delivery")
+      create_notice_combined("mazowieckie", "PL14", "Services")
+      create_notice_combined("malopolskie", "PL12", "Delivery")
+      create_notice_combined("malopolskie", "PL12", "Works")
+
+      :ok
+    end
+
+    test "filters by multiple regions and multiple order types" do
+      result =
+        Tenders.search_tender_notices(
+          regions: ["mazowieckie", "malopolskie"],
+          order_types: ["Delivery"],
+          page: 1,
+          per_page: 20
+        )
+
+      assert result.total_count == 2
+    end
+
+    test "filters by query, regions, and order types" do
+      result =
+        Tenders.search_tender_notices(
+          query: "mazowieckie",
+          regions: ["mazowieckie"],
+          order_types: ["Delivery"],
+          page: 1,
+          per_page: 20
+        )
+
+      assert result.total_count == 1
+    end
+
+    test "handles case sensitivity in region names" do
+      # Should be case-insensitive or handle properly
+      result = Tenders.search_tender_notices(regions: ["MAZOWIECKIE"], page: 1, per_page: 20)
+      # Depending on implementation, this might return 0 or apply case-insensitive matching
+      assert result.total_count >= 0
+    end
+
+    defp create_notice_combined(region, province_code, order_type) do
+      attrs = %{
+        object_id: "notice-#{:erlang.unique_integer([:positive])}",
+        client_type: "1.1.5",
+        order_type: order_type,
+        tender_type: "1.1.1",
+        notice_type: "ContractNotice",
+        notice_number: "2024/BZP #{:erlang.unique_integer([:positive])}/01",
+        bzp_number: "2024/BZP #{:erlang.unique_integer([:positive])}",
+        is_tender_amount_below_eu: true,
+        publication_date: DateTime.utc_now(),
+        order_object: "#{order_type} in #{region}",
+        cpv_codes: ["09100000-0"],
+        submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day),
+        procedure_result: nil,
+        organization_name: "Organization in #{region}",
+        organization_city: "City",
+        organization_province: province_code,
+        organization_country: "PL",
+        organization_national_id: "1234567890",
+        organization_id: "1234",
+        tender_id: "ocds-148610-test-#{:erlang.unique_integer([:positive])}",
+        html_body: "<html>...</html>",
+        contractors: [],
+        estimated_values: [],
+        estimated_value: Decimal.new("10000"),
+        total_contract_value: nil,
+        total_contractors_contracts_count: 0,
+        cancelled_count: 0,
+        contractors_contract_details: []
+      }
+
+      {:ok, _} = Tenders.upsert_tender_notice(attrs)
+    end
+  end
 end

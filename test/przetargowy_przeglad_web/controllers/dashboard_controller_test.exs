@@ -219,6 +219,185 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
     end
   end
 
+  describe "POST /dashboard/alerts/new with redirect_to parameter" do
+    setup %{conn: conn} do
+      {:ok, %{user: premium_user}} =
+        Accounts.register_premium_user(%{
+          email: "premium5@example.com",
+          password: "password123",
+          tender_category: "Usługi",
+          region: "malopolskie",
+          keyword: "software"
+        })
+
+      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+
+      premium_conn =
+        conn
+        |> init_test_session(%{})
+        |> put_session(:user_id, verified_premium.id)
+
+      %{premium_conn: premium_conn, premium_user: verified_premium}
+    end
+
+    test "redirects to custom path when redirect_to is provided", %{
+      premium_conn: conn,
+      premium_user: user
+    } do
+      initial_count = length(Accounts.list_user_alerts(user))
+
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "industries" => ["it"],
+          "regions" => ["mazowieckie"],
+          "keywords" => "cloud",
+          "redirect_to" => "/tenders?q=test&regions[]=mazowieckie&page=1"
+        })
+
+      assert redirected_to(conn) == "/tenders?q=test&regions[]=mazowieckie&page=1"
+      assert length(Accounts.list_user_alerts(user)) == initial_count + 1
+    end
+
+    test "redirects to dashboard when redirect_to is not provided", %{
+      premium_conn: conn,
+      premium_user: user
+    } do
+      initial_count = length(Accounts.list_user_alerts(user))
+
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "industries" => ["it"],
+          "regions" => ["wielkopolskie"],
+          "keywords" => "test"
+        })
+
+      assert redirected_to(conn) == ~p"/dashboard"
+      assert length(Accounts.list_user_alerts(user)) == initial_count + 1
+    end
+
+    test "shows success flash message", %{premium_conn: conn} do
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "industries" => ["it"],
+          "regions" => ["mazowieckie"],
+          "keywords" => "cloud"
+        })
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Alert został dodany pomyślnie"
+    end
+  end
+
+  describe "edge cases for alert creation" do
+    setup %{conn: conn} do
+      {:ok, %{user: premium_user}} =
+        Accounts.register_premium_user(%{
+          email: "premium6@example.com",
+          password: "password123",
+          tender_category: "Usługi",
+          region: "malopolskie",
+          keyword: "software"
+        })
+
+      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+
+      premium_conn =
+        conn
+        |> init_test_session(%{})
+        |> put_session(:user_id, verified_premium.id)
+
+      %{premium_conn: premium_conn, premium_user: verified_premium}
+    end
+
+    test "handles empty keywords string", %{premium_conn: conn, premium_user: user} do
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "industries" => ["it"],
+          "regions" => ["mazowieckie"],
+          "keywords" => ""
+        })
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      alerts = Accounts.list_user_alerts(user)
+      new_alert = List.last(alerts)
+      keywords = new_alert.rules["keywords"] || new_alert.rules[:keywords]
+
+      assert keywords == []
+    end
+
+    test "handles keywords with extra whitespace", %{premium_conn: conn, premium_user: user} do
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "industries" => ["it"],
+          "regions" => ["mazowieckie"],
+          "keywords" => "  software  ,  hardware  ,  cloud  "
+        })
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      alerts = Accounts.list_user_alerts(user)
+      new_alert = List.last(alerts)
+      keywords = new_alert.rules["keywords"] || new_alert.rules[:keywords]
+
+      assert "software" in keywords
+      assert "hardware" in keywords
+      assert "cloud" in keywords
+      assert length(keywords) == 3
+    end
+
+    test "handles nil industries parameter", %{premium_conn: conn, premium_user: user} do
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "regions" => ["mazowieckie"],
+          "keywords" => "test"
+        })
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      alerts = Accounts.list_user_alerts(user)
+      new_alert = List.last(alerts)
+      industries = new_alert.rules["industries"] || new_alert.rules[:industries]
+
+      assert industries == []
+    end
+
+    test "handles nil regions parameter", %{premium_conn: conn, premium_user: user} do
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "industries" => ["it"],
+          "keywords" => "test"
+        })
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      alerts = Accounts.list_user_alerts(user)
+      new_alert = List.last(alerts)
+      regions = new_alert.rules["regions"] || new_alert.rules[:regions]
+
+      assert regions == []
+    end
+
+    test "filters out empty strings from keywords", %{premium_conn: conn, premium_user: user} do
+      conn =
+        post(conn, ~p"/dashboard/alerts/new", %{
+          "industries" => ["it"],
+          "regions" => ["mazowieckie"],
+          "keywords" => "software,,cloud,,"
+        })
+
+      assert redirected_to(conn) == ~p"/dashboard"
+
+      alerts = Accounts.list_user_alerts(user)
+      new_alert = List.last(alerts)
+      keywords = new_alert.rules["keywords"] || new_alert.rules[:keywords]
+
+      assert "software" in keywords
+      assert "cloud" in keywords
+      assert "" not in keywords
+      assert length(keywords) == 2
+    end
+  end
+
   describe "DELETE /dashboard/alerts/:id for premium user" do
     setup %{conn: conn} do
       {:ok, %{user: premium_user}} =

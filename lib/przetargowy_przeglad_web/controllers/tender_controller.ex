@@ -9,16 +9,27 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
 
   def index(conn, params) do
     page = parse_page(params["page"])
+    current_user = conn.assigns[:current_user]
+
+    regions = params["regions"] || []
+    order_types = params["order_types"] || []
 
     search_opts = [
       query: params["q"],
-      region: params["region"],
-      order_type: params["order_type"],
+      regions: regions,
+      order_types: order_types,
       page: page,
       per_page: 20
     ]
 
     result = Tenders.search_tender_notices(search_opts)
+
+    # Load user alerts if logged in
+    user_alerts = if current_user do
+      PrzetargowyPrzeglad.Accounts.list_user_alerts(current_user)
+    else
+      []
+    end
 
     render(conn, :index,
       notices: result.notices,
@@ -26,9 +37,10 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
       page: result.page,
       total_pages: result.total_pages,
       query: params["q"] || "",
-      region: params["region"] || "",
-      order_type: params["order_type"] || "",
-      current_user: conn.assigns[:current_user]
+      regions: regions,
+      order_types: order_types,
+      current_user: current_user,
+      user_alerts: user_alerts
     )
   end
 

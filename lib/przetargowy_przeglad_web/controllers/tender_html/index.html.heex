@@ -21,7 +21,51 @@
     </div>
 
     <section class="search-section">
-      <form class="search-form" method="get" action="/tenders">
+      <form class="search-form" method="get" action="/tenders" id="search-form">
+        <%= if @current_user && @current_user.subscription_plan == "paid" && @user_alerts != [] do %>
+          <div class="form-group form-group-full alert-selector-wrapper">
+            <label class="form-label">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                style="width: 16px; height: 16px; display: inline-block; margin-right: 6px; vertical-align: text-bottom;"
+              >
+                <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              Zastosuj filtry z zapisanego alertu
+            </label>
+            <div class="filter-dropdown">
+              <button
+                type="button"
+                class="filter-dropdown-button alert-dropdown-button"
+                id="alert-dropdown-button"
+                onclick="toggleDropdown('alert')"
+              >
+                <span id="alert-selected-text">-- Wybierz alert --</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              <div class="filter-dropdown-content" id="alert-dropdown">
+                <div class="filter-option" onclick="clearAlertSelection()">
+                  <span style="color: var(--text-secondary); font-style: italic;">-- Wyczyść wybór --</span>
+                </div>
+                <div class="filter-divider"></div>
+                <%= for {alert, index} <- Enum.with_index(@user_alerts, 1) do %>
+                  <div
+                    class="filter-option"
+                    onclick={"applyAlertFilters('#{Jason.encode!(alert.rules) |> String.replace("'", "\\'")}', '#{format_alert_name(alert, index)}')"}
+                  >
+                    <span>{format_alert_name(alert, index)}</span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
         <div class="form-group">
           <label class="form-label" for="search-query">Szukaj</label>
           <input
@@ -33,51 +77,93 @@
             value={@query}
           />
         </div>
+
         <div class="form-group">
-          <label class="form-label" for="search-region">Region</label>
-          <select id="search-region" name="region" class="form-select">
-            <option value="">Wszystkie regiony</option>
-            <option value="dolnoslaskie" selected={@region == "dolnoslaskie"}>
-              Dolnośląskie
-            </option>
-            <option value="kujawsko-pomorskie" selected={@region == "kujawsko-pomorskie"}>
-              Kujawsko-pomorskie
-            </option>
-            <option value="lubelskie" selected={@region == "lubelskie"}>Lubelskie</option>
-            <option value="lubuskie" selected={@region == "lubuskie"}>Lubuskie</option>
-            <option value="lodzkie" selected={@region == "lodzkie"}>Łódzkie</option>
-            <option value="malopolskie" selected={@region == "malopolskie"}>Małopolskie</option>
-            <option value="mazowieckie" selected={@region == "mazowieckie"}>Mazowieckie</option>
-            <option value="opolskie" selected={@region == "opolskie"}>Opolskie</option>
-            <option value="podkarpackie" selected={@region == "podkarpackie"}>
-              Podkarpackie
-            </option>
-            <option value="podlaskie" selected={@region == "podlaskie"}>Podlaskie</option>
-            <option value="pomorskie" selected={@region == "pomorskie"}>Pomorskie</option>
-            <option value="slaskie" selected={@region == "slaskie"}>Śląskie</option>
-            <option value="swietokrzyskie" selected={@region == "swietokrzyskie"}>
-              Świętokrzyskie
-            </option>
-            <option value="warminsko-mazurskie" selected={@region == "warminsko-mazurskie"}>
-              Warmińsko-mazurskie
-            </option>
-            <option value="wielkopolskie" selected={@region == "wielkopolskie"}>
-              Wielkopolskie
-            </option>
-            <option value="zachodniopomorskie" selected={@region == "zachodniopomorskie"}>
-              Zachodniopomorskie
-            </option>
-          </select>
+          <label class="form-label">Regiony</label>
+          <div class="filter-dropdown">
+            <button
+              type="button"
+              class="filter-dropdown-button"
+              id="region-dropdown-button"
+              onclick="toggleDropdown('region')"
+            >
+              <%= if @regions == [] do %>
+                Wszystkie regiony
+              <% else %>
+                Wybrano: <%= length(@regions) %>
+              <% end %>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div class="filter-dropdown-content" id="region-dropdown">
+              <div class="filter-option">
+                <input
+                  type="checkbox"
+                  id="region-all"
+                  onchange="toggleAllRegions(this.checked)"
+                />
+                <label for="region-all">Wszystkie regiony</label>
+              </div>
+              <div class="filter-divider"></div>
+              <%= for {value, label} <- region_options() do %>
+                <div class="filter-option">
+                  <input
+                    type="checkbox"
+                    name="regions[]"
+                    value={value}
+                    id={"region-#{value}"}
+                    checked={value in @regions}
+                    class="region-checkbox"
+                  />
+                  <label for={"region-#{value}"}>{label}</label>
+                </div>
+              <% end %>
+            </div>
+          </div>
         </div>
+
         <div class="form-group">
-          <label class="form-label" for="search-type">Rodzaj</label>
-          <select id="search-type" name="order_type" class="form-select">
-            <option value="">Wszystkie rodzaje</option>
-            <option value="Delivery" selected={@order_type == "Delivery"}>Dostawy</option>
-            <option value="Services" selected={@order_type == "Services"}>Usługi</option>
-            <option value="Works" selected={@order_type == "Works"}>Roboty budowlane</option>
-          </select>
+          <label class="form-label">Rodzaj zamówienia</label>
+          <div class="filter-dropdown">
+            <button
+              type="button"
+              class="filter-dropdown-button"
+              id="type-dropdown-button"
+              onclick="toggleDropdown('type')"
+            >
+              <%= if @order_types == [] do %>
+                Wszystkie rodzaje
+              <% else %>
+                Wybrano: <%= length(@order_types) %>
+              <% end %>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div class="filter-dropdown-content" id="type-dropdown">
+              <div class="filter-option">
+                <input type="checkbox" id="type-all" onchange="toggleAllTypes(this.checked)" />
+                <label for="type-all">Wszystkie rodzaje</label>
+              </div>
+              <div class="filter-divider"></div>
+              <%= for {value, label} <- order_type_options() do %>
+                <div class="filter-option">
+                  <input
+                    type="checkbox"
+                    name="order_types[]"
+                    value={value}
+                    id={"type-#{value}"}
+                    checked={value in @order_types}
+                    class="type-checkbox"
+                  />
+                  <label for={"type-#{value}"}>{label}</label>
+                </div>
+              <% end %>
+            </div>
+          </div>
         </div>
+
         <div class="form-group">
           <button type="submit" class="btn btn-primary btn-search">Szukaj</button>
         </div>
@@ -88,6 +174,28 @@
       <p class="results-count">
         Znaleziono <strong>{@total_count}</strong> przetargów
       </p>
+      <%= if @current_user && @current_user.subscription_plan == "paid" && (@query != "" || @regions != [] || @order_types != []) do %>
+        <form method="post" action="/dashboard/alerts/new" class="alert-form">
+          <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+          <input
+            type="hidden"
+            name="redirect_to"
+            value={build_url(@query, @regions, @order_types, @page)}
+          />
+          <%= if @query != "" do %>
+            <input type="hidden" name="keywords" value={@query} />
+          <% end %>
+          <%= for region <- @regions do %>
+            <input type="hidden" name="regions[]" value={region} />
+          <% end %>
+          <button type="submit" class="btn btn-outline btn-create-alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            Utwórz alert z tych kryteriów
+          </button>
+        </form>
+      <% end %>
     </div>
 
     <%= if @notices == [] do %>
@@ -166,7 +274,7 @@
       <%= if @total_pages > 1 do %>
         <nav class="pagination">
           <%= if @page > 1 do %>
-            <a href={build_url(@query, @region, @order_type, @page - 1)} class="pagination-btn">
+            <a href={build_url(@query, @regions, @order_types, @page - 1)} class="pagination-btn">
               &larr; Poprzednia
             </a>
           <% else %>
@@ -176,7 +284,7 @@
           <span class="pagination-info">Strona {@page} z {@total_pages}</span>
 
           <%= if @page < @total_pages do %>
-            <a href={build_url(@query, @region, @order_type, @page + 1)} class="pagination-btn">
+            <a href={build_url(@query, @regions, @order_types, @page + 1)} class="pagination-btn">
               Następna &rarr;
             </a>
           <% else %>
@@ -186,4 +294,154 @@
       <% end %>
     <% end %>
   </main>
+
+  <script>
+    function toggleDropdown(type) {
+      const dropdown = document.getElementById(type + '-dropdown');
+      dropdown.classList.toggle('show');
+
+      // Close other dropdowns
+      const dropdownTypes = ['region', 'type', 'alert'];
+      dropdownTypes.forEach(dropdownType => {
+        if (dropdownType !== type) {
+          document.getElementById(dropdownType + '-dropdown')?.classList.remove('show');
+        }
+      });
+    }
+
+    function toggleAllRegions(checked) {
+      const checkboxes = document.querySelectorAll('.region-checkbox');
+      checkboxes.forEach(cb => cb.checked = checked);
+      updateButtonText('region');
+    }
+
+    function toggleAllTypes(checked) {
+      const checkboxes = document.querySelectorAll('.type-checkbox');
+      checkboxes.forEach(cb => cb.checked = checked);
+      updateButtonText('type');
+    }
+
+    function updateButtonText(type) {
+      const checkboxes = document.querySelectorAll('.' + type + '-checkbox:checked');
+      const button = document.getElementById(type + '-dropdown-button');
+      const count = checkboxes.length;
+
+      if (type === 'region') {
+        button.innerHTML = count === 0 ? 'Wszystkie regiony' : `Wybrano: ${count}`;
+      } else {
+        button.innerHTML = count === 0 ? 'Wszystkie rodzaje' : `Wybrano: ${count}`;
+      }
+
+      // Add SVG back
+      button.innerHTML += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9" /></svg>';
+    }
+
+    function applyAlertFilters(rulesJson, alertName) {
+      if (!rulesJson) return;
+
+      try {
+        const rules = JSON.parse(rulesJson);
+
+        // Clear all existing selections
+        document.querySelectorAll('.region-checkbox, .type-checkbox').forEach(cb => cb.checked = false);
+        document.getElementById('search-query').value = '';
+
+        // Apply keywords to search field (handle both array and string)
+        const keywords = rules.keywords || rules['keywords'];
+        if (keywords) {
+          const keywordString = Array.isArray(keywords) ? keywords.join(' ') : keywords;
+          document.getElementById('search-query').value = keywordString;
+        }
+
+        // Apply regions (handle both string keys and symbol keys)
+        const regions = rules.regions || rules['regions'];
+        const region = rules.region || rules['region'];
+
+        if (regions && Array.isArray(regions)) {
+          // Premium user with multiple regions
+          regions.forEach(reg => {
+            const checkbox = document.querySelector(`.region-checkbox[value="${reg}"]`);
+            if (checkbox) checkbox.checked = true;
+          });
+        } else if (region) {
+          // Free user with single region
+          const checkbox = document.querySelector(`.region-checkbox[value="${region}"]`);
+          if (checkbox) checkbox.checked = true;
+        }
+
+        // Apply tender category (free users)
+        const tenderCategory = rules.tender_category || rules['tender_category'];
+        if (tenderCategory) {
+          const categoryMap = {
+            'Dostawy': 'Delivery',
+            'Usługi': 'Services',
+            'Roboty budowlane': 'Works'
+          };
+          const orderType = categoryMap[tenderCategory];
+          if (orderType) {
+            const checkbox = document.querySelector(`.type-checkbox[value="${orderType}"]`);
+            if (checkbox) checkbox.checked = true;
+          }
+        }
+
+        // Update button texts
+        updateButtonText('region');
+        updateButtonText('type');
+
+        // Update alert dropdown button text
+        const alertText = document.getElementById('alert-selected-text');
+        if (alertText && alertName) {
+          alertText.textContent = alertName;
+        }
+
+        // Close alert dropdown
+        document.getElementById('alert-dropdown')?.classList.remove('show');
+
+        // Update "select all" checkboxes
+        ['region', 'type'].forEach(type => {
+          const allCheckbox = document.getElementById(type + '-all');
+          const checkboxes = document.querySelectorAll('.' + type + '-checkbox');
+          const checkedCount = document.querySelectorAll('.' + type + '-checkbox:checked').length;
+          if (allCheckbox) {
+            allCheckbox.checked = checkedCount === checkboxes.length;
+          }
+        });
+
+      } catch (e) {
+        console.error('Error applying alert filters:', e);
+      }
+    }
+
+    function clearAlertSelection() {
+      const alertText = document.getElementById('alert-selected-text');
+      if (alertText) {
+        alertText.textContent = '-- Wybierz alert --';
+      }
+      // Close alert dropdown
+      document.getElementById('alert-dropdown')?.classList.remove('show');
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!event.target.closest('.filter-dropdown')) {
+        document.querySelectorAll('.filter-dropdown-content').forEach(dropdown => {
+          dropdown.classList.remove('show');
+        });
+      }
+    });
+
+    // Update button text when checkboxes change
+    document.querySelectorAll('.region-checkbox, .type-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const type = this.classList.contains('region-checkbox') ? 'region' : 'type';
+        updateButtonText(type);
+
+        // Update "select all" checkbox
+        const allCheckbox = document.getElementById(type + '-all');
+        const checkboxes = document.querySelectorAll('.' + type + '-checkbox');
+        const checkedCount = document.querySelectorAll('.' + type + '-checkbox:checked').length;
+        allCheckbox.checked = checkedCount === checkboxes.length;
+      });
+    });
+  </script>
 </Layouts.site>

@@ -110,15 +110,31 @@ body {
 /* Flash messages */
 .flash {
   padding: 16px 24px;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 24px;
   font-weight: 500;
+  box-shadow: 0 4px 12px rgba(10, 22, 40, 0.1);
+  animation: slideDown 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .flash-info {
-  background: #eff6ff;
-  color: #1e40af;
-  border: 1px solid #bfdbfe;
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
 }
 
 .flash-error {
