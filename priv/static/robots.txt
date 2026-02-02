@@ -1,5 +1,12 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
-#
-# To ban all spiders from the entire site uncomment the next two lines:
-# User-agent: *
-# Disallow: /
+# Allow all crawlers to index public content
+User-agent: *
+Allow: /
+Allow: /tenders
+
+# Disallow private and admin areas
+Disallow: /dashboard
+Disallow: /users/
+Disallow: /admin/
+
+# Sitemap
+Sitemap: https://przetargowyprzeglad.pl/sitemap.xml

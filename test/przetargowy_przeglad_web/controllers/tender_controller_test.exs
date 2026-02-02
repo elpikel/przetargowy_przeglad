@@ -390,7 +390,6 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       refute response =~ "Dostawa komputerów do Krakowa"
       refute response =~ "Usługi komputerowe w Warszawie"
     end
-
   end
 
   describe "alert selector visibility" do

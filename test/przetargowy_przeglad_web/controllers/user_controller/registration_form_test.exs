@@ -72,7 +72,9 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
         assert changeset.valid?
       end
 
-      invalid_changeset = RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :tender_category, "invalid"))
+      invalid_changeset =
+        RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :tender_category, "invalid"))
+
       assert "nieprawidłowy rodzaj zamówienia" in errors_on(invalid_changeset).tender_category
     end
 

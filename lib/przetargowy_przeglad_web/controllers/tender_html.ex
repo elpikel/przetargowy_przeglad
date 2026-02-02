@@ -26,11 +26,11 @@ defmodule PrzetargowyPrzegladWeb.TenderHTML do
   end
 
   def build_url(query, regions, order_types, page) do
-    base_params = [q: query, page: page] |> Enum.filter(fn {_k, v} -> v && v != "" && v != 1 end)
+    base_params = Enum.filter([q: query, page: page], fn {_k, v} -> v && v != "" && v != 1 end)
     region_params = Enum.map(regions || [], fn r -> {"regions[]", r} end)
     type_params = Enum.map(order_types || [], fn t -> {"order_types[]", t} end)
 
-    params = (base_params ++ region_params ++ type_params) |> URI.encode_query()
+    params = URI.encode_query(base_params ++ region_params ++ type_params)
 
     "/tenders?#{params}"
   end
@@ -99,19 +99,22 @@ defmodule PrzetargowyPrzegladWeb.TenderHTML do
     end
   end
 
-  defp format_by_region(nil, index), do: (if index == 1, do: "Alert główny", else: "Alert #{index}")
-  defp format_by_region([], index), do: (if index == 1, do: "Alert główny", else: "Alert #{index}")
+  defp format_by_region(nil, index), do: if(index == 1, do: "Alert główny", else: "Alert #{index}")
+  defp format_by_region([], index), do: if(index == 1, do: "Alert główny", else: "Alert #{index}")
+
   defp format_by_region([region | _], _index) when is_binary(region) do
     region_name = region_options() |> Enum.find(fn {code, _} -> code == region end) |> elem(1)
     "Alert: #{region_name}"
   rescue
     _ -> "Alert"
   end
+
   defp format_by_region(region, _index) when is_binary(region) do
     region_name = region_options() |> Enum.find(fn {code, _} -> code == region end) |> elem(1)
     "Alert: #{region_name}"
   rescue
     _ -> "Alert"
   end
-  defp format_by_region(_region, index), do: (if index == 1, do: "Alert główny", else: "Alert #{index}")
+
+  defp format_by_region(_region, index), do: if(index == 1, do: "Alert główny", else: "Alert #{index}")
 end

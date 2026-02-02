@@ -91,7 +91,7 @@ defmodule PrzetargowyPrzeglad.Accounts.Alert do
 
       # Also handle string keys for premium format
       is_map(rules) and
-          (Map.has_key?(rules, "industries") or Map.has_key?(rules, :industries)) and
+        (Map.has_key?(rules, "industries") or Map.has_key?(rules, :industries)) and
           (Map.has_key?(rules, "regions") or Map.has_key?(rules, :regions)) ->
         validate_premium_rules(changeset)
 

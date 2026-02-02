@@ -393,7 +393,7 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
 
       assert "software" in keywords
       assert "cloud" in keywords
-      assert "" not in keywords
+      refute "" in keywords
       assert length(keywords) == 2
     end
   end

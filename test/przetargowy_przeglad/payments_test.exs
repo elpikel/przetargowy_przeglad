@@ -190,7 +190,7 @@ defmodule PrzetargowyPrzeglad.PaymentsTest do
 
       assert {:ok, cancelled} = Payments.cancel_user_subscription(user.id, false)
       assert cancelled.cancel_at_period_end == true
-      assert cancelled.cancelled_at != nil
+      assert cancelled.cancelled_at
       assert cancelled.status == "active"
     end
 
@@ -204,7 +204,7 @@ defmodule PrzetargowyPrzeglad.PaymentsTest do
 
       assert {:ok, cancelled} = Payments.cancel_user_subscription(user.id, true)
       assert cancelled.status == "cancelled"
-      assert cancelled.cancelled_at != nil
+      assert cancelled.cancelled_at
 
       # User should be downgraded
       updated_user = Accounts.get_user(user.id)

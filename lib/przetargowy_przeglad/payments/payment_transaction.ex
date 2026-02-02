@@ -4,6 +4,7 @@ defmodule PrzetargowyPrzeglad.Payments.PaymentTransaction do
   Tracks all payment attempts and their results.
   """
   use Ecto.Schema
+
   import Ecto.Changeset
 
   alias PrzetargowyPrzeglad.Accounts.User

@@ -28,7 +28,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2 class="card-title">Status subskrypcji</h2>
             <span class={"status-badge status-#{@subscription.status}"}>
-              <%= format_status(@subscription.status) %>
+              {format_status(@subscription.status)}
             </span>
           </div>
         </div>
@@ -40,21 +40,23 @@
             </div>
             <div class="info-row">
               <span class="info-label">Cena miesięczna</span>
-              <span class="info-value"><%= format_amount(@subscription.amount) %></span>
+              <span class="info-value">{format_amount(@subscription.amount)}</span>
             </div>
             <div class="info-row">
               <span class="info-label">Początek okresu</span>
-              <span class="info-value"><%= format_date(@subscription.current_period_start) %></span>
+              <span class="info-value">{format_date(@subscription.current_period_start)}</span>
             </div>
             <div class="info-row">
               <span class="info-label">Koniec okresu</span>
-              <span class="info-value"><%= format_date(@subscription.current_period_end) %></span>
+              <span class="info-value">{format_date(@subscription.current_period_end)}</span>
             </div>
           </div>
 
           <%= if @subscription.cancel_at_period_end do %>
             <div class="cancel-notice">
-              Twoja subskrypcja została anulowana i wygaśnie <%= format_date(@subscription.current_period_end) %>.
+              Twoja subskrypcja została anulowana i wygaśnie {format_date(
+                @subscription.current_period_end
+              )}.
               Dostęp Premium pozostanie aktywny do końca okresu rozliczeniowego.
             </div>
           <% end %>
@@ -65,7 +67,11 @@
             <form action="/dashboard/subscription" method="post">
               <input type="hidden" name="_method" value="delete" />
               <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
-              <button type="submit" class="btn btn-danger-outline" onclick="return confirm('Czy na pewno chcesz anulować subskrypcję? Dostęp Premium pozostanie aktywny do końca okresu rozliczeniowego.')">
+              <button
+                type="submit"
+                class="btn btn-danger-outline"
+                onclick="return confirm('Czy na pewno chcesz anulować subskrypcję? Dostęp Premium pozostanie aktywny do końca okresu rozliczeniowego.')"
+              >
                 Anuluj subskrypcję
               </button>
             </form>
@@ -93,8 +99,12 @@
               </svg>
             </div>
             <h3 class="empty-state-title">Brak aktywnej subskrypcji</h3>
-            <p class="empty-state-text">Wykup subskrypcję Premium, aby uzyskać pełny dostęp do wszystkich funkcji.</p>
-            <a href="/dashboard/subscription/new" class="btn btn-primary">Wykup Premium za <%= format_amount(@subscription_amount) %>/miesiąc</a>
+            <p class="empty-state-text">
+              Wykup subskrypcję Premium, aby uzyskać pełny dostęp do wszystkich funkcji.
+            </p>
+            <a href="/dashboard/subscription/new" class="btn btn-primary">
+              Wykup Premium za {format_amount(@subscription_amount)}/miesiąc
+            </a>
           </div>
         </div>
       </div>
@@ -118,12 +128,12 @@
             <tbody>
               <%= for transaction <- @transactions do %>
                 <tr>
-                  <td><%= format_datetime(transaction.inserted_at) %></td>
-                  <td><%= format_transaction_type(transaction.type) %></td>
-                  <td><%= format_amount(transaction.amount) %></td>
+                  <td>{format_datetime(transaction.inserted_at)}</td>
+                  <td>{format_transaction_type(transaction.type)}</td>
+                  <td>{format_amount(transaction.amount)}</td>
                   <td>
                     <span class={"transaction-status #{transaction.status}"}>
-                      <%= format_transaction_status(transaction.status) %>
+                      {format_transaction_status(transaction.status)}
                     </span>
                   </td>
                 </tr>

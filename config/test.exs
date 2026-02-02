@@ -34,9 +34,8 @@ config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
   secret_key_base: "V+IzNbD+3lhzHnRi47aZICC7PgWo3onpDQ0HJKJHT97YHlnJI09tj+ByiueEGxwY",
   server: false
 
+# Tpay sandbox config for tests (skips signature verification)
+config :przetargowy_przeglad, :tpay, api_url: "https://openapi.sandbox.tpay.com"
+
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false
-
-# Tpay sandbox config for tests (skips signature verification)
-config :przetargowy_przeglad, :tpay,
-  api_url: "https://openapi.sandbox.tpay.com"

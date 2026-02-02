@@ -92,7 +92,10 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionControllerTest do
 
       {:ok, _} =
         subscription
-        |> Ecto.Changeset.change(%{cancel_at_period_end: true, cancelled_at: DateTime.truncate(DateTime.utc_now(), :second)})
+        |> Ecto.Changeset.change(%{
+          cancel_at_period_end: true,
+          cancelled_at: DateTime.truncate(DateTime.utc_now(), :second)
+        })
         |> Repo.update()
 
       conn = get(conn, ~p"/dashboard/subscription")
@@ -106,7 +109,10 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionControllerTest do
 
       {:ok, _} =
         subscription
-        |> Ecto.Changeset.change(%{cancel_at_period_end: true, cancelled_at: DateTime.truncate(DateTime.utc_now(), :second)})
+        |> Ecto.Changeset.change(%{
+          cancel_at_period_end: true,
+          cancelled_at: DateTime.truncate(DateTime.utc_now(), :second)
+        })
         |> Repo.update()
 
       conn = get(conn, ~p"/dashboard/subscription")
@@ -167,7 +173,7 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionControllerTest do
       # Check subscription was marked for cancellation
       updated_subscription = Payments.get_user_subscription(user.id)
       assert updated_subscription.cancel_at_period_end == true
-      assert updated_subscription.cancelled_at != nil
+      assert updated_subscription.cancelled_at
     end
 
     test "returns error when user has no subscription", %{conn: conn} do

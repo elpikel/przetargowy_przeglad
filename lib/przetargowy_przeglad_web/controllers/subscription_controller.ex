@@ -34,9 +34,7 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionController do
       |> put_flash(:info, "Masz już aktywną subskrypcję Premium.")
       |> redirect(to: ~p"/dashboard/subscription")
     else
-      render(conn, :new,
-        subscription_amount: Payments.subscription_amount()
-      )
+      render(conn, :new, subscription_amount: Payments.subscription_amount())
     end
   end
 

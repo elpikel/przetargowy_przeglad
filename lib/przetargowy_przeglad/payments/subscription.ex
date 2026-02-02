@@ -4,6 +4,7 @@ defmodule PrzetargowyPrzeglad.Payments.Subscription do
   Tracks Tpay recurring payment subscriptions for premium access.
   """
   use Ecto.Schema
+
   import Ecto.Changeset
 
   alias PrzetargowyPrzeglad.Accounts.User
@@ -138,7 +139,7 @@ defmodule PrzetargowyPrzeglad.Payments.Subscription do
   Checks if a subscription is currently active.
   """
   def active?(%__MODULE__{status: "active", current_period_end: end_date}) when not is_nil(end_date) do
-    DateTime.compare(DateTime.utc_now(), end_date) == :lt
+    DateTime.before?(DateTime.utc_now(), end_date)
   end
 
   def active?(_), do: false

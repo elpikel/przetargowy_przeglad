@@ -28,7 +28,7 @@
             </div>
             <h1 class="premium-title">Plan Premium</h1>
             <div class="premium-price">
-              <%= Decimal.round(@subscription_amount, 0) %> zł<span>/miesiąc</span>
+              {Decimal.round(@subscription_amount, 0)} zł<span>/miesiąc</span>
             </div>
           </div>
 
@@ -41,7 +41,10 @@
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <span class="benefit-text"><strong>Nieograniczona liczba alertów</strong> - monitoruj wiele kategorii przetargów jednocześnie</span>
+              <span class="benefit-text">
+                <strong>Nieograniczona liczba alertów</strong>
+                - monitoruj wiele kategorii przetargów jednocześnie
+              </span>
             </div>
 
             <div class="benefit-item">
@@ -50,7 +53,9 @@
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <span class="benefit-text"><strong>Wszystkie regiony</strong> - otrzymuj powiadomienia z całej Polski</span>
+              <span class="benefit-text">
+                <strong>Wszystkie regiony</strong> - otrzymuj powiadomienia z całej Polski
+              </span>
             </div>
 
             <div class="benefit-item">
@@ -59,7 +64,10 @@
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <span class="benefit-text"><strong>Własne słowa kluczowe</strong> - filtruj przetargi według specyficznych terminów</span>
+              <span class="benefit-text">
+                <strong>Własne słowa kluczowe</strong>
+                - filtruj przetargi według specyficznych terminów
+              </span>
             </div>
 
             <div class="benefit-item">
@@ -68,7 +76,9 @@
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <span class="benefit-text"><strong>Wiele branż</strong> - wybierz dowolną kombinację kategorii przetargów</span>
+              <span class="benefit-text">
+                <strong>Wiele branż</strong> - wybierz dowolną kombinację kategorii przetargów
+              </span>
             </div>
           </div>
 
@@ -85,7 +95,7 @@
             <form action="/dashboard/subscription" method="post">
               <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
               <button type="submit" class="btn btn-gold btn-lg">
-                Wykup Premium za <%= Decimal.round(@subscription_amount, 0) %> zł/miesiąc
+                Wykup Premium za {Decimal.round(@subscription_amount, 0)} zł/miesiąc
               </button>
             </form>
 

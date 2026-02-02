@@ -4,10 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <title><%= @page_title || "Przetargowy Przegląd" %></title>
+    <title>{@page_title || "Przetargowy Przegląd - Portal Przetargów Publicznych"}</title>
+
+    <%= for {tag, attrs} <- PrzetargowyPrzegladWeb.SEO.meta_tags(assigns) do %>
+      <%= case tag do %>
+        <% :meta -> %>
+          <meta {attrs} />
+        <% :link -> %>
+          <link {attrs} />
+      <% end %>
+    <% end %>
+
     <%= if assigns[:page_meta] do %>
       {render_slot(@page_meta)}
     <% end %>
+
+    <script type="application/ld+json">
+      <%= raw Jason.encode!(PrzetargowyPrzegladWeb.SEO.structured_data_organization()) %>
+    </script>
+    <%= if assigns[:structured_data] do %>
+      <script type="application/ld+json">
+        <%= raw Jason.encode!(assigns.structured_data) %>
+      </script>
+    <% end %>
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -55,7 +75,7 @@
           >
             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span><%= Phoenix.Flash.get(@flash, :info) %></span>
+          <span>{Phoenix.Flash.get(@flash, :info)}</span>
         </div>
       </div>
     <% end %>
@@ -71,7 +91,7 @@
           >
             <path d="M6 18L18 6M6 6l12 12" />
           </svg>
-          <span><%= Phoenix.Flash.get(@flash, :error) %></span>
+          <span>{Phoenix.Flash.get(@flash, :error)}</span>
         </div>
       </div>
     <% end %>

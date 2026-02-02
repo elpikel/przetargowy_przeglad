@@ -59,8 +59,8 @@ defmodule PrzetargowyPrzeglad.Tenders do
       if query && query != "" do
         search_term = "%#{query}%"
 
-        base_query
-        |> where(
+        where(
+          base_query,
           [tender_notice: tn],
           ilike(tn.order_object, ^search_term) or ilike(tn.organization_name, ^search_term)
         )
@@ -69,18 +69,18 @@ defmodule PrzetargowyPrzeglad.Tenders do
       end
 
     base_query =
-      if regions != [] do
-        province_codes = Enum.map(regions, &region_to_province_code/1) |> Enum.filter(& &1)
-        where(base_query, [tender_notice: tn], tn.organization_province in ^province_codes)
-      else
+      if regions == [] do
         base_query
+      else
+        province_codes = regions |> Enum.map(&region_to_province_code/1) |> Enum.filter(& &1)
+        where(base_query, [tender_notice: tn], tn.organization_province in ^province_codes)
       end
 
     base_query =
-      if order_types != [] do
-        where(base_query, [tender_notice: tn], tn.order_type in ^order_types)
-      else
+      if order_types == [] do
         base_query
+      else
+        where(base_query, [tender_notice: tn], tn.order_type in ^order_types)
       end
 
     total_count =

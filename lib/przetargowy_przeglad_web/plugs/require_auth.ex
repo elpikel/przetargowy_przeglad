@@ -3,8 +3,8 @@ defmodule PrzetargowyPrzegladWeb.Plugs.RequireAuth do
   Plug that ensures a user is authenticated.
   Redirects to login page if no user is logged in.
   """
-  import Plug.Conn
   import Phoenix.Controller
+  import Plug.Conn
 
   alias PrzetargowyPrzeglad.Accounts
 

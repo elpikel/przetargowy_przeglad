@@ -12,9 +12,9 @@ defmodule PrzetargowyPrzeglad.Tpay.WebhookHandler do
   - Refund processed
   """
 
-  require Logger
-
   alias PrzetargowyPrzeglad.Payments
+
+  require Logger
 
   @doc """
   Verifies and processes a webhook payload.
@@ -56,7 +56,8 @@ defmodule PrzetargowyPrzeglad.Tpay.WebhookHandler do
       :ok
     else
       expected_signature =
-        :crypto.mac(:hmac, :sha256, webhook_secret, payload)
+        :hmac
+        |> :crypto.mac(:sha256, webhook_secret, payload)
         |> Base.encode64()
 
       if secure_compare(signature, expected_signature) do
@@ -186,7 +187,8 @@ defmodule PrzetargowyPrzeglad.Tpay.WebhookHandler do
   end
 
   defp get_webhook_secret do
-    Application.get_env(:przetargowy_przeglad, :tpay, [])
+    :przetargowy_przeglad
+    |> Application.get_env(:tpay, [])
     |> Keyword.get(:webhook_secret)
   end
 end

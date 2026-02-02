@@ -17,7 +17,7 @@ defmodule PrzetargowyPrzegladWeb.WebhookController do
   def tpay(conn, params) do
     # Get raw body for signature verification
     # Note: Raw body should be captured by a plug if signature verification is needed
-    signature = get_req_header(conn, "x-jws-signature") |> List.first()
+    signature = conn |> get_req_header("x-jws-signature") |> List.first()
 
     Logger.info("Received Tpay webhook: #{inspect(params)}")
 

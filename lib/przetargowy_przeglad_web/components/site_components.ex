@@ -60,7 +60,12 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
               <path d="M7.5 12H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
               <path d="M7.5 15H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
               <circle cx="16.5" cy="14.5" r="4" fill="none" stroke="currentColor" stroke-width="1.5" />
-              <path d="M19.5 17.5L22 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path
+                d="M19.5 17.5L22 20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
             </svg>
           </div>
           <span class="logo-text">Przetargowy<span>Przegląd</span></span>
@@ -429,10 +434,32 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
-                  <path d="M7.5 12H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                  <path d="M7.5 15H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                  <circle cx="16.5" cy="14.5" r="4" fill="none" stroke="currentColor" stroke-width="1.5" />
-                  <path d="M19.5 17.5L22 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path
+                    d="M7.5 12H12.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M7.5 15H10.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                  <circle
+                    cx="16.5"
+                    cy="14.5"
+                    r="4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M19.5 17.5L22 20"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
                 </svg>
               </div>
               <span class="logo-text">Przetargowy<span>Przegląd</span></span>

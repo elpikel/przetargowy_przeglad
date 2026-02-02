@@ -50,7 +50,9 @@
               </button>
               <div class="filter-dropdown-content" id="alert-dropdown">
                 <div class="filter-option" onclick="clearAlertSelection()">
-                  <span style="color: var(--text-secondary); font-style: italic;">-- Wyczyść wybór --</span>
+                  <span style="color: var(--text-secondary); font-style: italic;">
+                    -- Wyczyść wybór --
+                  </span>
                 </div>
                 <div class="filter-divider"></div>
                 <%= for {alert, index} <- Enum.with_index(@user_alerts, 1) do %>
@@ -90,7 +92,7 @@
               <%= if @regions == [] do %>
                 Wszystkie regiony
               <% else %>
-                Wybrano: <%= length(@regions) %>
+                Wybrano: {length(@regions)}
               <% end %>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9" />
@@ -135,7 +137,7 @@
               <%= if @order_types == [] do %>
                 Wszystkie rodzaje
               <% else %>
-                Wybrano: <%= length(@order_types) %>
+                Wybrano: {length(@order_types)}
               <% end %>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9" />

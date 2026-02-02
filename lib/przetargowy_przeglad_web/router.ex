@@ -24,6 +24,7 @@ defmodule PrzetargowyPrzegladWeb.Router do
     get "/", PageController, :home
     get "/rules", PageController, :rules
     get "/privacy-policy", PageController, :privacy_policy
+    get "/sitemap.xml", SitemapController, :index
     get "/login", SessionController, :show_login
     post "/create", SessionController, :create_session
     get "/register", UserController, :show_register

@@ -60,8 +60,8 @@ defmodule PrzetargowyPrzeglad.Payments.SubscriptionTest do
       assert changeset.valid?
       assert get_change(changeset, :status) == "active"
       assert get_change(changeset, :tpay_subscription_id) == "card_token_123"
-      assert get_change(changeset, :current_period_start) != nil
-      assert get_change(changeset, :current_period_end) != nil
+      assert get_change(changeset, :current_period_start)
+      assert get_change(changeset, :current_period_end)
       # Use get_field since retry_count has a default of 0 and may not show as a change
       assert Ecto.Changeset.get_field(changeset, :retry_count) == 0
     end
@@ -110,7 +110,7 @@ defmodule PrzetargowyPrzeglad.Payments.SubscriptionTest do
 
       assert changeset.valid?
       assert get_change(changeset, :cancel_at_period_end) == true
-      assert get_change(changeset, :cancelled_at) != nil
+      assert get_change(changeset, :cancelled_at)
       refute get_change(changeset, :status) == "cancelled"
     end
 
@@ -126,7 +126,7 @@ defmodule PrzetargowyPrzeglad.Payments.SubscriptionTest do
 
       assert changeset.valid?
       assert get_change(changeset, :status) == "cancelled"
-      assert get_change(changeset, :cancelled_at) != nil
+      assert get_change(changeset, :cancelled_at)
     end
   end
 

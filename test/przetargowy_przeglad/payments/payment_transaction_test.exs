@@ -105,7 +105,7 @@ defmodule PrzetargowyPrzeglad.Payments.PaymentTransactionTest do
       assert changeset.valid?
       assert get_change(changeset, :status) == "completed"
       assert get_change(changeset, :tpay_response) == tpay_response
-      assert get_change(changeset, :paid_at) != nil
+      assert get_change(changeset, :paid_at)
     end
   end
 

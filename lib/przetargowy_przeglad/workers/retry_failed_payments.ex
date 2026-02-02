@@ -33,9 +33,7 @@ defmodule PrzetargowyPrzeglad.Workers.RetryFailedPayments do
 
     results =
       Enum.map(retryable_subscriptions, fn subscription ->
-        Logger.info(
-          "Retrying payment for subscription #{subscription.id} (attempt #{subscription.retry_count + 1}/3)"
-        )
+        Logger.info("Retrying payment for subscription #{subscription.id} (attempt #{subscription.retry_count + 1}/3)")
 
         case Payments.process_renewal(subscription) do
           {:ok, result} ->

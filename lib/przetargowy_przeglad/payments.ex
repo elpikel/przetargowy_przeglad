@@ -58,14 +58,15 @@ defmodule PrzetargowyPrzeglad.Payments do
   def list_subscriptions_due_for_renewal(hours_ahead \\ 24) do
     cutoff = DateTime.add(DateTime.utc_now(), hours_ahead, :hour)
 
-    from(s in Subscription,
-      where: s.status == "active",
-      where: s.cancel_at_period_end == false,
-      where: s.current_period_end <= ^cutoff,
-      where: s.current_period_end > ^DateTime.utc_now(),
-      preload: [:user]
+    Repo.all(
+      from(s in Subscription,
+        where: s.status == "active",
+        where: s.cancel_at_period_end == false,
+        where: s.current_period_end <= ^cutoff,
+        where: s.current_period_end > ^DateTime.utc_now(),
+        preload: [:user]
+      )
     )
-    |> Repo.all()
   end
 
   @doc """
@@ -74,12 +75,7 @@ defmodule PrzetargowyPrzeglad.Payments do
   def list_expired_subscriptions do
     now = DateTime.utc_now()
 
-    from(s in Subscription,
-      where: s.status == "active",
-      where: s.current_period_end < ^now,
-      preload: [:user]
-    )
-    |> Repo.all()
+    Repo.all(from(s in Subscription, where: s.status == "active", where: s.current_period_end < ^now, preload: [:user]))
   end
 
   @doc """
@@ -88,13 +84,14 @@ defmodule PrzetargowyPrzeglad.Payments do
   def list_retryable_subscriptions do
     max_retries = Subscription.max_retry_count()
 
-    from(s in Subscription,
-      where: s.status == "active",
-      where: s.retry_count > 0,
-      where: s.retry_count < ^max_retries,
-      preload: [:user]
+    Repo.all(
+      from(s in Subscription,
+        where: s.status == "active",
+        where: s.retry_count > 0,
+        where: s.retry_count < ^max_retries,
+        preload: [:user]
+      )
     )
-    |> Repo.all()
   end
 
   # ============================================================================
@@ -459,23 +456,14 @@ defmodule PrzetargowyPrzeglad.Payments do
   def list_user_transactions(user_id, opts \\ []) do
     limit = Keyword.get(opts, :limit, 10)
 
-    from(t in PaymentTransaction,
-      where: t.user_id == ^user_id,
-      order_by: [desc: t.inserted_at],
-      limit: ^limit
-    )
-    |> Repo.all()
+    Repo.all(from(t in PaymentTransaction, where: t.user_id == ^user_id, order_by: [desc: t.inserted_at], limit: ^limit))
   end
 
   @doc """
   Lists transactions for a subscription.
   """
   def list_subscription_transactions(subscription_id) do
-    from(t in PaymentTransaction,
-      where: t.subscription_id == ^subscription_id,
-      order_by: [desc: t.inserted_at]
-    )
-    |> Repo.all()
+    Repo.all(from(t in PaymentTransaction, where: t.subscription_id == ^subscription_id, order_by: [desc: t.inserted_at]))
   end
 
   # ============================================================================
