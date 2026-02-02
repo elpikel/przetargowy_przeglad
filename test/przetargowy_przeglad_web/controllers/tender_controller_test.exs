@@ -1,5 +1,5 @@
 defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
-  use PrzetargowyPrzegladWeb.ConnCase, async: false
+  use PrzetargowyPrzegladWeb.ConnCase, async: true
 
   alias PrzetargowyPrzeglad.Repo
   alias PrzetargowyPrzeglad.Tenders.TenderNotice
@@ -23,7 +23,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "displays matching tender notices", %{conn: conn} do
-      create_tender_notice(%{
+      insert(:tender_notice,
         order_object: "Dostawa sprzętu komputerowego",
         organization_name: "Urząd Miasta Warszawa",
         organization_city: "Warszawa",
@@ -31,7 +31,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         order_type: "Delivery",
         notice_type: "ContractNotice",
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
-      })
+      )
 
       conn = get(conn, ~p"/tenders")
       response = html_response(conn, 200)
@@ -42,8 +42,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "filters by text query", %{conn: conn} do
-      create_tender_notice(%{
-        object_id: "notice-1",
+      insert(:tender_notice, %{
         order_object: "Dostawa komputerów",
         organization_name: "Urząd Miasta",
         organization_city: "Warszawa",
@@ -53,8 +52,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-2",
+      insert(:tender_notice, %{
         order_object: "Usługi sprzątania",
         organization_name: "Szkoła Podstawowa",
         organization_city: "Kraków",
@@ -72,8 +70,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "filters by region", %{conn: conn} do
-      create_tender_notice(%{
-        object_id: "notice-1",
+      insert(:tender_notice, %{
         order_object: "Dostawa do Warszawy",
         organization_name: "Urząd Mazowiecki",
         organization_city: "Warszawa",
@@ -83,8 +80,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-2",
+      insert(:tender_notice, %{
         order_object: "Dostawa do Krakowa",
         organization_name: "Urząd Małopolski",
         organization_city: "Kraków",
@@ -103,8 +99,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "filters by order type", %{conn: conn} do
-      create_tender_notice(%{
-        object_id: "notice-1",
+      insert(:tender_notice, %{
         order_object: "Dostawa materiałów",
         organization_name: "Urząd Miasta",
         organization_city: "Warszawa",
@@ -114,8 +109,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-2",
+      insert(:tender_notice, %{
         order_object: "Usługi transportowe",
         organization_name: "Urząd Gminy",
         organization_city: "Warszawa",
@@ -134,8 +128,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "only shows ContractNotice type", %{conn: conn} do
-      create_tender_notice(%{
-        object_id: "notice-1",
+      insert(:tender_notice, %{
         order_object: "Ogłoszenie o zamówieniu",
         organization_name: "Urząd Miasta",
         organization_city: "Warszawa",
@@ -145,8 +138,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-2",
+      insert(:tender_notice, %{
         order_object: "Wynik postępowania",
         organization_name: "Urząd Gminy",
         organization_city: "Warszawa",
@@ -164,8 +156,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "only shows notices with future submission date", %{conn: conn} do
-      create_tender_notice(%{
-        object_id: "notice-1",
+      insert(:tender_notice, %{
         order_object: "Aktualny przetarg",
         organization_name: "Urząd Miasta",
         organization_city: "Warszawa",
@@ -175,8 +166,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-2",
+      insert(:tender_notice, %{
         order_object: "Wygasły przetarg",
         organization_name: "Urząd Gminy",
         organization_city: "Warszawa",
@@ -195,8 +185,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
 
     test "supports pagination", %{conn: conn} do
       for i <- 1..25 do
-        create_tender_notice(%{
-          object_id: "notice-#{i}",
+        insert(:tender_notice, %{
           order_object: "Przetarg nr #{i}",
           organization_name: "Urząd #{i}",
           organization_city: "Miasto",
@@ -221,8 +210,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "filters by multiple regions", %{conn: conn} do
-      create_tender_notice(%{
-        object_id: "notice-1",
+      insert(:tender_notice, %{
         order_object: "Przetarg mazowiecki",
         organization_name: "Urząd Mazowiecki",
         organization_city: "Warszawa",
@@ -232,8 +220,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-2",
+      insert(:tender_notice, %{
         order_object: "Przetarg małopolski",
         organization_name: "Urząd Małopolski",
         organization_city: "Kraków",
@@ -243,8 +230,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-3",
+      insert(:tender_notice, %{
         order_object: "Przetarg wielkopolski",
         organization_name: "Urząd Wielkopolski",
         organization_city: "Poznań",
@@ -265,8 +251,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "filters by multiple order types", %{conn: conn} do
-      create_tender_notice(%{
-        object_id: "notice-1",
+      insert(:tender_notice, %{
         order_object: "Dostawa towarów",
         organization_name: "Urząd",
         organization_city: "Warszawa",
@@ -276,8 +261,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-2",
+      insert(:tender_notice, %{
         order_object: "Świadczenie usług",
         organization_name: "Urząd",
         organization_city: "Warszawa",
@@ -287,8 +271,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-3",
+      insert(:tender_notice, %{
         order_object: "Roboty budowlane",
         organization_name: "Urząd",
         organization_city: "Warszawa",
@@ -313,7 +296,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "handles empty regions array", %{conn: conn} do
-      create_tender_notice(%{
+      insert(:tender_notice, %{
         order_object: "Test przetarg",
         organization_name: "Urząd",
         organization_city: "Warszawa",
@@ -331,7 +314,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "handles empty order_types array", %{conn: conn} do
-      create_tender_notice(%{
+      insert(:tender_notice, %{
         order_object: "Test przetarg",
         organization_name: "Urząd",
         organization_city: "Warszawa",
@@ -349,8 +332,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "combines query, regions, and order_types filters", %{conn: conn} do
-      create_tender_notice(%{
-        object_id: "notice-1",
+      insert(:tender_notice, %{
         order_object: "Dostawa komputerów do Warszawy",
         organization_name: "Urząd Mazowiecki",
         organization_city: "Warszawa",
@@ -360,8 +342,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-2",
+      insert(:tender_notice, %{
         order_object: "Dostawa komputerów do Krakowa",
         organization_name: "Urząd Małopolski",
         organization_city: "Kraków",
@@ -371,8 +352,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      create_tender_notice(%{
-        object_id: "notice-3",
+      insert(:tender_notice, %{
         order_object: "Usługi komputerowe w Warszawie",
         organization_name: "Urząd Mazowiecki",
         organization_city: "Warszawa",
@@ -395,37 +375,21 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
   describe "alert selector visibility" do
     setup %{conn: conn} do
       # Create free user
-      {:ok, %{user: free_user}} =
-        PrzetargowyPrzeglad.Accounts.register_user(%{
-          email: "free@example.com",
-          password: "password123",
-          tender_category: "Dostawy",
-          region: "mazowieckie"
-        })
-
-      {:ok, verified_free} = PrzetargowyPrzeglad.Accounts.verify_user_email(free_user.email_verification_token)
+      free_user = insert(:verified_user, email: "free@example.com", subscription_plan: "free")
 
       # Create premium user
-      {:ok, %{user: premium_user}} =
-        PrzetargowyPrzeglad.Accounts.register_premium_user(%{
-          email: "premium@example.com",
-          password: "password123",
-          tender_category: "Usługi",
-          region: "malopolskie",
-          keyword: "test"
-        })
-
-      {:ok, verified_premium} = PrzetargowyPrzeglad.Accounts.verify_user_email(premium_user.email_verification_token)
+      premium_user = insert(:verified_premium_user, email: "premium@example.com")
+      insert(:premium_alert, user: premium_user)
 
       free_conn =
         conn
         |> init_test_session(%{})
-        |> put_session(:user_id, verified_free.id)
+        |> put_session(:user_id, free_user.id)
 
       premium_conn =
         conn
         |> init_test_session(%{})
-        |> put_session(:user_id, verified_premium.id)
+        |> put_session(:user_id, premium_user.id)
 
       %{free_conn: free_conn, premium_conn: premium_conn}
     end
@@ -450,37 +414,5 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
 
       assert response =~ "Zastosuj filtry z zapisanego alertu"
     end
-  end
-
-  defp create_tender_notice(attrs) do
-    default_attrs = %{
-      object_id: "notice-#{:erlang.unique_integer([:positive])}",
-      notice_number: "2024/BZP 00000001/01",
-      bzp_number: "2024/BZP 00001234",
-      client_type: "1.1.5",
-      tender_type: "1.1.1",
-      is_tender_amount_below_eu: true,
-      publication_date: DateTime.utc_now(),
-      cpv_codes: ["09100000-0"],
-      procedure_result: nil,
-      organization_country: "PL",
-      organization_national_id: "1234567890",
-      organization_id: "1234",
-      tender_id: "ocds-148610-test-#{:erlang.unique_integer([:positive])}",
-      html_body: "<html>...</html>",
-      contractors: [],
-      estimated_values: [],
-      estimated_value: Decimal.new("10000"),
-      total_contract_value: nil,
-      total_contractors_contracts_count: 0,
-      cancelled_count: 0,
-      contractors_contract_details: []
-    }
-
-    merged_attrs = Map.merge(default_attrs, attrs)
-
-    %TenderNotice{}
-    |> TenderNotice.changeset(merged_attrs)
-    |> Repo.insert!()
   end
 end

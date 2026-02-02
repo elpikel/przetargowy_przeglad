@@ -61,6 +61,7 @@ defmodule PrzetargowyPrzeglad.MixProject do
       {:bandit, "~> 1.5"},
       {:oban, "~> 2.20"},
       {:bcrypt_elixir, "~> 3.0"},
+      {:ex_machina, "~> 2.8", only: :test},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:styler, "~> 1.2", only: [:dev, :test], runtime: false}
     ]

@@ -5,24 +5,16 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
 
   setup %{conn: conn} do
     # Create and verify a user for authentication
-    {:ok, %{user: user}} =
-      Accounts.register_user(%{
-        email: "test@example.com",
-        password: "password123",
-        tender_category: "Dostawy",
-        region: "mazowieckie"
-      })
-
-    # Verify the user's email
-    {:ok, verified_user} = Accounts.verify_user_email(user.email_verification_token)
+    user = insert(:verified_user, email: "test@example.com")
+    insert(:simple_alert, user: user, rules: %{region: "mazowieckie", tender_category: "Dostawy"})
 
     # Set up authenticated connection
     conn =
       conn
       |> init_test_session(%{})
-      |> put_session(:user_id, verified_user.id)
+      |> put_session(:user_id, user.id)
 
-    %{conn: conn, user: verified_user}
+    %{conn: conn, user: user}
   end
 
   describe "GET /dashboard for free user" do
@@ -48,25 +40,20 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
   describe "GET /dashboard for premium user" do
     setup %{conn: conn} do
       # Create a premium user
-      {:ok, %{user: premium_user}} =
-        Accounts.register_premium_user(%{
-          email: "premium@example.com",
-          password: "password123",
-          tender_category: "Usługi",
-          region: "malopolskie",
-          keyword: "oprogramowanie"
-        })
+      premium_user = insert(:verified_premium_user, email: "premium@example.com")
 
-      # Verify the user's email
-      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+      insert(:premium_alert,
+        user: premium_user,
+        rules: %{regions: ["malopolskie"], industries: [], keywords: ["oprogramowanie"]}
+      )
 
       # Set up authenticated connection for premium user
       premium_conn =
         conn
         |> init_test_session(%{})
-        |> put_session(:user_id, verified_premium.id)
+        |> put_session(:user_id, premium_user.id)
 
-      %{premium_conn: premium_conn, premium_user: verified_premium}
+      %{premium_conn: premium_conn, premium_user: premium_user}
     end
 
     test "renders dashboard with premium plan section", %{premium_conn: conn} do
@@ -109,25 +96,20 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
   describe "POST /dashboard/alerts for premium user" do
     setup %{conn: conn} do
       # Create a premium user
-      {:ok, %{user: premium_user}} =
-        Accounts.register_premium_user(%{
-          email: "premium2@example.com",
-          password: "password123",
-          tender_category: "Usługi",
-          region: "malopolskie",
-          keyword: "software"
-        })
+      premium_user = insert(:verified_premium_user, email: "premium2@example.com")
 
-      # Verify the user's email
-      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+      insert(:premium_alert,
+        user: premium_user,
+        rules: %{regions: ["malopolskie"], industries: [], keywords: ["software"]}
+      )
 
       # Set up authenticated connection for premium user
       premium_conn =
         conn
         |> init_test_session(%{})
-        |> put_session(:user_id, verified_premium.id)
+        |> put_session(:user_id, premium_user.id)
 
-      %{premium_conn: premium_conn, premium_user: verified_premium}
+      %{premium_conn: premium_conn, premium_user: premium_user}
     end
 
     test "updates premium alert preferences with keywords", %{
@@ -163,23 +145,19 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
 
   describe "POST /dashboard/alerts/new for premium user" do
     setup %{conn: conn} do
-      {:ok, %{user: premium_user}} =
-        Accounts.register_premium_user(%{
-          email: "premium3@example.com",
-          password: "password123",
-          tender_category: "Usługi",
-          region: "malopolskie",
-          keyword: "software"
-        })
+      premium_user = insert(:verified_premium_user, email: "premium3@example.com")
 
-      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+      insert(:premium_alert,
+        user: premium_user,
+        rules: %{regions: ["malopolskie"], industries: [], keywords: ["software"]}
+      )
 
       premium_conn =
         conn
         |> init_test_session(%{})
-        |> put_session(:user_id, verified_premium.id)
+        |> put_session(:user_id, premium_user.id)
 
-      %{premium_conn: premium_conn, premium_user: verified_premium}
+      %{premium_conn: premium_conn, premium_user: premium_user}
     end
 
     test "creates a new alert for premium user", %{premium_conn: conn, premium_user: user} do
@@ -221,23 +199,19 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
 
   describe "POST /dashboard/alerts/new with redirect_to parameter" do
     setup %{conn: conn} do
-      {:ok, %{user: premium_user}} =
-        Accounts.register_premium_user(%{
-          email: "premium5@example.com",
-          password: "password123",
-          tender_category: "Usługi",
-          region: "malopolskie",
-          keyword: "software"
-        })
+      premium_user = insert(:verified_premium_user, email: "premium5@example.com")
 
-      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+      insert(:premium_alert,
+        user: premium_user,
+        rules: %{regions: ["malopolskie"], industries: [], keywords: ["software"]}
+      )
 
       premium_conn =
         conn
         |> init_test_session(%{})
-        |> put_session(:user_id, verified_premium.id)
+        |> put_session(:user_id, premium_user.id)
 
-      %{premium_conn: premium_conn, premium_user: verified_premium}
+      %{premium_conn: premium_conn, premium_user: premium_user}
     end
 
     test "redirects to custom path when redirect_to is provided", %{
@@ -289,23 +263,19 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
 
   describe "edge cases for alert creation" do
     setup %{conn: conn} do
-      {:ok, %{user: premium_user}} =
-        Accounts.register_premium_user(%{
-          email: "premium6@example.com",
-          password: "password123",
-          tender_category: "Usługi",
-          region: "malopolskie",
-          keyword: "software"
-        })
+      premium_user = insert(:verified_premium_user, email: "premium6@example.com")
 
-      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+      insert(:premium_alert,
+        user: premium_user,
+        rules: %{regions: ["malopolskie"], industries: [], keywords: ["software"]}
+      )
 
       premium_conn =
         conn
         |> init_test_session(%{})
-        |> put_session(:user_id, verified_premium.id)
+        |> put_session(:user_id, premium_user.id)
 
-      %{premium_conn: premium_conn, premium_user: verified_premium}
+      %{premium_conn: premium_conn, premium_user: premium_user}
     end
 
     test "handles empty keywords string", %{premium_conn: conn, premium_user: user} do
@@ -400,30 +370,25 @@ defmodule PrzetargowyPrzegladWeb.DashboardControllerTest do
 
   describe "DELETE /dashboard/alerts/:id for premium user" do
     setup %{conn: conn} do
-      {:ok, %{user: premium_user}} =
-        Accounts.register_premium_user(%{
-          email: "premium4@example.com",
-          password: "password123",
-          tender_category: "Usługi",
-          region: "malopolskie",
-          keyword: "software"
-        })
+      premium_user = insert(:verified_premium_user, email: "premium4@example.com")
 
-      {:ok, verified_premium} = Accounts.verify_user_email(premium_user.email_verification_token)
+      insert(:premium_alert,
+        user: premium_user,
+        rules: %{regions: ["malopolskie"], industries: [], keywords: ["software"]}
+      )
 
       # Create a second alert so we can delete one
-      {:ok, _second_alert} =
-        Accounts.create_alert(%{
-          user_id: verified_premium.id,
-          rules: %{industries: ["it"], regions: ["mazowieckie"], keywords: ["cloud"]}
-        })
+      insert(:premium_alert,
+        user: premium_user,
+        rules: %{industries: ["it"], regions: ["mazowieckie"], keywords: ["cloud"]}
+      )
 
       premium_conn =
         conn
         |> init_test_session(%{})
-        |> put_session(:user_id, verified_premium.id)
+        |> put_session(:user_id, premium_user.id)
 
-      %{premium_conn: premium_conn, premium_user: verified_premium}
+      %{premium_conn: premium_conn, premium_user: premium_user}
     end
 
     test "deletes an alert for premium user with multiple alerts", %{

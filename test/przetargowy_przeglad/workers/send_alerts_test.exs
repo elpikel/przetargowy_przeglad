@@ -4,9 +4,6 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
 
   import Swoosh.TestAssertions
 
-  alias PrzetargowyPrzeglad.Accounts.Alert
-  alias PrzetargowyPrzeglad.Accounts.User
-  alias PrzetargowyPrzeglad.Tenders.TenderNotice
   alias PrzetargowyPrzeglad.Workers.SendAlerts
 
   @moduletag capture_log: true
@@ -14,17 +11,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
   describe "perform/1" do
     test "sends email to verified user with matching tender notices" do
       # Create a verified user
-      user = create_verified_user("test@example.com")
+      user = insert(:verified_user, email: "test@example.com")
 
       # Create an alert for the user
-      create_alert(user, %{
+      insert(:simple_alert, user: user, rules: %{
         "region" => "mazowieckie",
         "tender_category" => "Dostawy"
       })
 
       # Create matching tender notices (future submission date)
-      create_tender_notice(%{
-        object_id: "notice-1",
+      insert(:tender_notice, 
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -33,7 +29,7 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
         organization_name: "Urząd Miasta Warszawa",
         organization_city: "Warszawa",
         bzp_number: "2024/BZP 00001234"
-      })
+      )
 
       # Perform the worker
       assert :ok = perform_job(SendAlerts, %{})
@@ -47,17 +43,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
 
     test "does not send email to unverified user" do
       # Create an unverified user
-      user = create_unverified_user("unverified@example.com")
+      user = insert(:user, email: "unverified@example.com", email_verified: false, email_verification_token: "some-token")
 
       # Create an alert for the user
-      create_alert(user, %{
+      insert(:simple_alert, user: user, rules: %{
         "region" => "mazowieckie",
         "tender_category" => "Dostawy"
       })
 
       # Create matching tender notices
-      create_tender_notice(%{
-        object_id: "notice-2",
+      insert(:tender_notice, 
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -66,7 +61,7 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
         organization_name: "Urząd Gminy",
         organization_city: "Warszawa",
         bzp_number: "2024/BZP 00001235"
-      })
+      )
 
       # Perform the worker
       assert :ok = perform_job(SendAlerts, %{})
@@ -77,17 +72,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
 
     test "does not send email when no matching notices" do
       # Create a verified user
-      user = create_verified_user("nonotices@example.com")
+      user = insert(:verified_user, email: "nonotices@example.com")
 
       # Create an alert for the user with different criteria
-      create_alert(user, %{
+      insert(:simple_alert, user: user, rules: %{
         "region" => "wielkopolskie",
         "tender_category" => "Usługi"
       })
 
       # Create tender notice that doesn't match (different region)
-      create_tender_notice(%{
-        object_id: "notice-3",
+      insert(:tender_notice, 
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -96,7 +90,7 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
         organization_name: "Urząd Miasta",
         organization_city: "Warszawa",
         bzp_number: "2024/BZP 00001236"
-      })
+      )
 
       # Perform the worker
       assert :ok = perform_job(SendAlerts, %{})
@@ -107,17 +101,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
 
     test "does not send email for expired tender notices" do
       # Create a verified user
-      user = create_verified_user("expired@example.com")
+      user = insert(:verified_user, email: "expired@example.com")
 
       # Create an alert for the user
-      create_alert(user, %{
+      insert(:simple_alert, user: user, rules: %{
         "region" => "mazowieckie",
         "tender_category" => "Dostawy"
       })
 
       # Create tender notice with past submission date
-      create_tender_notice(%{
-        object_id: "notice-4",
+      insert(:tender_notice, 
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -126,7 +119,7 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
         organization_name: "Szkoła Podstawowa",
         organization_city: "Warszawa",
         bzp_number: "2024/BZP 00001237"
-      })
+      )
 
       # Perform the worker
       assert :ok = perform_job(SendAlerts, %{})
@@ -137,17 +130,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
 
     test "sends email only for ContractNotice type" do
       # Create a verified user
-      user = create_verified_user("noticetype@example.com")
+      user = insert(:verified_user, email: "noticetype@example.com")
 
       # Create an alert for the user
-      create_alert(user, %{
+      insert(:simple_alert, user: user, rules: %{
         "region" => "mazowieckie",
         "tender_category" => "Dostawy"
       })
 
       # Create tender notice with wrong notice type
-      create_tender_notice(%{
-        object_id: "notice-5",
+      insert(:tender_notice, 
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "TenderResultNotice",
@@ -156,7 +148,7 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
         organization_name: "Urząd Miasta",
         organization_city: "Warszawa",
         bzp_number: "2024/BZP 00001238"
-      })
+      )
 
       # Perform the worker
       assert :ok = perform_job(SendAlerts, %{})
@@ -167,23 +159,22 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
 
     test "handles multiple users with different alerts" do
       # Create two verified users
-      user1 = create_verified_user("user1@example.com")
-      user2 = create_verified_user("user2@example.com")
+      user1 = insert(:verified_user, email: "user1@example.com")
+      user2 = insert(:verified_user, email: "user2@example.com")
 
       # Create alerts with different criteria
-      create_alert(user1, %{
+      insert(:simple_alert, user: user1, rules: %{
         "region" => "mazowieckie",
         "tender_category" => "Dostawy"
       })
 
-      create_alert(user2, %{
+      insert(:simple_alert, user: user2, rules: %{
         "region" => "malopolskie",
         "tender_category" => "Usługi"
       })
 
       # Create tender notices matching user1's alert
-      create_tender_notice(%{
-        object_id: "notice-6",
+      insert(:tender_notice, 
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -192,11 +183,10 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
         organization_name: "Urząd Mazowiecki",
         organization_city: "Warszawa",
         bzp_number: "2024/BZP 00001239"
-      })
+      )
 
       # Create tender notices matching user2's alert
-      create_tender_notice(%{
-        object_id: "notice-7",
+      insert(:tender_notice, 
         organization_province: "PL12",
         order_type: "Services",
         notice_type: "ContractNotice",
@@ -205,7 +195,7 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
         organization_name: "Urząd Małopolski",
         organization_city: "Kraków",
         bzp_number: "2024/BZP 00001240"
-      })
+      )
 
       # Perform the worker
       assert :ok = perform_job(SendAlerts, %{})
@@ -242,16 +232,15 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
 
       for {region, province_code} <- regions_to_codes do
         # Create user and alert
-        user = create_verified_user("test-#{region}@example.com")
+        user = insert(:verified_user, email: "test-#{region}@example.com")
 
-        create_alert(user, %{
+        insert(:simple_alert, user: user, rules: %{
           "region" => region,
           "tender_category" => "Dostawy"
         })
 
         # Create matching notice
-        create_tender_notice(%{
-          object_id: "notice-#{region}",
+        insert(:tender_notice, 
           organization_province: province_code,
           order_type: "Delivery",
           notice_type: "ContractNotice",
@@ -260,7 +249,7 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
           organization_name: "Urząd #{region}",
           organization_city: "Miasto",
           bzp_number: "2024/BZP #{region}"
-        })
+        )
       end
 
       # Perform the worker
@@ -282,15 +271,14 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       ]
 
       for {category, order_type} <- categories_to_types do
-        user = create_verified_user("test-#{order_type}@example.com")
+        user = insert(:verified_user, email: "test-#{order_type}@example.com")
 
-        create_alert(user, %{
+        insert(:simple_alert, user: user, rules: %{
           "region" => "mazowieckie",
           "tender_category" => category
         })
 
-        create_tender_notice(%{
-          object_id: "notice-#{order_type}",
+        insert(:tender_notice, 
           organization_province: "PL14",
           order_type: order_type,
           notice_type: "ContractNotice",
@@ -299,7 +287,7 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
           organization_name: "Urząd Miasta",
           organization_city: "Warszawa",
           bzp_number: "2024/BZP #{order_type}"
-        })
+        )
       end
 
       # Perform the worker
@@ -314,61 +302,4 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
     end
   end
 
-  # Helper functions
-
-  defp create_verified_user(email) do
-    Repo.insert!(%User{
-      email: email,
-      password: Bcrypt.hash_pwd_salt("password123"),
-      email_verified: true,
-      subscription_plan: "free"
-    })
-  end
-
-  defp create_unverified_user(email) do
-    Repo.insert!(%User{
-      email: email,
-      password: Bcrypt.hash_pwd_salt("password123"),
-      email_verified: false,
-      email_verification_token: "some-token",
-      subscription_plan: "free"
-    })
-  end
-
-  defp create_alert(user, rules) do
-    Repo.insert!(%Alert{
-      user_id: user.id,
-      rules: rules
-    })
-  end
-
-  defp create_tender_notice(attrs) do
-    default_attrs = %{
-      notice_number: "2024/BZP 00000001/01",
-      client_type: "1.1.5",
-      tender_type: "1.1.1",
-      is_tender_amount_below_eu: true,
-      publication_date: DateTime.utc_now(),
-      cpv_codes: ["09100000-0"],
-      procedure_result: nil,
-      organization_country: "PL",
-      organization_national_id: "1234567890",
-      organization_id: "1234",
-      tender_id: "ocds-148610-test",
-      html_body: "<html>...</html>",
-      contractors: [],
-      estimated_values: [],
-      estimated_value: Decimal.new("10000"),
-      total_contract_value: nil,
-      total_contractors_contracts_count: 0,
-      cancelled_count: 0,
-      contractors_contract_details: []
-    }
-
-    merged_attrs = Map.merge(default_attrs, attrs)
-
-    %TenderNotice{}
-    |> TenderNotice.changeset(merged_attrs)
-    |> Repo.insert!()
-  end
 end

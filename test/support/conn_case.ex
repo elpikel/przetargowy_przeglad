@@ -24,6 +24,8 @@ defmodule PrzetargowyPrzegladWeb.ConnCase do
       import Phoenix.ConnTest
       import Plug.Conn
       import PrzetargowyPrzegladWeb.ConnCase
+      import PrzetargowyPrzeglad.Factory
+
       # The default endpoint for testing
       @endpoint PrzetargowyPrzegladWeb.Endpoint
 

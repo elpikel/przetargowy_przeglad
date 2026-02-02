@@ -24,6 +24,7 @@ defmodule PrzetargowyPrzeglad.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import PrzetargowyPrzeglad.DataCase
+      import PrzetargowyPrzeglad.Factory
 
       alias PrzetargowyPrzeglad.Repo
     end
