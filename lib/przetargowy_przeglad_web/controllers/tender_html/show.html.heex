@@ -1,0 +1,231 @@
+<Layouts.site
+  flash={@flash}
+  current_user={@current_user}
+  page_title={@page_title}
+  header_position="sticky"
+  show_footer={true}
+>
+  <:page_meta>
+    <meta name="description" content={@page_description} />
+    <link rel="canonical" href={@canonical_url} />
+    <%= if @noindex do %>
+      <meta name="robots" content="noindex, follow" />
+    <% end %>
+  </:page_meta>
+
+  <main class="tender-detail-page">
+    <nav class="breadcrumb">
+      <a href="/" class="breadcrumb-link">Strona główna</a>
+      <span class="breadcrumb-separator">/</span>
+      <a href="/tenders" class="breadcrumb-link">Przetargi</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-current">{truncate_text(@tender.order_object, 50)}</span>
+    </nav>
+
+    <div class="tender-detail-header">
+      <div class="tender-header-content">
+        <h1 class="tender-detail-title">{@tender.order_object}</h1>
+        <%= if @is_expired do %>
+          <span class="tender-badge tender-badge-expired">Termin minął</span>
+        <% else %>
+          <span class="tender-badge tender-badge-active">Aktywny</span>
+        <% end %>
+      </div>
+      <div class="tender-bzp-number">
+        <span class="label">Numer BZP:</span>
+        <span class="value">{@tender.bzp_number}</span>
+      </div>
+    </div>
+
+    <div class="tender-detail-grid">
+      <section class="tender-detail-section tender-info-primary">
+        <h2 class="section-title">Informacje podstawowe</h2>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <svg
+              class="info-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 21h18" /><path d="M5 21V7l8-4v18" /><path d="M19 21V11l-6-4" />
+            </svg>
+            <div class="info-content">
+              <span class="info-label">Zamawiający</span>
+              <span class="info-value">{@tender.organization_name}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <svg
+              class="info-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <div class="info-content">
+              <span class="info-label">Lokalizacja</span>
+              <span class="info-value">
+                {@tender.organization_city}
+                <%= if @tender.organization_province do %>
+                  , {@tender.organization_province}
+                <% end %>
+              </span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <svg
+              class="info-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <div class="info-content">
+              <span class="info-label">Data publikacji</span>
+              <span class="info-value">{format_date(@tender.publication_date)}</span>
+            </div>
+          </div>
+
+          <%= if @tender.submitting_offers_date do %>
+            <div class="info-item">
+              <svg
+                class="info-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <div class="info-content">
+                <span class="info-label">Termin składania ofert</span>
+                <span class={"info-value #{if @is_expired, do: "text-expired", else: "text-deadline"}"}>
+                  {format_date(@tender.submitting_offers_date)}
+                </span>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="info-item">
+            <svg
+              class="info-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20 7h-9" /><path d="M14 17H5" /><circle cx="17" cy="17" r="3" /><circle
+                cx="7"
+                cy="7"
+                r="3"
+              />
+            </svg>
+            <div class="info-content">
+              <span class="info-label">Rodzaj zamówienia</span>
+              <span class="info-value">{format_order_type(@tender.order_type)}</span>
+            </div>
+          </div>
+
+          <%= if @tender.estimated_value do %>
+            <div class="info-item">
+              <svg
+                class="info-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+              </svg>
+              <div class="info-content">
+                <span class="info-label">Szacunkowa wartość</span>
+                <span class="info-value text-value">
+                  {format_value(@tender.estimated_value)} PLN
+                </span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <%= if @tender.cpv_codes != [] do %>
+          <div class="cpv-section">
+            <h3 class="subsection-title">Kody CPV</h3>
+            <div class="cpv-codes">
+              <%= for cpv_code <- @tender.cpv_codes do %>
+                <span class="cpv-code">{cpv_code}</span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="tender-actions">
+          <a
+            href={"https://ezamowienia.gov.pl/mp-client/search/list/#{@tender.tender_id}"}
+            target="_blank"
+            rel="noopener"
+            class="btn btn-primary btn-view-official"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+            Zobacz pełną dokumentację na ezamowienia.gov.pl
+          </a>
+          <a href="/tenders" class="btn btn-outline btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            Powrót do wyszukiwania
+          </a>
+        </div>
+      </section>
+
+      <aside class="tender-detail-sidebar">
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">Dodatkowe informacje</h3>
+
+          <div class="sidebar-info">
+            <span class="sidebar-label">Typ klienta</span>
+            <span class="sidebar-value">{@tender.client_type || "Brak danych"}</span>
+          </div>
+
+          <div class="sidebar-info">
+            <span class="sidebar-label">Rodzaj ogłoszenia</span>
+            <span class="sidebar-value">{format_notice_type(@tender.notice_type)}</span>
+          </div>
+
+          <%= if @tender.organization_national_id do %>
+            <div class="sidebar-info">
+              <span class="sidebar-label">NIP zamawiającego</span>
+              <span class="sidebar-value">{@tender.organization_national_id}</span>
+            </div>
+          <% end %>
+
+          <div class="sidebar-info">
+            <span class="sidebar-label">Wartość poniżej progów UE</span>
+            <span class="sidebar-value">
+              {if @tender.is_tender_amount_below_eu, do: "Tak", else: "Nie"}
+            </span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</Layouts.site>

@@ -60,6 +60,39 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
     )
   end
 
+  def show(conn, %{"id" => id}) do
+    case Tenders.get_tender_notice(id) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> put_view(html: PrzetargowyPrzegladWeb.ErrorHTML)
+        |> render(:"404")
+
+      tender ->
+        # Check if tender is expired
+        is_expired = tender.submitting_offers_date && DateTime.compare(tender.submitting_offers_date, DateTime.utc_now()) == :lt
+
+        # SEO meta tags
+        page_title = build_tender_page_title(tender)
+        page_description = build_tender_page_description(tender)
+        canonical_url = url(~p"/tenders/#{tender.object_id}")
+
+        # Structured data
+        structured_data = [
+          PrzetargowyPrzegladWeb.SEO.structured_data_tender(tender),
+          build_tender_breadcrumb_data(tender)
+        ]
+
+        conn
+        |> assign(:page_title, page_title)
+        |> assign(:page_description, page_description)
+        |> assign(:canonical_url, canonical_url)
+        |> assign(:structured_data, structured_data)
+        |> assign(:noindex, is_expired)
+        |> render(:show, tender: tender, is_expired: is_expired)
+    end
+  end
+
   defp build_page_title(params, page, total_count) do
     query = params["q"]
     regions = params["regions"] || []
@@ -182,6 +215,58 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
       end
 
     PrzetargowyPrzegladWeb.SEO.structured_data_breadcrumb(items)
+  end
+
+  defp build_tender_page_title(tender) do
+    "#{tender.order_object} - #{tender.organization_name} | Przetargowy Przegląd"
+  end
+
+  defp build_tender_page_description(tender) do
+    deadline = if tender.submitting_offers_date do
+      Calendar.strftime(tender.submitting_offers_date, "%d.%m.%Y")
+    else
+      "brak terminu"
+    end
+
+    "Przetarg: #{tender.order_object}. Zamawiający: #{tender.organization_name}, #{tender.organization_city}. " <>
+    "Numer BZP: #{tender.bzp_number}. Termin składania ofert: #{deadline}."
+  end
+
+  defp build_tender_breadcrumb_data(tender) do
+    region_code = get_province_region_code(tender.organization_province)
+    region_name = get_region_name(region_code)
+
+    items = [
+      {"Strona główna", url(~p"/")},
+      {"Przetargi", url(~p"/tenders")},
+      {"#{region_name}", url(~p"/tenders?#{[regions: [region_code]]}")},
+      {String.slice(tender.order_object, 0..50), url(~p"/tenders/#{tender.object_id}")}
+    ]
+
+    PrzetargowyPrzegladWeb.SEO.structured_data_breadcrumb(items)
+  end
+
+  defp get_province_region_code(province_code) do
+    province_to_region = %{
+      "PL02" => "dolnoslaskie",
+      "PL04" => "kujawsko-pomorskie",
+      "PL06" => "lubelskie",
+      "PL08" => "lubuskie",
+      "PL10" => "lodzkie",
+      "PL12" => "malopolskie",
+      "PL14" => "mazowieckie",
+      "PL16" => "opolskie",
+      "PL18" => "podkarpackie",
+      "PL20" => "podlaskie",
+      "PL22" => "pomorskie",
+      "PL24" => "slaskie",
+      "PL26" => "swietokrzyskie",
+      "PL28" => "warminsko-mazurskie",
+      "PL30" => "wielkopolskie",
+      "PL32" => "zachodniopomorskie"
+    }
+
+    Map.get(province_to_region, province_code, "mazowieckie")
   end
 
   defp parse_page(nil), do: 1

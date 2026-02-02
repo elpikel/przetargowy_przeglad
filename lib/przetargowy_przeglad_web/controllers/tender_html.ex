@@ -70,6 +70,28 @@ defmodule PrzetargowyPrzegladWeb.TenderHTML do
   def map_order_type_to_category(""), do: ""
   def map_order_type_to_category(nil), do: ""
 
+  def format_order_type("Delivery"), do: "Dostawy"
+  def format_order_type("Services"), do: "Usługi"
+  def format_order_type("Works"), do: "Roboty budowlane"
+  def format_order_type(type), do: type || "Brak danych"
+
+  def format_notice_type("ContractNotice"), do: "Ogłoszenie o zamówieniu"
+  def format_notice_type("AgreementIntentionNotice"), do: "Ogłoszenie o zamiarze zawarcia umowy"
+  def format_notice_type("TenderResultNotice"), do: "Ogłoszenie o wyniku postępowania"
+  def format_notice_type("CompetitionNotice"), do: "Ogłoszenie o konkursie"
+  def format_notice_type("CompetitionResultNotice"), do: "Ogłoszenie o wynikach konkursu"
+  def format_notice_type("NoticeUpdateNotice"), do: "Ogłoszenie o zmianie ogłoszenia"
+  def format_notice_type("AgreementUpdateNotice"), do: "Ogłoszenie o zmianie umowy"
+  def format_notice_type("ContractPerformingNotice"), do: "Ogłoszenie o wykonaniu umowy"
+  def format_notice_type("CircumstancesFulfillmentNotice"), do: "Ogłoszenie o spełnianiu okoliczności"
+  def format_notice_type("SmallContractNotice"), do: "Ogłoszenie o zamówieniu poza Pzp"
+  def format_notice_type("ConcessionNotice"), do: "Ogłoszenie o koncesji"
+  def format_notice_type("ConcessionIntentionAgreementNotice"), do: "Ogłoszenie o zamiarze zawarcia umowy koncesji"
+  def format_notice_type("NoticeUpdateConcession"), do: "Ogłoszenie o zmianie ogłoszenia dot. koncesji"
+  def format_notice_type("ConcessionAgreementNotice"), do: "Ogłoszenie o zawarciu umowy koncesji"
+  def format_notice_type("ConcessionUpdateAgreementNotice"), do: "Ogłoszenie o zmianie umowy koncesji"
+  def format_notice_type(type), do: type || "Brak danych"
+
   # For paid users, order_type doesn't map to industries since they are different concepts
   # Industries are business sectors, order_type is procurement type
   def map_order_type_to_industry(_), do: ""

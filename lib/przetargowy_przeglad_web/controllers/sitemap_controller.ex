@@ -1,10 +1,15 @@
 defmodule PrzetargowyPrzegladWeb.SitemapController do
   use PrzetargowyPrzegladWeb, :controller
+  use PrzetargowyPrzegladWeb, :verified_routes
+
+  import Ecto.Query
+  alias PrzetargowyPrzeglad.Repo
+  alias PrzetargowyPrzeglad.Tenders.TenderNotice
 
   def index(conn, _params) do
     base_url = "https://#{conn.host}"
 
-    urls = [
+    static_urls = [
       # Static pages
       %{loc: "#{base_url}/", changefreq: "daily", priority: "1.0"},
       %{loc: "#{base_url}/tenders", changefreq: "hourly", priority: "0.9"},
@@ -19,11 +24,52 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
       %{loc: "#{base_url}/tenders?order_types[]=Works", changefreq: "daily", priority: "0.7"}
     ]
 
+    # Get active tenders (non-expired, ContractNotice type only)
+    active_tenders = get_active_tenders()
+
+    tender_urls = Enum.map(active_tenders, fn tender ->
+      # Use Phoenix's url helper for proper encoding
+      tender_url = url(~p"/tenders/#{tender.object_id}")
+
+      %{
+        loc: tender_url,
+        changefreq: "daily",
+        priority: "0.8",
+        lastmod: format_lastmod(tender.updated_at || tender.inserted_at)
+      }
+    end)
+
+    urls = static_urls ++ tender_urls
+
     xml = generate_sitemap_xml(urls)
 
     conn
     |> put_resp_content_type("application/xml")
     |> send_resp(200, xml)
+  end
+
+  defp get_active_tenders do
+    now = DateTime.utc_now()
+
+    from(t in TenderNotice,
+      where: t.notice_type == "ContractNotice",
+      where: t.submitting_offers_date > ^now,
+      order_by: [desc: t.publication_date],
+      limit: 1000,
+      select: %{
+        object_id: t.object_id,
+        inserted_at: t.inserted_at,
+        updated_at: t.updated_at
+      }
+    )
+    |> Repo.all()
+  end
+
+  defp format_lastmod(nil), do: nil
+  defp format_lastmod(datetime) do
+    datetime
+    |> DateTime.truncate(:second)
+    |> DateTime.to_iso8601()
   end
 
   defp generate_sitemap_xml(urls) do
@@ -36,10 +82,16 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
   end
 
   defp url_to_xml(url) do
+    lastmod_tag = if Map.has_key?(url, :lastmod) && url.lastmod do
+      "<lastmod>#{url.lastmod}</lastmod>\n        "
+    else
+      ""
+    end
+
     """
       <url>
         <loc>#{url.loc}</loc>
-        <changefreq>#{url.changefreq}</changefreq>
+        #{lastmod_tag}<changefreq>#{url.changefreq}</changefreq>
         <priority>#{url.priority}</priority>
       </url>
     """

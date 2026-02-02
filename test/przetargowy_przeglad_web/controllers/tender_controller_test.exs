@@ -1,15 +1,6 @@
 defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
   use PrzetargowyPrzegladWeb.ConnCase, async: true
 
-  alias PrzetargowyPrzeglad.Repo
-  alias PrzetargowyPrzeglad.Tenders.TenderNotice
-
-  setup do
-    # Clean up database before each test to prevent data leakage
-    Repo.delete_all(TenderNotice)
-    :ok
-  end
-
   describe "GET /tenders" do
     test "renders search page", %{conn: conn} do
       conn = get(conn, ~p"/tenders")
@@ -252,8 +243,8 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
 
     test "filters by multiple order types", %{conn: conn} do
       insert(:tender_notice, %{
-        order_object: "Dostawa towarów",
-        organization_name: "Urząd",
+        order_object: "Dostawa towarów do magazynu",
+        organization_name: "Urząd Dostawy",
         organization_city: "Warszawa",
         organization_province: "PL14",
         order_type: "Delivery",
@@ -262,8 +253,8 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       })
 
       insert(:tender_notice, %{
-        order_object: "Świadczenie usług",
-        organization_name: "Urząd",
+        order_object: "Świadczenie usług informatycznych",
+        organization_name: "Urząd Usług",
         organization_city: "Warszawa",
         organization_province: "PL14",
         order_type: "Services",
@@ -272,8 +263,8 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       })
 
       insert(:tender_notice, %{
-        order_object: "Roboty budowlane",
-        organization_name: "Urząd",
+        order_object: "Wykonanie robót budowlanych",
+        organization_name: "Urząd Robót",
         organization_city: "Warszawa",
         organization_province: "PL14",
         order_type: "Works",
@@ -286,13 +277,12 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       conn = get(conn, "/tenders?" <> query_string)
       response = html_response(conn, 200)
 
-      # Count tender cards to verify correct number of results
-      card_count = response |> String.split("tender-card") |> length() |> Kernel.-(1)
-      assert card_count == 2
-
       # Should include the filtered results
-      assert response =~ "Dostawa towarów"
-      assert response =~ "Świadczenie usług"
+      assert response =~ "Dostawa towarów do magazynu"
+      assert response =~ "Świadczenie usług informatycznych"
+      # Should not include the Works tender
+      refute response =~ "Wykonanie robót budowlanych"
+      refute response =~ "Urząd Robót"
     end
 
     test "handles empty regions array", %{conn: conn} do
@@ -413,6 +403,169 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       response = html_response(conn, 200)
 
       assert response =~ "Zastosuj filtry z zapisanego alertu"
+    end
+  end
+
+  describe "GET /tenders/:id" do
+    test "renders tender detail page for valid bzp_number", %{conn: conn} do
+      tender =
+        insert(:tender_notice, %{
+          order_object: "Dostawa sprzętu komputerowego",
+          organization_name: "Urząd Miasta Warszawa",
+          organization_city: "Warszawa",
+          organization_province: "PL14",
+          order_type: "Delivery",
+          notice_type: "ContractNotice",
+          submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
+        })
+
+      # Verify tender was inserted
+      assert tender.bzp_number
+
+      # Verify we can find it directly
+      found_tender = PrzetargowyPrzeglad.Tenders.get_tender_by_bzp_number(tender.bzp_number)
+      assert found_tender
+      assert found_tender.bzp_number == tender.bzp_number
+
+      # Call controller action directly instead of via HTTP
+      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      response = html_response(conn, 200)
+
+      assert response =~ "Dostawa sprzętu komputerowego"
+      assert response =~ "Urząd Miasta Warszawa"
+      assert response =~ "Warszawa"
+      assert response =~ tender.bzp_number
+    end
+
+    test "returns 404 for non-existent tender", %{conn: conn} do
+      conn = get(conn, ~p"/tenders/2024-BZP-99999999")
+      assert html_response(conn, 404)
+    end
+
+    test "shows active badge for active tender", %{conn: conn} do
+      tender =
+        insert(:tender_notice, %{
+          order_object: "Aktywny przetarg",
+          submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
+        })
+
+      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      response = html_response(conn, 200)
+
+      assert response =~ "Aktywny"
+      refute response =~ "Termin minął"
+    end
+
+    test "shows expired badge for expired tender", %{conn: conn} do
+      tender =
+        insert(:tender_notice, %{
+          order_object: "Wygasły przetarg",
+          submitting_offers_date: DateTime.add(DateTime.utc_now(), -1, :day)
+        })
+
+      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      response = html_response(conn, 200)
+
+      assert response =~ "Termin minął"
+      refute response =~ "tender-badge-active"
+    end
+
+    test "includes SEO meta tags", %{conn: conn} do
+      tender =
+        insert(:tender_notice, %{
+          order_object: "Dostawa sprzętu",
+          organization_name: "Urząd",
+          submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
+        })
+
+      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      response = html_response(conn, 200)
+
+      assert response =~ ~s(<meta name="description")
+      assert response =~ ~s(<link rel="canonical")
+      assert response =~ "Dostawa sprzętu"
+    end
+
+    test "includes noindex meta tag for expired tender", %{conn: conn} do
+      tender =
+        insert(:tender_notice, %{
+          order_object: "Wygasły przetarg",
+          submitting_offers_date: DateTime.add(DateTime.utc_now(), -1, :day)
+        })
+
+      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      response = html_response(conn, 200)
+
+      assert response =~ ~s(<meta name="robots" content="noindex, follow")
+    end
+
+    test "does not include noindex for active tender", %{conn: conn} do
+      tender =
+        insert(:tender_notice, %{
+          order_object: "Aktywny przetarg",
+          submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
+        })
+
+      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      response = html_response(conn, 200)
+
+      refute response =~ ~s(<meta name="robots" content="noindex)
+    end
+
+    test "displays all tender details", %{conn: conn} do
+      tender =
+        insert(:tender_notice, %{
+          order_object: "Dostawa komputerów",
+          organization_name: "Urząd Miasta",
+          organization_city: "Warszawa",
+          organization_province: "PL14",
+          order_type: "Delivery",
+          notice_type: "ContractNotice",
+          cpv_codes: ["30200000-1", "30213000-5"],
+          estimated_value: Decimal.new("100000"),
+          submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
+        })
+
+      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      response = html_response(conn, 200)
+
+      assert response =~ "Dostawa komputerów"
+      assert response =~ "Urząd Miasta"
+      assert response =~ "Warszawa"
+      assert response =~ "Dostawy"
+      assert response =~ "30200000-1"
+      assert response =~ "30213000-5"
+      assert response =~ "100 000"
+    end
+
+    test "includes breadcrumb navigation", %{conn: conn} do
+      tender =
+        insert(:tender_notice, %{
+          order_object: "Test przetarg",
+          submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
+        })
+
+      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      response = html_response(conn, 200)
+
+      assert response =~ "Strona główna"
+      assert response =~ "Przetargi"
+      assert response =~ "breadcrumb"
+    end
+
+    test "includes link to official documentation", %{conn: conn} do
+      tender =
+        insert(:tender_notice, %{
+          tender_id: "ocds-148610-test-123",
+          order_object: "Test przetarg",
+          submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
+        })
+
+      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      response = html_response(conn, 200)
+
+      assert response =~ "ezamowienia.gov.pl"
+      assert response =~ "ocds-148610-test-123"
     end
   end
 end
