@@ -1,5 +1,5 @@
 defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
-  use PrzetargowyPrzeglad.DataCase, async: true
+  use PrzetargowyPrzeglad.DataCase, async: false
   use Oban.Testing, repo: PrzetargowyPrzeglad.Repo
 
   import Swoosh.TestAssertions
@@ -14,13 +14,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       user = insert(:verified_user, email: "test@example.com")
 
       # Create an alert for the user
-      insert(:simple_alert, user: user, rules: %{
-        "region" => "mazowieckie",
-        "tender_category" => "Dostawy"
-      })
+      insert(:simple_alert,
+        user: user,
+        rules: %{
+          "region" => "mazowieckie",
+          "tender_category" => "Dostawy"
+        }
+      )
 
       # Create matching tender notices (future submission date)
-      insert(:tender_notice, 
+      insert(:tender_notice,
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -46,13 +49,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       user = insert(:user, email: "unverified@example.com", email_verified: false, email_verification_token: "some-token")
 
       # Create an alert for the user
-      insert(:simple_alert, user: user, rules: %{
-        "region" => "mazowieckie",
-        "tender_category" => "Dostawy"
-      })
+      insert(:simple_alert,
+        user: user,
+        rules: %{
+          "region" => "mazowieckie",
+          "tender_category" => "Dostawy"
+        }
+      )
 
       # Create matching tender notices
-      insert(:tender_notice, 
+      insert(:tender_notice,
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -75,13 +81,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       user = insert(:verified_user, email: "nonotices@example.com")
 
       # Create an alert for the user with different criteria
-      insert(:simple_alert, user: user, rules: %{
-        "region" => "wielkopolskie",
-        "tender_category" => "Usługi"
-      })
+      insert(:simple_alert,
+        user: user,
+        rules: %{
+          "region" => "wielkopolskie",
+          "tender_category" => "Usługi"
+        }
+      )
 
       # Create tender notice that doesn't match (different region)
-      insert(:tender_notice, 
+      insert(:tender_notice,
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -104,13 +113,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       user = insert(:verified_user, email: "expired@example.com")
 
       # Create an alert for the user
-      insert(:simple_alert, user: user, rules: %{
-        "region" => "mazowieckie",
-        "tender_category" => "Dostawy"
-      })
+      insert(:simple_alert,
+        user: user,
+        rules: %{
+          "region" => "mazowieckie",
+          "tender_category" => "Dostawy"
+        }
+      )
 
       # Create tender notice with past submission date
-      insert(:tender_notice, 
+      insert(:tender_notice,
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -133,13 +145,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       user = insert(:verified_user, email: "noticetype@example.com")
 
       # Create an alert for the user
-      insert(:simple_alert, user: user, rules: %{
-        "region" => "mazowieckie",
-        "tender_category" => "Dostawy"
-      })
+      insert(:simple_alert,
+        user: user,
+        rules: %{
+          "region" => "mazowieckie",
+          "tender_category" => "Dostawy"
+        }
+      )
 
       # Create tender notice with wrong notice type
-      insert(:tender_notice, 
+      insert(:tender_notice,
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "TenderResultNotice",
@@ -163,18 +178,24 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       user2 = insert(:verified_user, email: "user2@example.com")
 
       # Create alerts with different criteria
-      insert(:simple_alert, user: user1, rules: %{
-        "region" => "mazowieckie",
-        "tender_category" => "Dostawy"
-      })
+      insert(:simple_alert,
+        user: user1,
+        rules: %{
+          "region" => "mazowieckie",
+          "tender_category" => "Dostawy"
+        }
+      )
 
-      insert(:simple_alert, user: user2, rules: %{
-        "region" => "malopolskie",
-        "tender_category" => "Usługi"
-      })
+      insert(:simple_alert,
+        user: user2,
+        rules: %{
+          "region" => "malopolskie",
+          "tender_category" => "Usługi"
+        }
+      )
 
       # Create tender notices matching user1's alert
-      insert(:tender_notice, 
+      insert(:tender_notice,
         organization_province: "PL14",
         order_type: "Delivery",
         notice_type: "ContractNotice",
@@ -186,7 +207,7 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       )
 
       # Create tender notices matching user2's alert
-      insert(:tender_notice, 
+      insert(:tender_notice,
         organization_province: "PL12",
         order_type: "Services",
         notice_type: "ContractNotice",
@@ -234,13 +255,16 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
         # Create user and alert
         user = insert(:verified_user, email: "test-#{region}@example.com")
 
-        insert(:simple_alert, user: user, rules: %{
-          "region" => region,
-          "tender_category" => "Dostawy"
-        })
+        insert(:simple_alert,
+          user: user,
+          rules: %{
+            "region" => region,
+            "tender_category" => "Dostawy"
+          }
+        )
 
         # Create matching notice
-        insert(:tender_notice, 
+        insert(:tender_notice,
           organization_province: province_code,
           order_type: "Delivery",
           notice_type: "ContractNotice",
@@ -273,12 +297,15 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       for {category, order_type} <- categories_to_types do
         user = insert(:verified_user, email: "test-#{order_type}@example.com")
 
-        insert(:simple_alert, user: user, rules: %{
-          "region" => "mazowieckie",
-          "tender_category" => category
-        })
+        insert(:simple_alert,
+          user: user,
+          rules: %{
+            "region" => "mazowieckie",
+            "tender_category" => category
+          }
+        )
 
-        insert(:tender_notice, 
+        insert(:tender_notice,
           organization_province: "PL14",
           order_type: order_type,
           notice_type: "ContractNotice",
@@ -301,5 +328,4 @@ defmodule PrzetargowyPrzeglad.Workers.SendAlertsTest do
       end
     end
   end
-
 end
