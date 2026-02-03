@@ -862,3 +862,258 @@
     justify-content: center;
   }
 }
+
+/* Sidebar Value List */
+.sidebar-value-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.sidebar-value-item {
+  font-size: 0.9rem;
+  color: var(--navy-700);
+  font-weight: 500;
+  padding: 4px 8px;
+  background: var(--cream-50);
+  border-radius: 4px;
+}
+
+/* Contractors Section */
+.tender-contractors-section,
+.tender-contracts-section,
+.tender-html-body-section {
+  grid-column: 1 / -1;
+  margin-top: 24px;
+}
+
+.contractors-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .contractors-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .contractors-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.contractor-card {
+  background: var(--cream-50);
+  border: 1px solid var(--cream-200);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.contractor-card:hover {
+  border-color: var(--navy-300);
+  box-shadow: 0 2px 8px rgba(10, 22, 40, 0.06);
+}
+
+.contractor-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy-800);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.contractor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contractor-detail {
+  display: flex;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.detail-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.detail-value {
+  color: var(--navy-700);
+  font-weight: 600;
+}
+
+/* Contract Details Table */
+.contracts-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--cream-200);
+}
+
+.contracts-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.contracts-table thead {
+  background: var(--cream-100);
+}
+
+.contracts-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--navy-800);
+  border-bottom: 2px solid var(--cream-200);
+  white-space: nowrap;
+}
+
+.contracts-table td {
+  padding: 12px 16px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--cream-100);
+}
+
+.contracts-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.contracts-table tbody tr:hover {
+  background: var(--cream-50);
+}
+
+.contract-row.contract-cancelled {
+  background: rgba(239, 68, 68, 0.03);
+}
+
+.contract-value {
+  font-weight: 600;
+  color: var(--navy-700);
+  white-space: nowrap;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge.status-contract_signed {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.status-badge.status-cancelled {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+}
+
+/* HTML Body Content */
+.html-body-content {
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.html-body-content h1,
+.html-body-content h2,
+.html-body-content h3,
+.html-body-content h4 {
+  color: var(--navy-800);
+  margin: 24px 0 12px;
+  font-weight: 600;
+}
+
+.html-body-content h1 {
+  font-size: 1.5rem;
+}
+
+.html-body-content h2 {
+  font-size: 1.3rem;
+}
+
+.html-body-content h3 {
+  font-size: 1.1rem;
+}
+
+.html-body-content h4 {
+  font-size: 1rem;
+}
+
+.html-body-content p {
+  margin: 12px 0;
+}
+
+.html-body-content ul,
+.html-body-content ol {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+
+.html-body-content li {
+  margin: 6px 0;
+}
+
+.html-body-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9rem;
+}
+
+.html-body-content table th,
+.html-body-content table td {
+  padding: 8px 12px;
+  border: 1px solid var(--cream-200);
+  text-align: left;
+}
+
+.html-body-content table th {
+  background: var(--cream-100);
+  font-weight: 600;
+  color: var(--navy-800);
+}
+
+.html-body-content a {
+  color: var(--navy-600);
+  text-decoration: underline;
+}
+
+.html-body-content a:hover {
+  color: var(--gold-600);
+}
+
+.html-body-content strong {
+  font-weight: 600;
+  color: var(--navy-800);
+}
+
+.html-body-content em {
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .contracts-table-wrapper {
+    border-radius: 8px;
+  }
+
+  .contracts-table {
+    font-size: 0.8rem;
+  }
+
+  .contracts-table th,
+  .contracts-table td {
+    padding: 8px;
+  }
+}

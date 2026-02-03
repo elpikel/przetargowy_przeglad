@@ -139,4 +139,18 @@ defmodule PrzetargowyPrzegladWeb.TenderHTML do
   end
 
   defp format_by_region(_region, index), do: if(index == 1, do: "Alert główny", else: "Alert #{index}")
+
+  def format_html_body(nil), do: ""
+  def format_html_body(html) when is_binary(html) do
+    # Strip potentially dangerous tags and attributes
+    html
+    |> String.replace(~r/<script[^>]*>.*?<\/script>/is, "")
+    |> String.replace(~r/<style[^>]*>.*?<\/style>/is, "")
+    |> String.replace(~r/on\w+\s*=\s*["'][^"']*["']/i, "")
+    |> Phoenix.HTML.raw()
+  end
+
+  def format_status(:contract_signed), do: "Umowa podpisana"
+  def format_status(:cancelled), do: "Anulowane"
+  def format_status(_), do: "Nieznany status"
 end

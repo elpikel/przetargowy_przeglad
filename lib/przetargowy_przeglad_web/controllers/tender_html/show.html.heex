@@ -160,6 +160,27 @@
               </div>
             </div>
           <% end %>
+
+          <%= if @tender.total_contract_value do %>
+            <div class="info-item">
+              <svg
+                class="info-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+              </svg>
+              <div class="info-content">
+                <span class="info-label">Łączna wartość umów</span>
+                <span class="info-value text-value">
+                  {format_value(@tender.total_contract_value)} PLN
+                </span>
+              </div>
+            </div>
+          <% end %>
         </div>
 
         <%= if @tender.cpv_codes != [] do %>
@@ -224,8 +245,149 @@
               {if @tender.is_tender_amount_below_eu, do: "Tak", else: "Nie"}
             </span>
           </div>
+
+          <%= if @tender.total_contractors_contracts_count && @tender.total_contractors_contracts_count > 0 do %>
+            <div class="sidebar-info">
+              <span class="sidebar-label">Liczba umów z wykonawcami</span>
+              <span class="sidebar-value">{@tender.total_contractors_contracts_count}</span>
+            </div>
+          <% end %>
+
+          <%= if @tender.cancelled_count && @tender.cancelled_count > 0 do %>
+            <div class="sidebar-info">
+              <span class="sidebar-label">Liczba anulowanych</span>
+              <span class="sidebar-value">{@tender.cancelled_count}</span>
+            </div>
+          <% end %>
+
+          <%= if @tender.estimated_values != [] && @tender.estimated_values != nil do %>
+            <div class="sidebar-info">
+              <span class="sidebar-label">Szacunkowe wartości</span>
+              <div class="sidebar-value-list">
+                <%= for value <- @tender.estimated_values do %>
+                  <span class="sidebar-value-item">{format_value(value)} PLN</span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
         </div>
       </aside>
     </div>
+
+    <%= if @tender.contractors != [] && @tender.contractors != nil do %>
+      <section class="tender-detail-section tender-contractors-section">
+        <h2 class="section-title">Wykonawcy</h2>
+        <div class="contractors-grid">
+          <%= for contractor <- @tender.contractors do %>
+            <div class="contractor-card">
+              <h3 class="contractor-name">{contractor.contractor_name}</h3>
+              <div class="contractor-info">
+                <%= if contractor.contractor_city do %>
+                  <div class="contractor-detail">
+                    <span class="detail-label">Miasto:</span>
+                    <span class="detail-value">{contractor.contractor_city}</span>
+                  </div>
+                <% end %>
+                <%= if contractor.contractor_province do %>
+                  <div class="contractor-detail">
+                    <span class="detail-label">Województwo:</span>
+                    <span class="detail-value">{contractor.contractor_province}</span>
+                  </div>
+                <% end %>
+                <%= if contractor.contractor_country do %>
+                  <div class="contractor-detail">
+                    <span class="detail-label">Kraj:</span>
+                    <span class="detail-value">{contractor.contractor_country}</span>
+                  </div>
+                <% end %>
+                <%= if contractor.contractor_national_id do %>
+                  <div class="contractor-detail">
+                    <span class="detail-label">NIP:</span>
+                    <span class="detail-value">{contractor.contractor_national_id}</span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <%= if @tender.contractors_contract_details != [] && @tender.contractors_contract_details != nil do %>
+      <section class="tender-detail-section tender-contracts-section">
+        <h2 class="section-title">Szczegóły umów z wykonawcami</h2>
+        <div class="contracts-table-wrapper">
+          <table class="contracts-table">
+            <thead>
+              <tr>
+                <th>Część</th>
+                <th>Status</th>
+                <th>Wykonawca</th>
+                <th>Miasto</th>
+                <th>NIP</th>
+                <th>Wartość umowy</th>
+                <th>Cena zwycięska</th>
+                <th>Cena najniższa</th>
+                <th>Cena najwyższa</th>
+                <th>Powód anulowania</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for detail <- @tender.contractors_contract_details do %>
+                <tr class={"contract-row #{if detail.status == :cancelled, do: "contract-cancelled", else: ""}"}>
+                  <td>{detail.part || "-"}</td>
+                  <td>
+                    <span class={"status-badge status-#{detail.status}"}>
+                      {format_status(detail.status)}
+                    </span>
+                  </td>
+                  <td>{detail.contractor_name || "-"}</td>
+                  <td>{detail.contractor_city || "-"}</td>
+                  <td>{detail.contractor_nip || "-"}</td>
+                  <td class="contract-value">
+                    <%= if detail.contract_value do %>
+                      {format_value(detail.contract_value)} {detail.currency || "PLN"}
+                    <% else %>
+                      -
+                    <% end %>
+                  </td>
+                  <td class="contract-value">
+                    <%= if detail.winning_price do %>
+                      {format_value(detail.winning_price)} {detail.currency || "PLN"}
+                    <% else %>
+                      -
+                    <% end %>
+                  </td>
+                  <td class="contract-value">
+                    <%= if detail.lowest_price do %>
+                      {format_value(detail.lowest_price)} {detail.currency || "PLN"}
+                    <% else %>
+                      -
+                    <% end %>
+                  </td>
+                  <td class="contract-value">
+                    <%= if detail.highest_price do %>
+                      {format_value(detail.highest_price)} {detail.currency || "PLN"}
+                    <% else %>
+                      -
+                    <% end %>
+                  </td>
+                  <td>{detail.cancellation_reason || "-"}</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    <% end %>
+
+    <%= if @tender.html_body && @tender.html_body != "" do %>
+      <section class="tender-detail-section tender-html-body-section">
+        <h2 class="section-title">Pełny opis ogłoszenia</h2>
+        <div class="html-body-content">
+          {format_html_body(@tender.html_body)}
+        </div>
+      </section>
+    <% end %>
   </main>
 </Layouts.site>
