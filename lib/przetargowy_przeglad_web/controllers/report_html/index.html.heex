@@ -1,0 +1,115 @@
+<Layouts.site
+  flash={@flash}
+  current_user={@current_user}
+  page_title={@page_title}
+  header_position="sticky"
+  show_footer={true}
+>
+  <:nav>
+    <a href="/tenders">Przetargi</a>
+    <a href="/reports">Raporty</a>
+  </:nav>
+  <:page_meta>
+    <meta name="description" content={@page_description} />
+    <meta name="keywords" content={@keywords} />
+    <link rel="canonical" href={@canonical_url} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={@og_type} />
+    <meta property="og:url" content={@canonical_url} />
+    <meta property="og:title" content={@page_title} />
+    <meta property="og:description" content={@page_description} />
+    <meta property="og:image" content={@og_image} />
+    <meta property="og:site_name" content="Przetargowy Przegląd" />
+    <meta property="og:locale" content="pl_PL" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={@canonical_url} />
+    <meta name="twitter:title" content={@page_title} />
+    <meta name="twitter:description" content={@page_description} />
+    <meta name="twitter:image" content={@og_image} />
+
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Przetargowy Przegląd" />
+  </:page_meta>
+
+  <main class="reports-page">
+    <div class="page-header">
+      <h1 class="page-title">Raporty przetargów</h1>
+      <p class="page-subtitle">
+        Miesięczne analizy rynku zamówień publicznych z całej Polski
+      </p>
+    </div>
+
+    <%= if @reports == [] do %>
+      <div class="empty-state">
+        <h2>Brak raportów</h2>
+        <p>Nie znaleziono żadnych raportów. Raporty są generowane automatycznie na początku każdego miesiąca.</p>
+      </div>
+    <% else %>
+      <div class="reports-grid">
+        <%= for report <- @reports do %>
+          <article class="report-card">
+            <a href={~p"/reports/#{report.slug}"} class="report-card-link">
+              <div class="report-card-image">
+                <img
+                  src={report.cover_image_url}
+                  alt={report.title}
+                  loading="lazy"
+                  onerror="this.src='/images/reports/default.jpg'"
+                />
+              </div>
+              <div class="report-card-content">
+                <h2 class="report-card-title">{truncate_text(report.title, 80)}</h2>
+                <div class="report-card-meta">
+                  <span class="report-date">
+                    {format_report_date(report.report_month)}
+                  </span>
+                  <%= if report.region || report.order_type do %>
+                    <span class="report-badge">
+                      <%= cond do %>
+                        <% report.region && report.order_type -> %>
+                          {format_region_name(report.region)} · {format_order_type(report.order_type)}
+                        <% report.region -> %>
+                          {format_region_name(report.region)}
+                        <% report.order_type -> %>
+                          {format_order_type(report.order_type)}
+                      <% end %>
+                    </span>
+                  <% end %>
+                </div>
+                <p class="report-card-summary">
+                  {get_summary_text(report.report_data)}
+                </p>
+              </div>
+            </a>
+          </article>
+        <% end %>
+      </div>
+
+      <%= if @total_pages > 1 do %>
+        <nav class="pagination">
+          <%= if @page > 1 do %>
+            <a href={build_url(@page - 1)} class="pagination-btn">
+              &larr; Poprzednia
+            </a>
+          <% else %>
+            <span class="pagination-btn disabled">&larr; Poprzednia</span>
+          <% end %>
+
+          <span class="pagination-info">Strona {@page} z {@total_pages}</span>
+
+          <%= if @page < @total_pages do %>
+            <a href={build_url(@page + 1)} class="pagination-btn">
+              Następna &rarr;
+            </a>
+          <% else %>
+            <span class="pagination-btn disabled">Następna &rarr;</span>
+          <% end %>
+        </nav>
+      <% end %>
+    <% end %>
+  </main>
+</Layouts.site>

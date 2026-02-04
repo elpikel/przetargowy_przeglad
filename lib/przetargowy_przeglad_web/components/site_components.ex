@@ -21,7 +21,7 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
 
       <.page_header current_user={@current_user}>
         <:nav>
-          <a href="/tenders">Szukaj przetargów</a>
+          <a href="/tenders">Przetargi</a>
           <a href="#cennik">Cennik</a>
         </:nav>
       </.page_header>
@@ -71,18 +71,20 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
           <span class="logo-text">Przetargowy<span>Przegląd</span></span>
         </a>
 
-        <%= if @nav != [] do %>
-          <nav class="desktop-nav">
+        <nav class="desktop-nav">
+          <%= if length(@nav) > 0 do %>
             {render_slot(@nav)}
-          </nav>
-        <% end %>
+          <% else %>
+            <a href="/tenders">Przetargi</a>
+            <a href="/reports">Raporty</a>
+          <% end %>
+        </nav>
 
         <div class="header-cta">
           <%= if @hide_default_cta do %>
             {render_slot(@cta)}
           <% else %>
             <%= if @current_user do %>
-              <span class="user-email">{@current_user.email}</span>
               <a href="/dashboard" class="btn btn-primary">Ustawienia</a>
               <a href="/logout" class="btn btn-outline">Wyloguj</a>
             <% else %>
@@ -105,20 +107,20 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
     <%= unless @hide_hamburger do %>
       <div class="mobile-menu" id="mobile-menu">
         <%= if @current_user do %>
-          <div class="mobile-menu-user">
-            <span class="mobile-menu-user-email">{@current_user.email}</span>
-          </div>
           <a href="/dashboard" class="btn btn-primary">Ustawienia</a>
           <a href="/logout" class="mobile-link">Wyloguj się</a>
         <% else %>
           <a href="/login" class="btn btn-outline">Zaloguj się</a>
           <a href="/register" class="btn btn-primary">Rozpocznij za darmo</a>
         <% end %>
-        <%= if @nav != [] do %>
-          <div class="mobile-nav">
+        <div class="mobile-nav">
+          <%= if length(@nav) > 0 do %>
             {render_slot(@nav)}
-          </div>
-        <% end %>
+          <% else %>
+            <a href="/tenders">Przetargi</a>
+            <a href="/reports">Raporty</a>
+          <% end %>
+        </div>
       </div>
     <% end %>
     """
@@ -471,17 +473,10 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
           <div class="footer-links">
             <h4>Produkt</h4>
             <ul>
-              <li><a href="/tenders">Szukaj przetargów</a></li>
+              <li><a href="/tenders">Przetargi</a></li>
+              <li><a href="/reports">Raporty</a></li>
               <li><a href="/#jak-dziala">Jak to działa</a></li>
               <li><a href="/#cennik">Cennik</a></li>
-            </ul>
-          </div>
-          <div class="footer-links">
-            <h4>Kontakt</h4>
-            <ul>
-              <li>
-                <a href="mailto:kontakt@przetargowyprzeglad.pl">kontakt@przetargowyprzeglad.pl</a>
-              </li>
             </ul>
           </div>
         </div>

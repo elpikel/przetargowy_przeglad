@@ -36,7 +36,9 @@ config :przetargowy_przeglad, Oban,
        # Payment workers - run daily
        {"0 3 * * *", PrzetargowyPrzeglad.Workers.ProcessSubscriptionRenewals},
        {"0 4 * * *", PrzetargowyPrzeglad.Workers.ExpireSubscriptions},
-       {"0 5 * * *", PrzetargowyPrzeglad.Workers.RetryFailedPayments}
+       {"0 5 * * *", PrzetargowyPrzeglad.Workers.RetryFailedPayments},
+       # Monthly reports - run on 1st of month at 2 AM
+       {"0 2 1 * *", PrzetargowyPrzeglad.Workers.GenerateMonthlyReports}
      ]}
   ],
   queues: [default: 10, mailers: 20, tenders: 1, alerts: 1, payments: 5],

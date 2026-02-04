@@ -35,6 +35,8 @@ defmodule PrzetargowyPrzegladWeb.Router do
     get "/verify-email", UserController, :verify_email
     get "/tenders", TenderController, :index
     get "/tenders/:id", TenderController, :show
+    get "/reports", ReportController, :index
+    get "/reports/:slug", ReportController, :show
   end
 
   scope "/", PrzetargowyPrzegladWeb do

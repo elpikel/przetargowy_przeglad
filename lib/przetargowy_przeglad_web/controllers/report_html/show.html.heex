@@ -1,0 +1,127 @@
+<Layouts.site
+  flash={@flash}
+  current_user={@current_user}
+  page_title={@page_title}
+  header_position="sticky"
+  show_footer={true}
+>
+  <:nav>
+    <a href="/tenders">Przetargi</a>
+    <a href="/reports">Raporty</a>
+  </:nav>
+  <:page_meta>
+    <meta name="description" content={@page_description} />
+    <meta name="keywords" content={@keywords} />
+    <link rel="canonical" href={@canonical_url} />
+    
+<!-- Open Graph / Facebook -->
+    <meta property="og:type" content={@og_type} />
+    <meta property="og:url" content={@canonical_url} />
+    <meta property="og:title" content={@page_title} />
+    <meta property="og:description" content={@page_description} />
+    <meta property="og:image" content={@og_image} />
+    <meta property="og:site_name" content="Przetargowy Przegląd" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta
+      property="article:published_time"
+      content={@report.inserted_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601()}
+    />
+    <meta
+      property="article:modified_time"
+      content={@report.updated_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601()}
+    />
+    <meta property="article:author" content="Przetargowy Przegląd" />
+    
+<!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={@canonical_url} />
+    <meta name="twitter:title" content={@page_title} />
+    <meta name="twitter:description" content={@page_description} />
+    <meta name="twitter:image" content={@og_image} />
+    
+<!-- Additional SEO -->
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Przetargowy Przegląd" />
+    
+<!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+      {raw(Jason.encode!(@structured_data))}
+    </script>
+  </:page_meta>
+
+  <main class="report-detail-page">
+    <nav class="breadcrumb">
+      <a href="/" class="breadcrumb-link">Strona główna</a>
+      <span class="breadcrumb-separator">/</span>
+      <a href="/reports" class="breadcrumb-link">Raporty</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-current">{truncate_text(@report.title, 50)}</span>
+    </nav>
+
+    <article class="report-detail">
+      <header class="report-header">
+        <img
+          src={@report.cover_image_url}
+          alt={@report.title}
+          class="report-cover"
+          onerror="this.src='/images/reports/default.jpg'"
+        />
+        <div class="report-header-content">
+          <h1 class="report-title">{@report.title}</h1>
+        </div>
+      </header>
+      
+<!-- Key Statistics Summary -->
+      <section class="report-summary">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">{@report.report_data["summary"]["total_tenders"]}</div>
+            <div class="stat-label">Przetargi ogółem</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{@report.report_data["summary"]["closed_tenders"]}</div>
+            <div class="stat-label">Przetargi rozstrzygnięte</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">
+              {format_currency(@report.report_data["summary"]["total_contract_value"])}
+            </div>
+            <div class="stat-label">Wartość kontraktów</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{@report.report_data["summary"]["total_contractors"]}</div>
+            <div class="stat-label">Wykonawcy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{@report.report_data["summary"]["active_organizations"]}</div>
+            <div class="stat-label">Zamawiający</div>
+          </div>
+        </div>
+      </section>
+      
+<!-- Introduction -->
+      <section class="report-section">
+        <div class="report-content">
+          {Phoenix.HTML.raw(@report.introduction_html)}
+        </div>
+      </section>
+      
+<!-- Analysis -->
+      <section class="report-section">
+        <div class="report-content">
+          {Phoenix.HTML.raw(@report.analysis_html)}
+        </div>
+      </section>
+      
+<!-- Upsell -->
+      <section class="report-section report-upsell">
+        {Phoenix.HTML.raw(@report.upsell_html)}
+      </section>
+      
+<!-- Back navigation -->
+      <div class="report-footer">
+        <a href="/reports" class="btn-secondary">&larr; Powrót do listy raportów</a>
+      </div>
+    </article>
+  </main>
+</Layouts.site>
