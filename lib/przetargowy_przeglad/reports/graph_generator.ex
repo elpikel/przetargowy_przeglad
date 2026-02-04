@@ -19,10 +19,8 @@ defmodule PrzetargowyPrzeglad.Reports.GraphGenerator do
   """
   def generate_graphs(report_data) do
     %{
-      "tender_count_trend" =>
-        generate_weekly_trend_chart(report_data["trends"]["weekly_counts"]),
-      "value_distribution" =>
-        generate_value_distribution_chart(report_data["statistics"]["by_value_range"])
+      "tender_count_trend" => generate_weekly_trend_chart(report_data["trends"]["weekly_counts"]),
+      "value_distribution" => generate_value_distribution_chart(report_data["statistics"]["by_value_range"])
     }
   end
 
@@ -38,9 +36,9 @@ defmodule PrzetargowyPrzeglad.Reports.GraphGenerator do
     bars =
       weekly_data
       |> Enum.with_index()
-      |> Enum.map(fn {data, index} ->
+      |> Enum.map_join("\n", fn {data, index} ->
         count = data["count"]
-        height = if max_count > 0, do: (count / max_count * chart_height) |> trunc(), else: 0
+        height = if max_count > 0, do: trunc(count / max_count * chart_height), else: 0
         x = index * (bar_width + gap)
         y = chart_height - height
 
@@ -53,7 +51,6 @@ defmodule PrzetargowyPrzeglad.Reports.GraphGenerator do
               text-anchor="middle" font-size="11" fill="#1f2937" font-weight="600">#{count}</text>
         """
       end)
-      |> Enum.join("\n")
 
     width = length(weekly_data) * (bar_width + gap)
 
@@ -70,8 +67,7 @@ defmodule PrzetargowyPrzeglad.Reports.GraphGenerator do
   @doc """
   Generates a horizontal bar chart showing value distribution.
   """
-  def generate_value_distribution_chart(value_ranges)
-      when is_list(value_ranges) and length(value_ranges) > 0 do
+  def generate_value_distribution_chart(value_ranges) when is_list(value_ranges) and length(value_ranges) > 0 do
     max_count = value_ranges |> Enum.map(& &1["count"]) |> Enum.max(fn -> 1 end)
     bar_height = 30
     gap = 10
@@ -81,9 +77,9 @@ defmodule PrzetargowyPrzeglad.Reports.GraphGenerator do
     bars =
       value_ranges
       |> Enum.with_index()
-      |> Enum.map(fn {data, index} ->
+      |> Enum.map_join("\n", fn {data, index} ->
         count = data["count"]
-        width = if max_count > 0, do: (count / max_count * chart_width) |> trunc(), else: 0
+        width = if max_count > 0, do: trunc(count / max_count * chart_width), else: 0
         y = index * (bar_height + gap)
 
         """
@@ -94,7 +90,6 @@ defmodule PrzetargowyPrzeglad.Reports.GraphGenerator do
               font-size="12" fill="#1f2937" font-weight="600">#{count}</text>
         """
       end)
-      |> Enum.join("\n")
 
     height = length(value_ranges) * (bar_height + gap)
 
@@ -106,8 +101,7 @@ defmodule PrzetargowyPrzeglad.Reports.GraphGenerator do
     """
   end
 
-  def generate_value_distribution_chart(_),
-    do: generate_no_data_message("Brak danych o wartościach")
+  def generate_value_distribution_chart(_), do: generate_no_data_message("Brak danych o wartościach")
 
   # Helper function for empty data states
   defp generate_no_data_message(message) do

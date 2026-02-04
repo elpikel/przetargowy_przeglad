@@ -36,15 +36,15 @@ defmodule PrzetargowyPrzeglad.Repo.Migrations.CreateTenderReports do
 
     # Unique constraint for detailed reports
     create unique_index(:tender_reports, [:region, :order_type, :report_month],
-      where: "report_type = 'detailed'",
-      name: :tender_reports_detailed_unique_idx
-    )
+             where: "report_type = 'detailed'",
+             name: :tender_reports_detailed_unique_idx
+           )
 
     # Unique constraint for summary reports
     create unique_index(:tender_reports, [:report_type, :region, :order_type, :report_month],
-      where: "report_type != 'detailed'",
-      name: :tender_reports_summary_unique_idx
-    )
+             where: "report_type != 'detailed'",
+             name: :tender_reports_summary_unique_idx
+           )
 
     # Query indexes
     create index(:tender_reports, [:report_month])

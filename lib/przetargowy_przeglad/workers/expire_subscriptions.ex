@@ -8,10 +8,11 @@ defmodule PrzetargowyPrzeglad.Workers.ExpireSubscriptions do
   2. Marks them as expired
   3. Downgrades users to free plan
 
-  This worker handles:
-  - Subscriptions cancelled at period end
-  - Subscriptions where renewal failed after max retries
-  - Any subscription that wasn't renewed for any reason
+  This worker serves as a backup for Stripe webhooks (customer.subscription.deleted).
+  It handles edge cases where:
+  - Webhooks are delayed or fail to deliver
+  - Subscriptions are cancelled at period end
+  - Any subscription that wasn't properly cleaned up via webhooks
   """
 
   use Oban.Worker,

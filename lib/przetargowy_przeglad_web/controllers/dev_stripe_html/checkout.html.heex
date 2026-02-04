@@ -1,0 +1,54 @@
+<div style="max-width: 600px; margin: 80px auto; padding: 40px; background: #f7f9fc; border-radius: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <div style="background: white; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div style="text-align: center; margin-bottom: 32px;">
+      <div style="display: inline-block; padding: 12px 24px; background: #635bff; color: white; border-radius: 6px; font-size: 20px; font-weight: 600; margin-bottom: 16px;">
+        🧪 Development Mode
+      </div>
+      <h1 style="font-size: 28px; margin: 16px 0; color: #1a1a1a;">Simulated Stripe Checkout</h1>
+      <p style="color: #666; font-size: 16px;">This is a development-only page that simulates the Stripe payment flow</p>
+    </div>
+
+    <div style="border-top: 1px solid #e6e6e6; padding-top: 24px; margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+        <span style="color: #666;">Przetargowy Przegląd Premium</span>
+        <span style="font-weight: 600;">19.00 zł</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+        <span style="color: #666;">Billing</span>
+        <span>Monthly subscription</span>
+      </div>
+      <div style="border-top: 2px solid #e6e6e6; margin-top: 16px; padding-top: 16px; display: flex; justify-content: space-between;">
+        <span style="font-weight: 600; font-size: 18px;">Total due today</span>
+        <span style="font-weight: 600; font-size: 18px;">19.00 zł</span>
+      </div>
+    </div>
+
+    <div style="background: #f7f9fc; padding: 16px; border-radius: 6px; margin-bottom: 24px;">
+      <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.6;">
+        <strong>Note:</strong> In production, this would be the real Stripe checkout page.
+        Click the button below to simulate a successful payment and activate your subscription.
+      </p>
+    </div>
+
+    <form method="post" action="/dev/stripe/simulate-payment">
+      <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+      <input type="hidden" name="session_id" value={@session_id} />
+      <input type="hidden" name="user_id" value={@user_id} />
+      <input type="hidden" name="subscription_id" value={@subscription_id} />
+      <input type="hidden" name="success_url" value={@success_url} />
+
+      <button
+        type="submit"
+        style="width: 100%; padding: 16px; background: #635bff; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s;"
+        onmouseover="this.style.background='#5145e5'"
+        onmouseout="this.style.background='#635bff'"
+      >
+        ✓ Simulate Successful Payment
+      </button>
+    </form>
+
+    <p style="text-align: center; margin-top: 16px; color: #999; font-size: 14px;">
+      Session ID: <%= @session_id %>
+    </p>
+  </div>
+</div>

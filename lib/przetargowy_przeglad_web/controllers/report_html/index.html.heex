@@ -13,8 +13,8 @@
     <meta name="description" content={@page_description} />
     <meta name="keywords" content={@keywords} />
     <link rel="canonical" href={@canonical_url} />
-
-    <!-- Open Graph / Facebook -->
+    
+<!-- Open Graph / Facebook -->
     <meta property="og:type" content={@og_type} />
     <meta property="og:url" content={@canonical_url} />
     <meta property="og:title" content={@page_title} />
@@ -22,15 +22,15 @@
     <meta property="og:image" content={@og_image} />
     <meta property="og:site_name" content="Przetargowy Przegląd" />
     <meta property="og:locale" content="pl_PL" />
-
-    <!-- Twitter -->
+    
+<!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={@canonical_url} />
     <meta name="twitter:title" content={@page_title} />
     <meta name="twitter:description" content={@page_description} />
     <meta name="twitter:image" content={@og_image} />
-
-    <!-- Additional SEO -->
+    
+<!-- Additional SEO -->
     <meta name="robots" content="index, follow" />
     <meta name="author" content="Przetargowy Przegląd" />
   </:page_meta>
@@ -46,7 +46,9 @@
     <%= if @reports == [] do %>
       <div class="empty-state">
         <h2>Brak raportów</h2>
-        <p>Nie znaleziono żadnych raportów. Raporty są generowane automatycznie na początku każdego miesiąca.</p>
+        <p>
+          Nie znaleziono żadnych raportów. Raporty są generowane automatycznie na początku każdego miesiąca.
+        </p>
       </div>
     <% else %>
       <div class="reports-grid">
@@ -71,7 +73,9 @@
                     <span class="report-badge">
                       <%= cond do %>
                         <% report.region && report.order_type -> %>
-                          {format_region_name(report.region)} · {format_order_type(report.order_type)}
+                          {format_region_name(report.region)} · {format_order_type(
+                            report.order_type
+                          )}
                         <% report.region -> %>
                           {format_region_name(report.region)}
                         <% report.order_type -> %>

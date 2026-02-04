@@ -9,6 +9,7 @@ defmodule PrzetargowyPrzeglad.Reports.TenderReport do
   - overall: All tenders for the month
   """
   use Ecto.Schema
+
   import Ecto.Changeset
 
   schema "tender_reports" do
@@ -71,16 +72,13 @@ defmodule PrzetargowyPrzeglad.Reports.TenderReport do
 
     case report_type do
       "detailed" ->
-        changeset
-        |> validate_required([:region, :order_type])
+        validate_required(changeset, [:region, :order_type])
 
       "region_summary" ->
-        changeset
-        |> validate_required([:region])
+        validate_required(changeset, [:region])
 
       "industry_summary" ->
-        changeset
-        |> validate_required([:order_type])
+        validate_required(changeset, [:order_type])
 
       _ ->
         changeset

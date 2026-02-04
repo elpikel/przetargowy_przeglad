@@ -99,12 +99,12 @@ defmodule PrzetargowyPrzeglad.Payments.PaymentTransactionTest do
         })
         |> Repo.insert()
 
-      tpay_response = %{"tr_id" => "123", "tr_status" => "TRUE"}
-      changeset = PaymentTransaction.complete_changeset(transaction, tpay_response)
+      stripe_response = %{"tr_id" => "123", "tr_status" => "TRUE"}
+      changeset = PaymentTransaction.complete_changeset(transaction, stripe_response)
 
       assert changeset.valid?
       assert get_change(changeset, :status) == "completed"
-      assert get_change(changeset, :tpay_response) == tpay_response
+      assert get_change(changeset, :stripe_response) == stripe_response
       assert get_change(changeset, :paid_at)
     end
   end
@@ -148,12 +148,12 @@ defmodule PrzetargowyPrzeglad.Payments.PaymentTransactionTest do
         })
         |> Repo.insert()
 
-      tpay_response = %{"refund_id" => "ref_123"}
-      changeset = PaymentTransaction.refund_changeset(transaction, tpay_response)
+      stripe_response = %{"refund_id" => "ref_123"}
+      changeset = PaymentTransaction.refund_changeset(transaction, stripe_response)
 
       assert changeset.valid?
       assert get_change(changeset, :status) == "refunded"
-      assert get_change(changeset, :tpay_response) == tpay_response
+      assert get_change(changeset, :stripe_response) == stripe_response
     end
   end
 end

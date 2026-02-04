@@ -96,7 +96,7 @@ defmodule PrzetargowyPrzeglad.TendersTest do
     end
 
     test "returns failed list for invalid tender notices" do
-      invalid_attrs = params_for(:tender_notice) |> Map.delete(:object_id)
+      invalid_attrs = :tender_notice |> params_for() |> Map.delete(:object_id)
       {success_count, failed} = Tenders.upsert_tender_notices([invalid_attrs])
       assert success_count == 0
       assert length(failed) == 1

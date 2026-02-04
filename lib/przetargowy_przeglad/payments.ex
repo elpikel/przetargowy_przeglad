@@ -10,12 +10,16 @@ defmodule PrzetargowyPrzeglad.Payments do
   alias PrzetargowyPrzeglad.Payments.PaymentTransaction
   alias PrzetargowyPrzeglad.Payments.Subscription
   alias PrzetargowyPrzeglad.Repo
-  alias PrzetargowyPrzeglad.Tpay.Client, as: TpayClient
 
   require Logger
 
   @subscription_amount Decimal.new("19.00")
   @subscription_currency "PLN"
+
+  # Get the Stripe client module (real or mock based on config)
+  defp stripe_client do
+    Application.get_env(:przetargowy_przeglad, :stripe_client, PrzetargowyPrzeglad.Stripe.Client)
+  end
 
   # ============================================================================
   # Subscription Queries
@@ -36,10 +40,10 @@ defmodule PrzetargowyPrzeglad.Payments do
   end
 
   @doc """
-  Gets a subscription by Tpay subscription ID.
+  Gets a subscription by Stripe subscription ID.
   """
-  def get_subscription_by_tpay_id(tpay_subscription_id) do
-    Repo.get_by(Subscription, tpay_subscription_id: tpay_subscription_id)
+  def get_subscription_by_stripe_id(stripe_subscription_id) do
+    Repo.get_by(Subscription, stripe_subscription_id: stripe_subscription_id)
   end
 
   @doc """
@@ -54,6 +58,7 @@ defmodule PrzetargowyPrzeglad.Payments do
 
   @doc """
   Lists subscriptions that are due for renewal (expiring within given hours).
+  Note: With Stripe, renewals are automatic. This is mainly for monitoring.
   """
   def list_subscriptions_due_for_renewal(hours_ahead \\ 24) do
     cutoff = DateTime.add(DateTime.utc_now(), hours_ahead, :hour)
@@ -99,7 +104,7 @@ defmodule PrzetargowyPrzeglad.Payments do
   # ============================================================================
 
   @doc """
-  Initiates a new subscription by creating a Tpay transaction.
+  Initiates a new subscription by creating a Stripe Checkout Session.
   Returns {:ok, %{redirect_url: url, subscription: subscription}} on success.
   """
   def create_subscription(user, callbacks) do
@@ -120,16 +125,12 @@ defmodule PrzetargowyPrzeglad.Payments do
         }
 
         with {:ok, subscription} <- create_subscription_record(subscription_attrs),
-             {:ok, transaction} <- create_initial_transaction(subscription, user),
-             {:ok, tpay_result} <- initiate_tpay_payment(user, transaction, callbacks) do
-          # Update transaction with Tpay ID
-          update_transaction_tpay_id(transaction, tpay_result.transaction_id)
-
+             {:ok, stripe_result} <- initiate_stripe_checkout(user, subscription, callbacks) do
           {:ok,
            %{
-             redirect_url: tpay_result.payment_url,
+             redirect_url: stripe_result.checkout_url,
              subscription: subscription,
-             transaction: transaction
+             session_id: stripe_result.session_id
            }}
         end
     end
@@ -141,56 +142,30 @@ defmodule PrzetargowyPrzeglad.Payments do
     |> Repo.insert()
   end
 
-  defp create_initial_transaction(subscription, user) do
-    attrs = %{
-      subscription_id: subscription.id,
-      user_id: user.id,
-      type: "initial",
-      amount: @subscription_amount,
-      currency: @subscription_currency,
-      tpay_title: "Przetargowy Przegląd Premium - #{user.email}"
-    }
-
-    %PaymentTransaction{}
-    |> PaymentTransaction.create_changeset(attrs)
-    |> Repo.insert()
-  end
-
-  defp initiate_tpay_payment(user, transaction, callbacks) do
-    TpayClient.create_transaction(%{
-      amount: Decimal.to_float(@subscription_amount),
-      description: "Przetargowy Przegląd Premium - subskrypcja miesięczna",
-      hidden_description: "subscription:#{transaction.id}",
-      payer: %{
-        email: user.email,
-        name: user.email
-      },
-      callbacks: %{
-        success_url: callbacks.success_url,
-        error_url: callbacks.error_url,
-        notification_url: callbacks.notification_url
+  defp initiate_stripe_checkout(user, subscription, callbacks) do
+    stripe_client().create_checkout_session(%{
+      customer_email: user.email,
+      success_url: callbacks.success_url,
+      cancel_url: callbacks.error_url,
+      metadata: %{
+        user_id: to_string(user.id),
+        subscription_id: to_string(subscription.id)
       }
     })
   end
 
-  defp update_transaction_tpay_id(transaction, tpay_transaction_id) do
-    transaction
-    |> Ecto.Changeset.change(%{tpay_transaction_id: tpay_transaction_id})
-    |> Repo.update()
-  end
-
   @doc """
   Activates a subscription after successful payment.
-  Called from webhook handler.
+  Called from webhook handler when checkout.session.completed event is received.
   """
-  def activate_subscription(subscription, tpay_data) do
+  def activate_subscription(subscription, stripe_data) do
     Repo.transaction(fn ->
       # Activate subscription
       {:ok, subscription} =
         subscription
         |> Subscription.activate_changeset(%{
-          tpay_subscription_id: tpay_data.card_token,
-          tpay_client_id: tpay_data[:client_id]
+          stripe_subscription_id: stripe_data.subscription_id,
+          stripe_customer_id: stripe_data.customer_id
         })
         |> Repo.update()
 
@@ -201,71 +176,31 @@ defmodule PrzetargowyPrzeglad.Payments do
     end)
   end
 
-  @doc """
-  Processes a subscription renewal by charging the saved card.
-  """
-  def process_renewal(subscription) do
-    subscription = Repo.preload(subscription, :user)
+  # Private helper - activates subscription without transaction
+  defp do_activate_subscription(subscription, stripe_data) do
+    # Activate subscription
+    {:ok, subscription} =
+      subscription
+      |> Subscription.activate_changeset(%{
+        stripe_subscription_id: stripe_data.subscription_id,
+        stripe_customer_id: stripe_data.customer_id
+      })
+      |> Repo.update()
 
-    with {:ok, transaction} <- create_renewal_transaction(subscription),
-         {:ok, tpay_result} <- charge_renewal(subscription, transaction) do
-      # Update transaction with result
-      if tpay_result.status == "correct" or tpay_result.status == "pending" do
-        update_transaction_tpay_id(transaction, tpay_result.transaction_id)
-        {:ok, %{transaction: transaction, tpay_result: tpay_result}}
-      else
-        handle_renewal_failure(subscription, transaction, "Payment not approved")
-      end
-    else
-      {:error, reason} ->
-        Logger.error("Subscription renewal failed: #{inspect(reason)}")
-        {:error, reason}
-    end
-  end
+    # Upgrade user to premium
+    Accounts.upgrade_to_premium(subscription.user_id)
 
-  defp create_renewal_transaction(subscription) do
-    attrs = %{
-      subscription_id: subscription.id,
-      user_id: subscription.user_id,
-      type: "renewal",
-      amount: subscription.amount,
-      currency: subscription.currency,
-      tpay_title: "Przetargowy Przegląd Premium - odnowienie"
-    }
-
-    %PaymentTransaction{}
-    |> PaymentTransaction.create_changeset(attrs)
-    |> Repo.insert()
-  end
-
-  defp charge_renewal(subscription, _transaction) do
-    notification_url = get_webhook_url()
-
-    TpayClient.charge_recurring(subscription.tpay_subscription_id, %{
-      amount: Decimal.to_float(subscription.amount),
-      description: "Przetargowy Przegląd Premium - odnowienie subskrypcji",
-      hidden_description: "renewal:#{subscription.id}",
-      payer: %{
-        email: subscription.user.email
-      },
-      callbacks: %{
-        notification_url: notification_url
-      }
-    })
-  end
-
-  defp handle_renewal_failure(subscription, transaction, error_message) do
-    # Mark transaction as failed
-    transaction
-    |> PaymentTransaction.fail_changeset("renewal_failed", error_message)
-    |> Repo.update()
-
-    # Update subscription retry count
     subscription
-    |> Subscription.payment_failed_changeset(error_message)
-    |> Repo.update()
+  end
 
-    {:error, :renewal_failed}
+  @doc """
+  Renews a subscription for another period.
+  Called from webhook handler when invoice.payment_succeeded event is received.
+  """
+  def renew_subscription(subscription) do
+    subscription
+    |> Subscription.renew_changeset()
+    |> Repo.update()
   end
 
   @doc """
@@ -273,22 +208,26 @@ defmodule PrzetargowyPrzeglad.Payments do
   """
   def cancel_subscription(subscription, immediately \\ false) do
     Repo.transaction(fn ->
-      {:ok, subscription} =
-        subscription
-        |> Subscription.cancel_changeset(immediately)
-        |> Repo.update()
+      # Cancel in Stripe
+      case stripe_client().cancel_subscription(subscription.stripe_subscription_id, immediately) do
+        {:ok, _stripe_subscription} ->
+          # Update local subscription
+          {:ok, subscription} =
+            subscription
+            |> Subscription.cancel_changeset(immediately)
+            |> Repo.update()
 
-      # If cancelling immediately, downgrade user
-      if immediately do
-        Accounts.downgrade_to_free(subscription.user_id)
+          # If cancelling immediately, downgrade user
+          if immediately do
+            Accounts.downgrade_to_free(subscription.user_id)
+          end
 
-        # Deauthorize the card token if present
-        if subscription.tpay_subscription_id do
-          TpayClient.deauthorize_card(subscription.tpay_subscription_id)
-        end
+          subscription
+
+        {:error, reason} ->
+          Logger.error("Failed to cancel Stripe subscription: #{inspect(reason)}")
+          Repo.rollback(reason)
       end
-
-      subscription
     end)
   end
 
@@ -308,9 +247,21 @@ defmodule PrzetargowyPrzeglad.Payments do
   """
   def reactivate_subscription(subscription) do
     if subscription.status == "active" and subscription.cancel_at_period_end do
-      subscription
-      |> Subscription.reactivate_changeset()
-      |> Repo.update()
+      Repo.transaction(fn ->
+        case stripe_client().reactivate_subscription(subscription.stripe_subscription_id) do
+          {:ok, _stripe_subscription} ->
+            {:ok, subscription} =
+              subscription
+              |> Subscription.reactivate_changeset()
+              |> Repo.update()
+
+            subscription
+
+          {:error, reason} ->
+            Logger.error("Failed to reactivate Stripe subscription: #{inspect(reason)}")
+            Repo.rollback(reason)
+        end
+      end)
     else
       {:error, :cannot_reactivate}
     end
@@ -328,6 +279,7 @@ defmodule PrzetargowyPrzeglad.Payments do
 
   @doc """
   Expires a subscription and downgrades the user.
+  Also removes all premium alerts.
   """
   def expire_subscription(subscription) do
     Repo.transaction(fn ->
@@ -339,6 +291,9 @@ defmodule PrzetargowyPrzeglad.Payments do
       # Downgrade user
       Accounts.downgrade_to_free(subscription.user_id)
 
+      # Remove premium alerts
+      Accounts.delete_premium_alerts(subscription.user_id)
+
       subscription
     end)
   end
@@ -348,87 +303,123 @@ defmodule PrzetargowyPrzeglad.Payments do
   # ============================================================================
 
   @doc """
-  Handles a successful payment notification from Tpay.
+  Handles a successful payment notification from Stripe.
+  Can be called for both initial checkout and recurring invoices.
   """
-  def handle_payment_completed(%{transaction_id: tpay_transaction_id, card_token: card_token} = event) do
-    transaction = get_transaction_by_tpay_id(tpay_transaction_id)
+  def handle_payment_completed(%{session_id: _session_id, subscription_id: stripe_subscription_id} = event) do
+    # This is a checkout.session.completed event (initial payment)
+    metadata = event[:metadata] || %{}
+    subscription_id = metadata["subscription_id"]
 
-    if transaction do
+    if subscription_id do
+      subscription = get_subscription(subscription_id)
+
+      if subscription do
+        Repo.transaction(fn ->
+          # Create transaction record
+          create_initial_transaction(subscription, event)
+
+          # Activate subscription
+          do_activate_subscription(subscription, %{
+            subscription_id: stripe_subscription_id,
+            customer_id: event.customer_id
+          })
+
+          :ok
+        end)
+      else
+        Logger.warning("No subscription found for ID: #{subscription_id}")
+        {:error, :subscription_not_found}
+      end
+    else
+      Logger.warning("No subscription_id in metadata")
+      {:error, :missing_metadata}
+    end
+  end
+
+  def handle_payment_completed(%{invoice_id: _invoice_id, subscription_id: stripe_subscription_id} = event) do
+    # This is an invoice.payment_succeeded event (renewal)
+    subscription = get_subscription_by_stripe_id(stripe_subscription_id)
+
+    if subscription do
       Repo.transaction(fn ->
-        # Mark transaction as completed
-        {:ok, _transaction} =
-          transaction
-          |> PaymentTransaction.complete_changeset(event.raw_event)
-          |> Repo.update()
+        # Create transaction record
+        create_renewal_transaction_from_webhook(subscription, event)
 
-        # Handle based on transaction type
-        case transaction.type do
-          "initial" ->
-            subscription = get_subscription(transaction.subscription_id)
-
-            if subscription do
-              activate_subscription(subscription, %{card_token: card_token})
-            end
-
-          "renewal" ->
-            subscription = get_subscription(transaction.subscription_id)
-
-            if subscription do
-              subscription
-              |> Subscription.renew_changeset()
-              |> Repo.update()
-            end
-
-          _ ->
-            :ok
-        end
+        # Renew subscription
+        {:ok, _subscription} = renew_subscription(subscription)
 
         :ok
       end)
     else
-      Logger.warning("No transaction found for Tpay ID: #{tpay_transaction_id}")
-      {:error, :transaction_not_found}
+      Logger.warning("No subscription found for Stripe ID: #{stripe_subscription_id}")
+      {:error, :subscription_not_found}
     end
   end
 
   @doc """
-  Handles a failed payment notification from Tpay.
+  Handles a failed payment notification from Stripe.
   """
-  def handle_payment_failed(%{transaction_id: tpay_transaction_id, error_code: error_code, error_message: error_message}) do
-    transaction = get_transaction_by_tpay_id(tpay_transaction_id)
+  def handle_payment_failed(%{invoice_id: _invoice_id, subscription_id: stripe_subscription_id} = event) do
+    subscription = get_subscription_by_stripe_id(stripe_subscription_id)
 
-    if transaction do
+    if subscription do
       Repo.transaction(fn ->
-        # Mark transaction as failed
-        {:ok, _transaction} =
-          transaction
-          |> PaymentTransaction.fail_changeset(error_code, error_message)
+        # Create failed transaction record
+        create_failed_transaction(subscription, event)
+
+        # Update subscription retry count
+        {:ok, _subscription} =
+          subscription
+          |> Subscription.payment_failed_changeset(event.error_message)
           |> Repo.update()
-
-        # If this is a renewal, update subscription retry count
-        if transaction.type == "renewal" and transaction.subscription_id do
-          subscription = get_subscription(transaction.subscription_id)
-
-          if subscription do
-            subscription
-            |> Subscription.payment_failed_changeset(error_message)
-            |> Repo.update()
-          end
-        end
 
         :ok
       end)
     else
-      Logger.warning("No transaction found for Tpay ID: #{tpay_transaction_id}")
-      {:error, :transaction_not_found}
+      Logger.warning("No subscription found for Stripe ID: #{stripe_subscription_id}")
+      {:error, :subscription_not_found}
     end
   end
 
   @doc """
-  Handles a refund notification from Tpay.
+  Handles a subscription update notification from Stripe.
   """
-  def handle_refund(%{transaction_id: tpay_transaction_id} = event) do
-    transaction = get_transaction_by_tpay_id(tpay_transaction_id)
+  def handle_subscription_updated(%{subscription_id: stripe_subscription_id} = event) do
+    subscription = get_subscription_by_stripe_id(stripe_subscription_id)
+
+    if subscription do
+      attrs = %{
+        cancel_at_period_end: event.cancel_at_period_end,
+        current_period_end: DateTime.from_unix!(event.current_period_end)
+      }
+
+      subscription
+      |> Ecto.Changeset.change(attrs)
+      |> Repo.update()
+    else
+      {:error, :subscription_not_found}
+    end
+  end
+
+  @doc """
+  Handles a subscription deletion notification from Stripe.
+  """
+  def handle_subscription_deleted(%{subscription_id: stripe_subscription_id}) do
+    subscription = get_subscription_by_stripe_id(stripe_subscription_id)
+
+    if subscription do
+      expire_subscription(subscription)
+    else
+      {:error, :subscription_not_found}
+    end
+  end
+
+  @doc """
+  Handles a refund notification from Stripe.
+  """
+  def handle_refund(%{payment_intent_id: payment_intent_id} = event) do
+    transaction = get_transaction_by_stripe_payment_intent_id(payment_intent_id)
 
     if transaction do
       transaction
@@ -440,14 +431,75 @@ defmodule PrzetargowyPrzeglad.Payments do
   end
 
   # ============================================================================
+  # Transaction Helpers
+  # ============================================================================
+
+  defp create_initial_transaction(subscription, event) do
+    attrs = %{
+      subscription_id: subscription.id,
+      user_id: subscription.user_id,
+      type: "initial",
+      amount: event[:amount] || @subscription_amount,
+      currency: @subscription_currency,
+      stripe_description: "Przetargowy Przegląd Premium - initial payment",
+      stripe_payment_intent_id: event[:payment_intent_id]
+    }
+
+    %PaymentTransaction{}
+    |> PaymentTransaction.create_changeset(attrs)
+    |> Ecto.Changeset.put_change(:status, "completed")
+    |> Ecto.Changeset.put_change(:stripe_response, event.raw_event || %{})
+    |> Ecto.Changeset.put_change(:paid_at, DateTime.truncate(DateTime.utc_now(), :second))
+    |> Repo.insert()
+  end
+
+  defp create_renewal_transaction_from_webhook(subscription, event) do
+    attrs = %{
+      subscription_id: subscription.id,
+      user_id: subscription.user_id,
+      type: "renewal",
+      amount: event[:amount] || subscription.amount,
+      currency: subscription.currency,
+      stripe_description: "Przetargowy Przegląd Premium - renewal",
+      stripe_payment_intent_id: event[:payment_intent_id]
+    }
+
+    %PaymentTransaction{}
+    |> PaymentTransaction.create_changeset(attrs)
+    |> Ecto.Changeset.put_change(:status, "completed")
+    |> Ecto.Changeset.put_change(:stripe_response, event.raw_event || %{})
+    |> Ecto.Changeset.put_change(:paid_at, DateTime.truncate(DateTime.utc_now(), :second))
+    |> Repo.insert()
+  end
+
+  defp create_failed_transaction(subscription, event) do
+    attrs = %{
+      subscription_id: subscription.id,
+      user_id: subscription.user_id,
+      type: "renewal",
+      amount: subscription.amount,
+      currency: subscription.currency,
+      stripe_description: "Przetargowy Przegląd Premium - failed renewal"
+    }
+
+    %PaymentTransaction{}
+    |> PaymentTransaction.create_changeset(attrs)
+    |> Ecto.Changeset.put_change(:status, "failed")
+    |> Ecto.Changeset.put_change(:error_code, event.error_code)
+    |> Ecto.Changeset.put_change(:error_message, event.error_message)
+    |> Ecto.Changeset.put_change(:stripe_response, event.raw_event || %{})
+    |> Repo.insert()
+  end
+
+  # ============================================================================
   # Transaction Queries
   # ============================================================================
 
   @doc """
-  Gets a transaction by Tpay transaction ID.
+  Gets a transaction by Stripe payment intent ID.
   """
-  def get_transaction_by_tpay_id(tpay_transaction_id) do
-    Repo.get_by(PaymentTransaction, tpay_transaction_id: tpay_transaction_id)
+  def get_transaction_by_stripe_payment_intent_id(stripe_payment_intent_id) do
+    Repo.get_by(PaymentTransaction, stripe_payment_intent_id: stripe_payment_intent_id)
   end
 
   @doc """
@@ -469,12 +521,6 @@ defmodule PrzetargowyPrzeglad.Payments do
   # ============================================================================
   # Helpers
   # ============================================================================
-
-  defp get_webhook_url do
-    host = Application.get_env(:przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint)[:url][:host]
-    scheme = Application.get_env(:przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint)[:url][:scheme] || "https"
-    "#{scheme}://#{host}/webhooks/tpay"
-  end
 
   @doc """
   Returns the subscription amount.

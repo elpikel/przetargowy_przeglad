@@ -89,8 +89,25 @@ config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
     ]
   ]
 
+# Stripe configuration for development
+# Set these environment variables to use real Stripe sandbox:
+#   export STRIPE_API_KEY=sk_test_xxxxx
+#   export STRIPE_PRICE_ID=price_xxxxx
+#   export STRIPE_WEBHOOK_SECRET=whsec_xxxxx
+# Then use Stripe CLI to forward webhooks: stripe listen --forward-to localhost:4000/webhooks/stripe
+config :przetargowy_przeglad, :stripe,
+  price_id: System.get_env("STRIPE_PRICE_ID") || raise("STRIPE_PRICE_ID environment variable is not set"),
+  webhook_secret: System.get_env("STRIPE_WEBHOOK_SECRET") || raise("STRIPE_WEBHOOK_SECRET environment variable is not set")
+
 # Enable dev routes for dashboard and mailbox
 config :przetargowy_przeglad, dev_routes: true
+
+config :stripity_stripe,
+  api_key: System.get_env("STRIPE_API_KEY") || raise("STRIPE_API_KEY environment variable is not set")
+
+# Use real Stripe client in development
+# Uncomment the line below to use ClientStub instead (no real Stripe calls, no webhook signature verification needed):
+# config :przetargowy_przeglad, :stripe_client, PrzetargowyPrzeglad.Stripe.ClientStub
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

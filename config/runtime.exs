@@ -129,13 +129,13 @@ if config_env() == :prod do
 
   config :przetargowy_przeglad, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
-  # Tpay payment gateway configuration
-  config :przetargowy_przeglad, :tpay,
-    client_id: System.get_env("TPAY_CLIENT_ID") || raise("TPAY_CLIENT_ID missing"),
-    client_secret: System.get_env("TPAY_CLIENT_SECRET") || raise("TPAY_CLIENT_SECRET missing"),
-    merchant_id: System.get_env("TPAY_MERCHANT_ID") || raise("TPAY_MERCHANT_ID missing"),
-    webhook_secret: System.get_env("TPAY_WEBHOOK_SECRET") || raise("TPAY_WEBHOOK_SECRET missing"),
-    api_url: System.get_env("TPAY_API_URL", "https://openapi.sandbox.tpay.com")
+  config :przetargowy_przeglad, :stripe,
+    price_id: System.get_env("STRIPE_PRICE_ID") || raise("STRIPE_PRICE_ID missing"),
+    webhook_secret: System.get_env("STRIPE_WEBHOOK_SECRET") || raise("STRIPE_WEBHOOK_SECRET missing")
+
+  # Stripe payment gateway configuration
+  config :stripity_stripe,
+    api_key: System.get_env("STRIPE_API_KEY") || raise("STRIPE_API_KEY missing")
 
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.

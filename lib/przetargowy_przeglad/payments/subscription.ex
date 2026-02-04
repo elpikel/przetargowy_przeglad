@@ -1,7 +1,7 @@
 defmodule PrzetargowyPrzeglad.Payments.Subscription do
   @moduledoc """
   Schema for user subscriptions.
-  Tracks Tpay recurring payment subscriptions for premium access.
+  Tracks Stripe recurring payment subscriptions for premium access.
   """
   use Ecto.Schema
 
@@ -14,8 +14,8 @@ defmodule PrzetargowyPrzeglad.Payments.Subscription do
   @max_retry_count 3
 
   schema "subscriptions" do
-    field :tpay_subscription_id, :string
-    field :tpay_client_id, :string
+    field :stripe_subscription_id, :string
+    field :stripe_customer_id, :string
     field :status, :string, default: "pending"
     field :current_period_start, :utc_datetime
     field :current_period_end, :utc_datetime
@@ -52,7 +52,7 @@ defmodule PrzetargowyPrzeglad.Payments.Subscription do
     period_end = DateTime.add(now, 30, :day)
 
     subscription
-    |> cast(attrs, [:tpay_subscription_id, :tpay_client_id, :metadata])
+    |> cast(attrs, [:stripe_subscription_id, :stripe_customer_id, :metadata])
     |> put_change(:status, "active")
     |> put_change(:current_period_start, now)
     |> put_change(:current_period_end, period_end)

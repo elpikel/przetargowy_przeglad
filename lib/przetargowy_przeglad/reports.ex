@@ -4,6 +4,7 @@ defmodule PrzetargowyPrzeglad.Reports do
   """
 
   import Ecto.Query
+
   alias PrzetargowyPrzeglad.Repo
   alias PrzetargowyPrzeglad.Reports.TenderReport
 
@@ -35,13 +36,13 @@ defmodule PrzetargowyPrzeglad.Reports do
     per_page = Keyword.get(opts, :per_page, 12)
     offset = (page - 1) * per_page
 
-    base_query = from r in TenderReport
+    base_query = from(r in TenderReport)
 
     total_count = base_query |> select([r], count(r.id)) |> Repo.one()
 
     reports =
       base_query
-      |> order_by([r], [desc: r.report_month, asc: r.region, asc: r.order_type])
+      |> order_by([r], desc: r.report_month, asc: r.region, asc: r.order_type)
       |> limit(^per_page)
       |> offset(^offset)
       |> Repo.all()
@@ -140,33 +141,36 @@ defmodule PrzetargowyPrzeglad.Reports do
   end
 
   defp find_existing_report(%{report_type: "region_summary"} = attrs) do
-    from(r in TenderReport,
-      where: r.region == ^attrs[:region],
-      where: is_nil(r.order_type),
-      where: r.report_month == ^attrs[:report_month],
-      where: r.report_type == "region_summary"
+    Repo.one(
+      from(r in TenderReport,
+        where: r.region == ^attrs[:region],
+        where: is_nil(r.order_type),
+        where: r.report_month == ^attrs[:report_month],
+        where: r.report_type == "region_summary"
+      )
     )
-    |> Repo.one()
   end
 
   defp find_existing_report(%{report_type: "industry_summary"} = attrs) do
-    from(r in TenderReport,
-      where: is_nil(r.region),
-      where: r.order_type == ^attrs[:order_type],
-      where: r.report_month == ^attrs[:report_month],
-      where: r.report_type == "industry_summary"
+    Repo.one(
+      from(r in TenderReport,
+        where: is_nil(r.region),
+        where: r.order_type == ^attrs[:order_type],
+        where: r.report_month == ^attrs[:report_month],
+        where: r.report_type == "industry_summary"
+      )
     )
-    |> Repo.one()
   end
 
   defp find_existing_report(%{report_type: "overall"} = attrs) do
-    from(r in TenderReport,
-      where: is_nil(r.region),
-      where: is_nil(r.order_type),
-      where: r.report_month == ^attrs[:report_month],
-      where: r.report_type == "overall"
+    Repo.one(
+      from(r in TenderReport,
+        where: is_nil(r.region),
+        where: is_nil(r.order_type),
+        where: r.report_month == ^attrs[:report_month],
+        where: r.report_type == "overall"
+      )
     )
-    |> Repo.one()
   end
 
   defp find_existing_report(_attrs), do: nil

@@ -75,7 +75,9 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
 
         # Build full URL for cover image
         og_image_url =
-          URI.parse(url(~p"/"))
+          ~p"/"
+          |> url()
+          |> URI.parse()
           |> Map.put(:path, report.cover_image_url)
           |> URI.to_string()
 
@@ -106,8 +108,7 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
 
   defp build_page_title(1), do: "Raporty przetargów publicznych | Przetargowy Przegląd"
 
-  defp build_page_title(page),
-    do: "Raporty przetargów - Strona #{page} | Przetargowy Przegląd"
+  defp build_page_title(page), do: "Raporty przetargów - Strona #{page} | Przetargowy Przegląd"
 
   defp build_canonical_url(_conn, 1) do
     url(~p"/reports")
@@ -127,10 +128,8 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
       "@type" => "Report",
       "headline" => report.title,
       "description" => report.meta_description,
-      "datePublished" =>
-        report.inserted_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601(),
-      "dateModified" =>
-        report.updated_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601(),
+      "datePublished" => report.inserted_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601(),
+      "dateModified" => report.updated_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601(),
       "author" => %{
         "@type" => "Organization",
         "name" => "Przetargowy Przegląd",
@@ -146,7 +145,9 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
         "@id" => canonical_url
       },
       "image" =>
-        URI.parse(url(~p"/"))
+        ~p"/"
+        |> url()
+        |> URI.parse()
         |> Map.put(:path, report.cover_image_url)
         |> URI.to_string(),
       "about" => %{

@@ -62,8 +62,10 @@ defmodule PrzetargowyPrzeglad.MixProject do
       {:oban, "~> 2.20"},
       {:bcrypt_elixir, "~> 3.0"},
       {:ex_machina, "~> 2.8", only: :test},
+      {:mox, "~> 1.0", only: :test},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:styler, "~> 1.2", only: [:dev, :test], runtime: false}
+      {:styler, "~> 1.2", only: [:dev, :test], runtime: false},
+      {:stripity_stripe, "~> 3.2"}
     ]
   end
 

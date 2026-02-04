@@ -39,8 +39,8 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionController do
   end
 
   @doc """
-  Creates a new subscription by initiating Tpay payment.
-  Redirects user to Tpay payment page.
+  Creates a new subscription by initiating Stripe checkout.
+  Redirects user to Stripe Checkout page.
   """
   def create(conn, _params) do
     user = conn.assigns.current_user
@@ -48,7 +48,7 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionController do
     callbacks = %{
       success_url: url(~p"/dashboard/subscription/success"),
       error_url: url(~p"/dashboard/subscription/error"),
-      notification_url: url(~p"/webhooks/tpay")
+      notification_url: url(~p"/webhooks/stripe")
     }
 
     case Payments.create_subscription(user, callbacks) do
@@ -132,7 +132,7 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionController do
   end
 
   @doc """
-  Handles successful return from Tpay.
+  Handles successful return from Stripe Checkout.
   Note: The actual subscription activation happens via webhook.
   """
   def payment_success(conn, _params) do
@@ -145,7 +145,7 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionController do
   end
 
   @doc """
-  Handles error return from Tpay.
+  Handles error return from Stripe Checkout.
   """
   def payment_error(conn, _params) do
     conn

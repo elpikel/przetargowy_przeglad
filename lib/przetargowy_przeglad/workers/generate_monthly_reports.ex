@@ -13,13 +13,14 @@ defmodule PrzetargowyPrzeglad.Workers.GenerateMonthlyReports do
   use Oban.Worker,
     queue: :default,
     max_attempts: 3,
-    unique: [period: 86400]
+    unique: [period: 86_400]
 
   import Ecto.Query
+
   alias PrzetargowyPrzeglad.Repo
-  alias PrzetargowyPrzeglad.Tenders.TenderNotice
   alias PrzetargowyPrzeglad.Reports
   alias PrzetargowyPrzeglad.Reports.ReportGenerator
+  alias PrzetargowyPrzeglad.Tenders.TenderNotice
 
   require Logger
 
@@ -110,9 +111,7 @@ defmodule PrzetargowyPrzeglad.Workers.GenerateMonthlyReports do
           Logger.info("Successfully generated detailed report: #{report.slug}")
 
         {:error, changeset} ->
-          Logger.error(
-            "Failed to generate detailed report for #{region}/#{order_type}: #{inspect(changeset.errors)}"
-          )
+          Logger.error("Failed to generate detailed report for #{region}/#{order_type}: #{inspect(changeset.errors)}")
       end
     else
       Logger.info("Skipping detailed report for #{region}/#{order_type} - no tenders found")
@@ -139,9 +138,7 @@ defmodule PrzetargowyPrzeglad.Workers.GenerateMonthlyReports do
           Logger.info("Successfully generated region summary: #{report.slug}")
 
         {:error, changeset} ->
-          Logger.error(
-            "Failed to generate region summary for #{region}: #{inspect(changeset.errors)}"
-          )
+          Logger.error("Failed to generate region summary for #{region}: #{inspect(changeset.errors)}")
       end
     else
       Logger.info("Skipping region summary for #{region} - no tenders found")
@@ -168,9 +165,7 @@ defmodule PrzetargowyPrzeglad.Workers.GenerateMonthlyReports do
           Logger.info("Successfully generated industry summary: #{report.slug}")
 
         {:error, changeset} ->
-          Logger.error(
-            "Failed to generate industry summary for #{order_type}: #{inspect(changeset.errors)}"
-          )
+          Logger.error("Failed to generate industry summary for #{order_type}: #{inspect(changeset.errors)}")
       end
     else
       Logger.info("Skipping industry summary for #{order_type} - no tenders found")
@@ -205,8 +200,8 @@ defmodule PrzetargowyPrzeglad.Workers.GenerateMonthlyReports do
   end
 
   defp fetch_tenders(month, filters) do
-    start_date = Date.beginning_of_month(month) |> DateTime.new!(~T[00:00:00])
-    end_date = Date.end_of_month(month) |> DateTime.new!(~T[23:59:59])
+    start_date = month |> Date.beginning_of_month() |> DateTime.new!(~T[00:00:00])
+    end_date = month |> Date.end_of_month() |> DateTime.new!(~T[23:59:59])
 
     query =
       from(tn in TenderNotice,

@@ -4,7 +4,8 @@ defmodule PrzetargowyPrzeglad.Factory do
   """
   use ExMachina.Ecto, repo: PrzetargowyPrzeglad.Repo
 
-  alias PrzetargowyPrzeglad.Accounts.{Alert, User}
+  alias PrzetargowyPrzeglad.Accounts.Alert
+  alias PrzetargowyPrzeglad.Accounts.User
   alias PrzetargowyPrzeglad.Tenders.TenderNotice
 
   # User factories

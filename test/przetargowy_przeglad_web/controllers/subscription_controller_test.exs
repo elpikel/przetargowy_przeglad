@@ -1,5 +1,5 @@
 defmodule PrzetargowyPrzegladWeb.SubscriptionControllerTest do
-  use PrzetargowyPrzegladWeb.ConnCase, async: true
+  use PrzetargowyPrzegladWeb.ConnCase, async: false
 
   alias PrzetargowyPrzeglad.Accounts
   alias PrzetargowyPrzeglad.Payments
@@ -38,7 +38,7 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionControllerTest do
           status: "active",
           current_period_start: now,
           current_period_end: period_end,
-          tpay_subscription_id: "test_token_#{System.unique_integer()}"
+          stripe_subscription_id: "test_token_#{System.unique_integer()}"
         }
       else
         %{user_id: user.id}
@@ -207,7 +207,7 @@ defmodule PrzetargowyPrzegladWeb.SubscriptionControllerTest do
       subscription = create_subscription(user, "active")
 
       # First cancel the subscription
-      {:ok, _} =
+      {:ok, _subscription} =
         subscription
         |> Ecto.Changeset.change(%{
           cancel_at_period_end: true,

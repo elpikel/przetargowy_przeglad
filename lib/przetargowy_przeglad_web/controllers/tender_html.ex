@@ -141,6 +141,7 @@ defmodule PrzetargowyPrzegladWeb.TenderHTML do
   defp format_by_region(_region, index), do: if(index == 1, do: "Alert główny", else: "Alert #{index}")
 
   def format_html_body(nil), do: ""
+
   def format_html_body(html) when is_binary(html) do
     # Strip potentially dangerous tags and attributes
     html

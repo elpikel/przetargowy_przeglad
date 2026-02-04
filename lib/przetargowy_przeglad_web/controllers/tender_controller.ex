@@ -70,7 +70,7 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
 
       tender ->
         # Check if tender is expired
-        is_expired = tender.submitting_offers_date && DateTime.compare(tender.submitting_offers_date, DateTime.utc_now()) == :lt
+        is_expired = tender.submitting_offers_date && DateTime.before?(tender.submitting_offers_date, DateTime.utc_now())
 
         # SEO meta tags
         page_title = build_tender_page_title(tender)
@@ -222,14 +222,15 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
   end
 
   defp build_tender_page_description(tender) do
-    deadline = if tender.submitting_offers_date do
-      Calendar.strftime(tender.submitting_offers_date, "%d.%m.%Y")
-    else
-      "brak terminu"
-    end
+    deadline =
+      if tender.submitting_offers_date do
+        Calendar.strftime(tender.submitting_offers_date, "%d.%m.%Y")
+      else
+        "brak terminu"
+      end
 
     "Przetarg: #{tender.order_object}. Zamawiający: #{tender.organization_name}, #{tender.organization_city}. " <>
-    "Numer BZP: #{tender.bzp_number}. Termin składania ofert: #{deadline}."
+      "Numer BZP: #{tender.bzp_number}. Termin składania ofert: #{deadline}."
   end
 
   defp build_tender_breadcrumb_data(tender) do

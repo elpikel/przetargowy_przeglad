@@ -193,18 +193,17 @@ defmodule PrzetargowyPrzeglad.Reports.ReportGenerator do
       tenders
       |> Enum.map(fn tender ->
         contractor_count =
-          cond do
-            is_list(tender.contractors) -> length(tender.contractors)
-            true -> 0
+          if is_list(tender.contractors) do
+            length(tender.contractors)
+          else
+            0
           end
 
         details_count =
-          cond do
-            is_list(tender.contractors_contract_details) ->
-              length(tender.contractors_contract_details)
-
-            true ->
-              0
+          if is_list(tender.contractors_contract_details) do
+            length(tender.contractors_contract_details)
+          else
+            0
           end
 
         total_interest = max(contractor_count, details_count)
@@ -580,12 +579,11 @@ defmodule PrzetargowyPrzeglad.Reports.ReportGenerator do
     mierzone liczbą złożonych ofert:</p>
     <ol class="top-contractors-list">
     #{Enum.map_join(stats.details["top_tenders"], "\n", fn tender ->
-      value_info =
-        if tender["estimated_value"] do
-          " - szacowana wartość: #{Decimal.new(tender["estimated_value"]) |> format_currency()}"
-        else
-          ""
-        end
+      value_info = if tender["estimated_value"] do
+        " - szacowana wartość: #{tender["estimated_value"] |> Decimal.new() |> format_currency()}"
+      else
+        ""
+      end
 
       "<li><strong>#{String.slice(tender["title"], 0..100)}</strong><br/>
       Zamawiający: #{tender["organization"]}<br/>

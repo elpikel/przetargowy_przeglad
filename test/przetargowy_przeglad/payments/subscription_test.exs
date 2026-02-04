@@ -54,12 +54,12 @@ defmodule PrzetargowyPrzeglad.Payments.SubscriptionTest do
 
       changeset =
         Subscription.activate_changeset(subscription, %{
-          tpay_subscription_id: "card_token_123"
+          stripe_subscription_id: "card_token_123"
         })
 
       assert changeset.valid?
       assert get_change(changeset, :status) == "active"
-      assert get_change(changeset, :tpay_subscription_id) == "card_token_123"
+      assert get_change(changeset, :stripe_subscription_id) == "card_token_123"
       assert get_change(changeset, :current_period_start)
       assert get_change(changeset, :current_period_end)
       # Use get_field since retry_count has a default of 0 and may not show as a change

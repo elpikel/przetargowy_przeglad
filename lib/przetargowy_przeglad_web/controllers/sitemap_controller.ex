@@ -3,6 +3,7 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
   use PrzetargowyPrzegladWeb, :verified_routes
 
   import Ecto.Query
+
   alias PrzetargowyPrzeglad.Repo
   alias PrzetargowyPrzeglad.Tenders.TenderNotice
 
@@ -27,17 +28,18 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
     # Get active tenders (non-expired, ContractNotice type only)
     active_tenders = get_active_tenders()
 
-    tender_urls = Enum.map(active_tenders, fn tender ->
-      # Use Phoenix's url helper for proper encoding
-      tender_url = url(~p"/tenders/#{tender.object_id}")
+    tender_urls =
+      Enum.map(active_tenders, fn tender ->
+        # Use Phoenix's url helper for proper encoding
+        tender_url = url(~p"/tenders/#{tender.object_id}")
 
-      %{
-        loc: tender_url,
-        changefreq: "daily",
-        priority: "0.8",
-        lastmod: format_lastmod(tender.updated_at || tender.inserted_at)
-      }
-    end)
+        %{
+          loc: tender_url,
+          changefreq: "daily",
+          priority: "0.8",
+          lastmod: format_lastmod(tender.updated_at || tender.inserted_at)
+        }
+      end)
 
     urls = static_urls ++ tender_urls
 
@@ -51,21 +53,19 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
   defp get_active_tenders do
     now = DateTime.utc_now()
 
-    from(t in TenderNotice,
-      where: t.notice_type == "ContractNotice",
-      where: t.submitting_offers_date > ^now,
-      order_by: [desc: t.publication_date],
-      limit: 1000,
-      select: %{
-        object_id: t.object_id,
-        inserted_at: t.inserted_at,
-        updated_at: t.updated_at
-      }
+    Repo.all(
+      from(t in TenderNotice,
+        where: t.notice_type == "ContractNotice",
+        where: t.submitting_offers_date > ^now,
+        order_by: [desc: t.publication_date],
+        limit: 1000,
+        select: %{object_id: t.object_id, inserted_at: t.inserted_at, updated_at: t.updated_at}
+      )
     )
-    |> Repo.all()
   end
 
   defp format_lastmod(nil), do: nil
+
   defp format_lastmod(datetime) do
     datetime
     |> DateTime.truncate(:second)
@@ -82,11 +82,12 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
   end
 
   defp url_to_xml(url) do
-    lastmod_tag = if Map.has_key?(url, :lastmod) && url.lastmod do
-      "<lastmod>#{url.lastmod}</lastmod>\n        "
-    else
-      ""
-    end
+    lastmod_tag =
+      if Map.has_key?(url, :lastmod) && url.lastmod do
+        "<lastmod>#{url.lastmod}</lastmod>\n        "
+      else
+        ""
+      end
 
     """
       <url>

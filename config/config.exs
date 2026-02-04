@@ -33,10 +33,9 @@ config :przetargowy_przeglad, Oban,
      crontab: [
        {"0 * * * *", PrzetargowyPrzeglad.Workers.FetchTendersNotices, args: %{"days" => 730}},
        {"0 6 * * *", PrzetargowyPrzeglad.Workers.SendAlerts},
-       # Payment workers - run daily
-       {"0 3 * * *", PrzetargowyPrzeglad.Workers.ProcessSubscriptionRenewals},
+       # Stripe handles subscription renewals automatically via webhooks
+       # This worker expires subscriptions that weren't renewed (backup for webhook failures)
        {"0 4 * * *", PrzetargowyPrzeglad.Workers.ExpireSubscriptions},
-       {"0 5 * * *", PrzetargowyPrzeglad.Workers.RetryFailedPayments},
        # Monthly reports - run on 1st of month at 2 AM
        {"0 2 1 * *", PrzetargowyPrzeglad.Workers.GenerateMonthlyReports}
      ]}

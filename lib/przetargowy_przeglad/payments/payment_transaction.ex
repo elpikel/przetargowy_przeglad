@@ -14,15 +14,15 @@ defmodule PrzetargowyPrzeglad.Payments.PaymentTransaction do
   @statuses ~w(pending completed failed refunded)
 
   schema "payment_transactions" do
-    field :tpay_transaction_id, :string
-    field :tpay_title, :string
+    field :stripe_payment_intent_id, :string
+    field :stripe_description, :string
     field :type, :string
     field :status, :string, default: "pending"
     field :amount, :decimal
     field :currency, :string, default: "PLN"
     field :error_code, :string
     field :error_message, :string
-    field :tpay_response, :map, default: %{}
+    field :stripe_response, :map, default: %{}
     field :paid_at, :utc_datetime
 
     belongs_to :subscription, Subscription
@@ -36,7 +36,7 @@ defmodule PrzetargowyPrzeglad.Payments.PaymentTransaction do
   """
   def create_changeset(transaction \\ %__MODULE__{}, attrs) do
     transaction
-    |> cast(attrs, [:subscription_id, :user_id, :tpay_transaction_id, :tpay_title, :type, :amount, :currency])
+    |> cast(attrs, [:subscription_id, :user_id, :stripe_payment_intent_id, :stripe_description, :type, :amount, :currency])
     |> validate_required([:user_id, :type, :amount])
     |> validate_inclusion(:type, @types)
     |> put_change(:status, "pending")
@@ -45,13 +45,13 @@ defmodule PrzetargowyPrzeglad.Payments.PaymentTransaction do
   @doc """
   Changeset for marking a transaction as completed.
   """
-  def complete_changeset(transaction, tpay_response) do
+  def complete_changeset(transaction, stripe_response) do
     now = DateTime.truncate(DateTime.utc_now(), :second)
 
     transaction
     |> change()
     |> put_change(:status, "completed")
-    |> put_change(:tpay_response, tpay_response)
+    |> put_change(:stripe_response, stripe_response)
     |> put_change(:paid_at, now)
   end
 
@@ -69,11 +69,11 @@ defmodule PrzetargowyPrzeglad.Payments.PaymentTransaction do
   @doc """
   Changeset for marking a transaction as refunded.
   """
-  def refund_changeset(transaction, tpay_response) do
+  def refund_changeset(transaction, stripe_response) do
     transaction
     |> change()
     |> put_change(:status, "refunded")
-    |> put_change(:tpay_response, tpay_response)
+    |> put_change(:stripe_response, stripe_response)
   end
 
   @doc """
