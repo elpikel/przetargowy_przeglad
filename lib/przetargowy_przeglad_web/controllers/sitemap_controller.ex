@@ -96,6 +96,7 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
     naive_datetime
     |> NaiveDateTime.truncate(:second)
     |> NaiveDateTime.to_iso8601()
+    |> Kernel.<>("+00:00")
   end
 
   defp format_lastmod(%DateTime{} = datetime) do
