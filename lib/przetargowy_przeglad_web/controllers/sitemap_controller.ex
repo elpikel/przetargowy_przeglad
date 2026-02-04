@@ -5,6 +5,7 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
   import Ecto.Query
 
   alias PrzetargowyPrzeglad.Repo
+  alias PrzetargowyPrzeglad.Reports.TenderReport
   alias PrzetargowyPrzeglad.Tenders.TenderNotice
 
   def index(conn, _params) do
@@ -14,6 +15,7 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
       # Static pages
       %{loc: "#{base_url}/", changefreq: "daily", priority: "1.0"},
       %{loc: "#{base_url}/tenders", changefreq: "hourly", priority: "0.9"},
+      %{loc: "#{base_url}/reports", changefreq: "weekly", priority: "0.9"},
       %{loc: "#{base_url}/pricing", changefreq: "weekly", priority: "0.8"},
 
       # Common search pages
@@ -41,7 +43,22 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
         }
       end)
 
-    urls = static_urls ++ tender_urls
+    # Get all reports
+    reports = get_reports()
+
+    report_urls =
+      Enum.map(reports, fn report ->
+        report_url = url(~p"/reports/#{report.slug}")
+
+        %{
+          loc: report_url,
+          changefreq: "monthly",
+          priority: "0.7",
+          lastmod: format_lastmod(report.updated_at || report.inserted_at)
+        }
+      end)
+
+    urls = static_urls ++ tender_urls ++ report_urls
 
     xml = generate_sitemap_xml(urls)
 
@@ -64,9 +81,24 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
     )
   end
 
+  defp get_reports do
+    Repo.all(
+      from(r in TenderReport,
+        order_by: [desc: r.report_month],
+        select: %{slug: r.slug, inserted_at: r.inserted_at, updated_at: r.updated_at}
+      )
+    )
+  end
+
   defp format_lastmod(nil), do: nil
 
-  defp format_lastmod(datetime) do
+  defp format_lastmod(%NaiveDateTime{} = naive_datetime) do
+    naive_datetime
+    |> NaiveDateTime.truncate(:second)
+    |> NaiveDateTime.to_iso8601()
+  end
+
+  defp format_lastmod(%DateTime{} = datetime) do
     datetime
     |> DateTime.truncate(:second)
     |> DateTime.to_iso8601()

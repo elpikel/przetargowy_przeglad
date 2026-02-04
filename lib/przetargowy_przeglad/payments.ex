@@ -114,6 +114,9 @@ defmodule PrzetargowyPrzeglad.Payments do
         {:error, :already_subscribed}
 
       existing_subscription ->
+        # Capture customer_id BEFORE deleting (for better resubscription UX)
+        existing_customer_id = existing_subscription && existing_subscription.stripe_customer_id
+
         # Delete any old non-active subscription
         if existing_subscription, do: Repo.delete(existing_subscription)
 
@@ -125,7 +128,7 @@ defmodule PrzetargowyPrzeglad.Payments do
         }
 
         with {:ok, subscription} <- create_subscription_record(subscription_attrs),
-             {:ok, stripe_result} <- initiate_stripe_checkout(user, subscription, callbacks) do
+             {:ok, stripe_result} <- initiate_stripe_checkout(user, subscription, callbacks, existing_customer_id) do
           {:ok,
            %{
              redirect_url: stripe_result.checkout_url,
@@ -142,16 +145,25 @@ defmodule PrzetargowyPrzeglad.Payments do
     |> Repo.insert()
   end
 
-  defp initiate_stripe_checkout(user, subscription, callbacks) do
-    stripe_client().create_checkout_session(%{
-      customer_email: user.email,
+  defp initiate_stripe_checkout(user, subscription, callbacks, existing_customer_id \\ nil) do
+    params = %{
       success_url: callbacks.success_url,
       cancel_url: callbacks.error_url,
       metadata: %{
         user_id: to_string(user.id),
         subscription_id: to_string(subscription.id)
       }
-    })
+    }
+
+    # Use existing customer if available (preserves saved payment methods)
+    params =
+      if existing_customer_id do
+        Map.put(params, :customer_id, existing_customer_id)
+      else
+        Map.put(params, :customer_email, user.email)
+      end
+
+    stripe_client().create_checkout_session(params)
   end
 
   @doc """

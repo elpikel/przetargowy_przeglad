@@ -26,13 +26,16 @@ defmodule PrzetargowyPrzeglad.Stripe.Client do
   @doc """
   Creates a Stripe Checkout Session for subscription payment.
   Returns {:ok, %{session_id: id, checkout_url: url}} on success.
+
+  Options:
+  - customer_id: Use existing Stripe customer (preserves saved payment methods)
+  - customer_email: Create new customer or find by email (if customer_id not provided)
   """
   def create_checkout_session(params) do
     price_id = get_price_id()
 
     checkout_params = %{
       mode: :subscription,
-      customer_email: params.customer_email,
       line_items: [
         %{
           price: price_id,
@@ -43,6 +46,14 @@ defmodule PrzetargowyPrzeglad.Stripe.Client do
       cancel_url: params.cancel_url,
       metadata: params[:metadata] || %{}
     }
+
+    # Use existing customer if available (better UX - preserves payment methods)
+    checkout_params =
+      if params[:customer_id] do
+        Map.put(checkout_params, :customer, params.customer_id)
+      else
+        Map.put(checkout_params, :customer_email, params.customer_email)
+      end
 
     case Stripe.Checkout.Session.create(checkout_params) do
       {:ok, session} ->

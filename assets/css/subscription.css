@@ -280,6 +280,33 @@
   color: #92400e;
 }
 
+.resubscribe-notice {
+  background: var(--cream-50);
+  border: 1px solid var(--cream-200);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  width: 100%;
+  text-align: center;
+}
+
+.resubscribe-notice.error {
+  background: var(--error-light);
+  border-color: #fecaca;
+  color: var(--error);
+}
+
+.resubscribe-notice p {
+  margin: 0;
+}
+
+/* Card actions with resubscribe notice - stack vertically */
+.card-actions:has(.resubscribe-notice) {
+  flex-direction: column;
+  align-items: center;
+}
+
 /* Empty state */
 .subscription-page .empty-state {
   text-align: center;

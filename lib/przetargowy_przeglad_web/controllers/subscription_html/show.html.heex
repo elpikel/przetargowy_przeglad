@@ -89,6 +89,23 @@
             </form>
           </div>
         <% end %>
+
+        <%= if @subscription.status in ["expired", "failed", "cancelled"] do %>
+          <div class="card-actions">
+            <%= if @subscription.status == "failed" do %>
+              <div class="resubscribe-notice error">
+                <p>Nie udało się pobrać płatności. Spróbuj ponownie z inną metodą płatności.</p>
+              </div>
+            <% else %>
+              <div class="resubscribe-notice">
+                <p>Twoja subskrypcja wygasła. Wykup ją ponownie, aby odzyskać dostęp Premium.</p>
+              </div>
+            <% end %>
+            <a href="/dashboard/subscription/new" class="btn btn-primary">
+              Wykup ponownie za {format_amount(@subscription_amount)}/miesiąc
+            </a>
+          </div>
+        <% end %>
       </div>
     <% else %>
       <div class="card">
