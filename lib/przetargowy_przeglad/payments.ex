@@ -145,7 +145,7 @@ defmodule PrzetargowyPrzeglad.Payments do
     |> Repo.insert()
   end
 
-  defp initiate_stripe_checkout(user, subscription, callbacks, existing_customer_id \\ nil) do
+  defp initiate_stripe_checkout(user, subscription, callbacks, existing_customer_id) do
     params = %{
       success_url: callbacks.success_url,
       cancel_url: callbacks.error_url,
