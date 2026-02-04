@@ -96,14 +96,14 @@ config :przetargowy_przeglad, PrzetargowyPrzegladWeb.Endpoint,
 #   export STRIPE_WEBHOOK_SECRET=whsec_xxxxx
 # Then use Stripe CLI to forward webhooks: stripe listen --forward-to localhost:4000/webhooks/stripe
 config :przetargowy_przeglad, :stripe,
-  price_id: System.get_env("STRIPE_PRICE_ID") || raise("STRIPE_PRICE_ID environment variable is not set"),
-  webhook_secret: System.get_env("STRIPE_WEBHOOK_SECRET") || raise("STRIPE_WEBHOOK_SECRET environment variable is not set")
+  price_id: System.get_env("STRIPE_PRICE_ID") || "price_dev_placeholder",
+  webhook_secret: System.get_env("STRIPE_WEBHOOK_SECRET") || "whsec_dev_placeholder"
 
 # Enable dev routes for dashboard and mailbox
 config :przetargowy_przeglad, dev_routes: true
 
 config :stripity_stripe,
-  api_key: System.get_env("STRIPE_API_KEY") || raise("STRIPE_API_KEY environment variable is not set")
+  api_key: System.get_env("STRIPE_API_KEY") || "sk_test_dev_placeholder"
 
 # Use real Stripe client in development
 # Uncomment the line below to use ClientStub instead (no real Stripe calls, no webhook signature verification needed):
