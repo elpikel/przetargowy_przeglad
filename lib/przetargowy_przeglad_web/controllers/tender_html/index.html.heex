@@ -1,7 +1,7 @@
 <Layouts.site
   flash={@flash}
   current_user={@current_user}
-  page_title="Wyszukaj przetargi - Przetargowy Przegląd"
+  page_title={@page_title}
   header_position="sticky"
   show_footer={false}
 >
@@ -10,10 +10,8 @@
     <a href="/reports">Raporty</a>
   </:nav>
   <:page_meta>
-    <meta
-      name="description"
-      content="Przeszukaj bazę przetargów publicznych z całej Polski. Znajdź aktualne ogłoszenia o zamówieniach publicznych."
-    />
+    <meta name="description" content={@page_description} />
+    <link rel="canonical" href={@canonical_url} />
   </:page_meta>
 
   <main class="tenders-page">
