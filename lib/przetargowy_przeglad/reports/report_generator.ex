@@ -619,7 +619,7 @@ defmodule PrzetargowyPrzeglad.Reports.ReportGenerator do
         <li>Przeglądać <strong>historyczne dane</strong> i analizy rynkowe</li>
       </ul>
       <p class="cta">
-        <a href="/register/premium" class="cta-button">Dołącz do Premium →</a>
+        <a href="/register" class="cta-button">Rozpocznij za darmo →</a>
       </p>
     </div>
     """
