@@ -31,7 +31,7 @@ config :przetargowy_przeglad, Oban,
     Oban.Plugins.Pruner,
     {Oban.Plugins.Cron,
      crontab: [
-       {"0 * * * *", PrzetargowyPrzeglad.Workers.FetchTendersNotices, args: %{"days" => 730}},
+       {"0 * * * *", PrzetargowyPrzeglad.Workers.FetchTendersNotices, args: %{"days" => 60}},
        {"0 6 * * *", PrzetargowyPrzeglad.Workers.SendAlerts},
        # Stripe handles subscription renewals automatically via webhooks
        # This worker expires subscriptions that weren't renewed (backup for webhook failures)
