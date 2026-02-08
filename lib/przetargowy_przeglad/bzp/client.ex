@@ -100,13 +100,21 @@ defmodule PrzetargowyPrzeglad.Bzp.Client do
   end
 
   defp make_request(params) do
+    # Note: Using verify: :verify_none due to BZP server certificate having
+    # key_usage_mismatch (keyCertSign/cRLSign used for TLS). This is a server-side
+    # misconfiguration that we cannot fix. The connection is still encrypted.
     Req.get(@base_url,
       params: params,
       headers: [
         {"Accept", "application/json"},
         {"User-Agent", "PrzetargowyPrzeglad/1.0"}
       ],
-      receive_timeout: @timeout
+      receive_timeout: @timeout,
+      connect_options: [
+        transport_opts: [
+          verify: :verify_none
+        ]
+      ]
     )
   end
 

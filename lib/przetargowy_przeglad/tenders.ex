@@ -6,6 +6,7 @@ defmodule PrzetargowyPrzeglad.Tenders do
   import Ecto.Query
 
   alias PrzetargowyPrzeglad.Repo
+  alias PrzetargowyPrzeglad.Tenders.BzpParser
   alias PrzetargowyPrzeglad.Tenders.TenderNotice
 
   require Logger
@@ -140,8 +141,11 @@ defmodule PrzetargowyPrzeglad.Tenders do
 
   @doc """
   Upserts a single tender notice. Updates on conflict.
+  Parses the html_body to extract additional structured data.
   """
   def upsert_tender_notice(attrs) do
+    attrs = enrich_with_parsed_data(attrs)
+
     %TenderNotice{}
     |> TenderNotice.changeset(attrs)
     |> Repo.insert(
@@ -149,6 +153,71 @@ defmodule PrzetargowyPrzeglad.Tenders do
       conflict_target: [:object_id]
     )
   end
+
+  # Parse HTML body and extract additional fields
+  # Handle atom keys (from BZP Client)
+  defp enrich_with_parsed_data(%{html_body: html_body} = attrs) when is_binary(html_body) and html_body != "" do
+    case BzpParser.parse(html_body) do
+      {:ok, parsed} ->
+        Map.merge(attrs, %{
+          wadium: parsed.wadium,
+          wadium_amount: parsed.wadium_amount,
+          kryteria: parsed.kryteria,
+          okres_realizacji_from: parsed.okres_realizacji[:from],
+          okres_realizacji_to: parsed.okres_realizacji[:to],
+          okres_realizacji_raw: parsed.okres_realizacji[:raw],
+          opis_przedmiotu: parsed.opis_przedmiotu,
+          warunki_udzialu: parsed.warunki_udzialu,
+          cpv_main: parsed.cpv_main,
+          cpv_additional: parsed.cpv_additional,
+          numer_referencyjny: parsed.numer_referencyjny,
+          oferty_czesciowe: parsed.oferty_czesciowe,
+          zabezpieczenie: parsed.zabezpieczenie,
+          organization_email: parsed.zamawiajacy[:email],
+          organization_www: parsed.zamawiajacy[:www],
+          organization_regon: parsed.zamawiajacy[:regon],
+          organization_street: parsed.zamawiajacy[:ulica],
+          organization_postal_code: parsed.zamawiajacy[:kod_pocztowy]
+        })
+
+      {:error, reason} ->
+        Logger.warning("Failed to parse BZP HTML for tender #{attrs[:object_id]}: #{inspect(reason)}")
+        attrs
+    end
+  end
+
+  # Handle string keys (for backwards compatibility with tests)
+  defp enrich_with_parsed_data(%{"html_body" => html_body} = attrs) when is_binary(html_body) and html_body != "" do
+    case BzpParser.parse(html_body) do
+      {:ok, parsed} ->
+        Map.merge(attrs, %{
+          "wadium" => parsed.wadium,
+          "wadium_amount" => parsed.wadium_amount,
+          "kryteria" => parsed.kryteria,
+          "okres_realizacji_from" => parsed.okres_realizacji[:from],
+          "okres_realizacji_to" => parsed.okres_realizacji[:to],
+          "okres_realizacji_raw" => parsed.okres_realizacji[:raw],
+          "opis_przedmiotu" => parsed.opis_przedmiotu,
+          "warunki_udzialu" => parsed.warunki_udzialu,
+          "cpv_main" => parsed.cpv_main,
+          "cpv_additional" => parsed.cpv_additional,
+          "numer_referencyjny" => parsed.numer_referencyjny,
+          "oferty_czesciowe" => parsed.oferty_czesciowe,
+          "zabezpieczenie" => parsed.zabezpieczenie,
+          "organization_email" => parsed.zamawiajacy[:email],
+          "organization_www" => parsed.zamawiajacy[:www],
+          "organization_regon" => parsed.zamawiajacy[:regon],
+          "organization_street" => parsed.zamawiajacy[:ulica],
+          "organization_postal_code" => parsed.zamawiajacy[:kod_pocztowy]
+        })
+
+      {:error, reason} ->
+        Logger.warning("Failed to parse BZP HTML for tender #{attrs["object_id"]}: #{inspect(reason)}")
+        attrs
+    end
+  end
+
+  defp enrich_with_parsed_data(attrs), do: attrs
 
   @doc """
   Upserts multiple tender notices in bulk.
