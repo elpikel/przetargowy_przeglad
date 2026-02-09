@@ -11,29 +11,21 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationForm do
     field :email, :string
     field :password, :string
     field :password_confirmation, :string
-    field :tender_category, :string
-    field :region, :string
-    field :keyword, :string
     field :terms, :boolean, default: false
   end
 
-  @required_fields [:email, :password, :password_confirmation, :tender_category, :region, :terms]
-  @optional_fields [:keyword]
-  @tender_categories ["Dostawy", "Usługi", "Roboty budowlane"]
-  @regions ~w(dolnoslaskie kujawsko-pomorskie lubelskie lubuskie lodzkie malopolskie mazowieckie opolskie podkarpackie podlaskie pomorskie slaskie swietokrzyskie warminsko-mazurskie wielkopolskie zachodniopomorskie)
+  @required_fields [:email, :password, :password_confirmation, :terms]
 
   @doc """
   Creates a changeset for registration form validation.
   """
   def changeset(form \\ %__MODULE__{}, attrs) do
     form
-    |> cast(attrs, @required_fields ++ @optional_fields)
+    |> cast(attrs, @required_fields)
     |> validate_required(@required_fields, message: "to pole jest wymagane")
     |> validate_email()
     |> validate_password()
     |> validate_password_confirmation()
-    |> validate_tender_category()
-    |> validate_region()
     |> validate_terms()
   end
 
@@ -58,14 +50,6 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationForm do
     else
       changeset
     end
-  end
-
-  defp validate_tender_category(changeset) do
-    validate_inclusion(changeset, :tender_category, @tender_categories, message: "nieprawidłowy rodzaj zamówienia")
-  end
-
-  defp validate_region(changeset) do
-    validate_inclusion(changeset, :region, @regions, message: "nieprawidłowy region")
   end
 
   defp validate_terms(changeset) do

@@ -45,25 +45,26 @@
     <% end %>
 
     <%= if @current_user.subscription_plan == "free" do %>
-      <section class="settings-section" id="alertsFreeSection">
-        <div class="section-header" onclick="toggleSection('alertsFreeSection')">
-          <div class="section-header-left">
-            <h2 class="section-title">Preferencje przetargów</h2>
-            <span class="section-badge">Plan Darmowy</span>
+      <%= if @alert do %>
+        <section class="settings-section" id="alertsFreeSection">
+          <div class="section-header" onclick="toggleSection('alertsFreeSection')">
+            <div class="section-header-left">
+              <h2 class="section-title">Preferencje przetargów</h2>
+              <span class="section-badge">Plan Darmowy</span>
+            </div>
+            <svg
+              class="collapse-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
-          <svg
-            class="collapse-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </div>
-        <div class="section-divider"></div>
-        <div class="section-content">
-          <form id="alertsFormFree" action="/dashboard/alerts" method="POST">
+          <div class="section-divider"></div>
+          <div class="section-content">
+            <form id="alertsFormFree" action="/dashboard/alerts" method="POST">
             <input
               type="hidden"
               name="_csrf_token"
@@ -157,6 +158,38 @@
           </form>
         </div>
       </section>
+      <% else %>
+        <!-- Empty state for free users without alerts -->
+        <section class="settings-section" id="alertsFreeSection">
+          <div class="section-header">
+            <div class="section-header-left">
+              <h2 class="section-title">Preferencje przetargów</h2>
+              <span class="section-badge">Plan Darmowy</span>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <div class="section-content" style="text-align: center; padding: 48px 24px;">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--text-secondary)"
+              stroke-width="1.5"
+              style="width: 64px; height: 64px; margin-bottom: 16px;"
+            >
+              <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <h3 style="font-size: 1.25rem; margin-bottom: 8px; font-weight: 600;">
+              Nie masz jeszcze alertu
+            </h3>
+            <p style="color: var(--text-secondary); margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">
+              Utwórz swój pierwszy alert, aby otrzymywać powiadomienia o nowych przetargach dopasowanych do Twoich preferencji.
+            </p>
+            <a href="/tenders" class="btn btn-primary">
+              Przejdź do wyszukiwarki przetargów
+            </a>
+          </div>
+        </section>
+      <% end %>
     <% end %>
 
     <%= if @current_user.subscription_plan == "paid" do %>

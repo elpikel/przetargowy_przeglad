@@ -9,7 +9,15 @@ defmodule PrzetargowyPrzegladWeb.SessionController do
   plug :put_layout, false
   plug :put_root_layout, false
 
-  def show_login(conn, _params) do
+  def show_login(conn, params) do
+    # Store return_to in session if provided
+    conn =
+      if params["return_to"] do
+        put_session(conn, :return_to, params["return_to"])
+      else
+        conn
+      end
+
     changeset = LoginForm.changeset(%{})
     render(conn, :show_login, form: to_form(changeset, as: "session"))
   end
@@ -22,10 +30,13 @@ defmodule PrzetargowyPrzegladWeb.SessionController do
 
       case Accounts.authenticate_user(email, password) do
         {:ok, user} ->
+          return_to = get_session(conn, :return_to)
+
           conn
           |> put_session(:user_id, user.id)
+          |> delete_session(:return_to)
           |> configure_session(renew: true)
-          |> redirect(to: ~p"/dashboard")
+          |> redirect(to: return_to || ~p"/dashboard")
 
         {:error, :invalid_credentials} ->
           changeset =

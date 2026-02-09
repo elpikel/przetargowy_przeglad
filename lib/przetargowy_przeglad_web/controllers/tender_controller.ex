@@ -1,11 +1,12 @@
 defmodule PrzetargowyPrzegladWeb.TenderController do
   use PrzetargowyPrzegladWeb, :controller
 
+  alias PrzetargowyPrzeglad.Accounts
   alias PrzetargowyPrzeglad.Tenders
 
   plug :put_layout, false
   plug :put_root_layout, false
-  plug PrzetargowyPrzegladWeb.Plugs.OptionalAuth
+  plug PrzetargowyPrzegladWeb.Plugs.OptionalAuth when action in [:index, :show]
 
   def index(conn, params) do
     page = parse_page(params["page"])
@@ -280,4 +281,89 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
   end
 
   defp parse_page(_), do: 1
+
+  @doc """
+  Creates an alert from tender search criteria.
+  For free users only - paid users use the dashboard route.
+  """
+  def create_alert(conn, params) do
+    user = conn.assigns.current_user
+    redirect_path = params["redirect_to"] || ~p"/tenders"
+
+    # Get existing alerts
+    existing_alerts = Accounts.list_user_alerts(user)
+
+    regions = params["regions"] || []
+    order_types = params["order_types"] || []
+    keyword = params["keyword"] || ""
+
+    cond do
+      # Free user already has an alert - upsell to Premium
+      user.subscription_plan == "free" && length(existing_alerts) > 0 ->
+        conn
+        |> put_flash(:info, "Masz już jeden alert. Przejdź na Premium, aby tworzyć więcej alertów.")
+        |> redirect(to: ~p"/dashboard/subscription/new")
+
+      # Free user - validate limits
+      user.subscription_plan == "free" ->
+        if length(regions) > 1 || length(order_types) > 1 do
+          conn
+          |> put_flash(:info, "W planie darmowym możesz wybrać tylko jeden region i jeden rodzaj zamówienia. Przejdź na Premium, aby odblokować więcej opcji.")
+          |> redirect(to: ~p"/dashboard/subscription/new")
+        else
+          # Create simple alert for free user
+          region = List.first(regions)
+          order_type = List.first(order_types)
+          tender_category = map_order_type_to_category(order_type)
+
+          alert_attrs = %{
+            "user_id" => user.id,
+            "region" => region,
+            "tender_category" => tender_category,
+            "keyword" => keyword
+          }
+
+          case Accounts.create_simple_alert(alert_attrs) do
+            {:ok, _alert} ->
+              conn
+              |> put_flash(:info, "Alert został utworzony pomyślnie!")
+              |> redirect(to: ~p"/dashboard")
+
+            {:error, _changeset} ->
+              conn
+              |> put_flash(:error, "Nie udało się utworzyć alertu. Upewnij się, że wybrałeś region i rodzaj zamówienia.")
+              |> redirect(to: redirect_path)
+          end
+        end
+
+      # Paid user - use premium alert creation
+      true ->
+        rules = build_premium_rules(params)
+
+        case Accounts.create_alert(%{user_id: user.id, rules: rules}) do
+          {:ok, _alert} ->
+            conn
+            |> put_flash(:info, "Alert został utworzony pomyślnie!")
+            |> redirect(to: ~p"/dashboard")
+
+          {:error, _changeset} ->
+            conn
+            |> put_flash(:error, "Nie udało się utworzyć alertu")
+            |> redirect(to: redirect_path)
+        end
+    end
+  end
+
+  defp map_order_type_to_category("Delivery"), do: "Dostawy"
+  defp map_order_type_to_category("Services"), do: "Usługi"
+  defp map_order_type_to_category("Works"), do: "Roboty budowlane"
+  defp map_order_type_to_category(_), do: nil
+
+  defp build_premium_rules(params) do
+    %{
+      "regions" => params["regions"] || [],
+      "industries" => [],
+      "keywords" => if(params["keyword"] && params["keyword"] != "", do: [params["keyword"]], else: [])
+    }
+  end
 end

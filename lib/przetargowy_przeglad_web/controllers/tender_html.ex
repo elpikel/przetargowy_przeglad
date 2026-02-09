@@ -154,4 +154,49 @@ defmodule PrzetargowyPrzegladWeb.TenderHTML do
   def format_status(:contract_signed), do: "Umowa podpisana"
   def format_status(:cancelled), do: "Anulowane"
   def format_status(_), do: "Nieznany status"
+
+  @doc """
+  Determines if a free user can create an alert with the current criteria.
+  Free users can only have 1 alert with 1 region, 1 order type.
+  """
+  def can_create_free_alert?(user_alerts, regions, order_types) do
+    has_no_alerts = user_alerts == [] || Enum.empty?(user_alerts)
+    within_limits = length(regions || []) <= 1 && length(order_types || []) <= 1
+
+    has_no_alerts && within_limits
+  end
+
+  @doc """
+  Gets the reason why a free user cannot create an alert.
+  Returns nil if they can create one.
+  """
+  def get_free_user_paywall_reason(user_alerts, regions, order_types) do
+    cond do
+      user_alerts != [] && !Enum.empty?(user_alerts) ->
+        :has_alert
+
+      length(regions || []) > 1 ->
+        :multiple_regions
+
+      length(order_types || []) > 1 ->
+        :multiple_types
+
+      true ->
+        nil
+    end
+  end
+
+  @doc """
+  Builds a URL to return to after registration/login for alert creation.
+  """
+  def build_alert_return_url(query, regions, order_types) do
+    base_params = if query && query != "", do: [q: query], else: []
+    region_params = Enum.map(regions || [], fn r -> {"regions[]", r} end)
+    type_params = Enum.map(order_types || [], fn t -> {"order_types[]", t} end)
+    alert_param = [create_alert: "true"]
+
+    params = URI.encode_query(base_params ++ region_params ++ type_params ++ alert_param)
+
+    "/tenders?#{params}"
+  end
 end

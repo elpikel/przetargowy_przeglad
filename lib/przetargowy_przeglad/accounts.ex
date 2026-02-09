@@ -35,12 +35,12 @@ defmodule PrzetargowyPrzeglad.Accounts do
   end
 
   @doc """
-  Registers a new user with a simple alert.
+  Registers a new user.
 
   ## Examples
 
-      iex> register_user(%{email: "user@example.com", password: "password123", tender_category: "Dostawy", region: "mazowieckie"})
-      {:ok, %{user: %User{}, alert: %Alert{}}}
+      iex> register_user(%{email: "user@example.com", password: "password123"})
+      {:ok, %{user: %User{}}}
 
       iex> register_user(%{email: "invalid", password: "short"})
       {:error, :user, %Ecto.Changeset{}, %{}}
@@ -48,30 +48,16 @@ defmodule PrzetargowyPrzeglad.Accounts do
   def register_user(attrs) do
     Ecto.Multi.new()
     |> Ecto.Multi.insert(:user, User.registration_changeset(%User{}, attrs))
-    |> Ecto.Multi.insert(:alert, fn %{user: user} ->
-      # Ensure consistent key type (string or atom) to avoid mixed keys error
-      alert_attrs =
-        if is_map(attrs) and Map.has_key?(attrs, "email") do
-          Map.put(attrs, "user_id", user.id)
-        else
-          Map.put(attrs, :user_id, user.id)
-        end
-
-      Alert.simple_alert_changeset(%Alert{}, alert_attrs)
-    end)
     |> Ecto.Multi.run(:send_email, fn _repo, %{user: user} ->
       send_verification_email(user)
     end)
     |> Repo.transaction()
     |> case do
-      {:ok, %{user: user, alert: alert}} ->
-        {:ok, %{user: user, alert: alert}}
+      {:ok, %{user: user}} ->
+        {:ok, %{user: user}}
 
       {:error, :user, changeset, _} ->
         {:error, :user, changeset, %{}}
-
-      {:error, :alert, changeset, _} ->
-        {:error, :alert, changeset, %{}}
 
       {:error, :send_email, reason, _} ->
         Logger.error("Failed to send verification email: #{inspect(reason)}")

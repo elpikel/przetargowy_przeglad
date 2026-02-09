@@ -21,7 +21,15 @@ defmodule PrzetargowyPrzegladWeb.UserController do
     end
   end
 
-  def show_register(conn, _params) do
+  def show_register(conn, params) do
+    # Store return_to in session if provided
+    conn =
+      if params["return_to"] do
+        put_session(conn, :return_to, params["return_to"])
+      else
+        conn
+      end
+
     changeset = RegistrationForm.changeset(%RegistrationForm{}, %{})
     render(conn, :show_register, changeset: changeset)
   end
@@ -50,9 +58,9 @@ defmodule PrzetargowyPrzegladWeb.UserController do
 
     case Ecto.Changeset.apply_action(form_changeset, :insert) do
       {:ok, _registration_data} ->
-        # Form is valid, now create user and alert in database
+        # Form is valid, now create user in database
         case Accounts.register_user(registration_params) do
-          {:ok, %{user: _user, alert: _alert}} ->
+          {:ok, %{user: _user}} ->
             redirect(conn, to: ~p"/registration-success")
 
           {:error, :user, changeset, _} ->
@@ -64,10 +72,9 @@ defmodule PrzetargowyPrzegladWeb.UserController do
 
             render(conn, :show_register, changeset: form_changeset)
 
-          {:error, :alert, _changeset, _} ->
-            {:error, form_changeset} = Ecto.Changeset.apply_action(form_changeset, :insert)
-
-            render(conn, :show_register, changeset: form_changeset)
+          {:error, :send_email, _reason, _} ->
+            # Email failure - still redirect to success, user can request new email
+            redirect(conn, to: ~p"/registration-success")
         end
 
       {:error, changeset} ->

@@ -178,27 +178,83 @@
       <p class="results-count">
         Znaleziono <strong>{@total_count}</strong> przetargów
       </p>
-      <%= if @current_user && @current_user.subscription_plan == "paid" && (@query != "" || @regions != [] || @order_types != []) do %>
-        <form method="post" action="/dashboard/alerts/new" class="alert-form">
-          <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
-          <input
-            type="hidden"
-            name="redirect_to"
-            value={build_url(@query, @regions, @order_types, @page)}
-          />
-          <%= if @query != "" do %>
-            <input type="hidden" name="keywords" value={@query} />
-          <% end %>
-          <%= for region <- @regions do %>
-            <input type="hidden" name="regions[]" value={region} />
-          <% end %>
-          <button type="submit" class="btn btn-outline btn-create-alert">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-            Utwórz alert z tych kryteriów
-          </button>
-        </form>
+      <%= if @query != "" || @regions != [] || @order_types != [] do %>
+        <%= cond do %>
+          <% !@current_user -> %>
+            <!-- Anonymous user: Link to registration with return URL -->
+            <a
+              href={
+                ~p"/register?return_to=#{build_alert_return_url(@query, @regions, @order_types)}"
+              }
+              class="btn btn-outline btn-create-alert"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              Utwórz alert z tych kryteriów
+            </a>
+          <% @current_user.subscription_plan == "free" -> %>
+            <%= if can_create_free_alert?(@user_alerts, @regions, @order_types) do %>
+              <!-- Free user within limits: can create alert -->
+              <form method="post" action="/tenders/create-alert" class="alert-form">
+                <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                <input
+                  type="hidden"
+                  name="redirect_to"
+                  value={build_url(@query, @regions, @order_types, @page)}
+                />
+                <%= if @query != "" do %>
+                  <input type="hidden" name="keyword" value={@query} />
+                <% end %>
+                <%= for region <- @regions do %>
+                  <input type="hidden" name="regions[]" value={region} />
+                <% end %>
+                <%= for order_type <- @order_types do %>
+                  <input type="hidden" name="order_types[]" value={order_type} />
+                <% end %>
+                <button type="submit" class="btn btn-outline btn-create-alert">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  Utwórz alert z tych kryteriów
+                </button>
+              </form>
+            <% else %>
+              <!-- Free user exceeds limits: show paywall button -->
+              <button
+                type="button"
+                class="btn btn-outline btn-create-alert"
+                onclick="showPaywallModal()"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                Utwórz alert z tych kryteriów
+              </button>
+            <% end %>
+          <% true -> %>
+            <!-- Paid user: original behavior -->
+            <form method="post" action="/dashboard/alerts/new" class="alert-form">
+              <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+              <input
+                type="hidden"
+                name="redirect_to"
+                value={build_url(@query, @regions, @order_types, @page)}
+              />
+              <%= if @query != "" do %>
+                <input type="hidden" name="keywords" value={@query} />
+              <% end %>
+              <%= for region <- @regions do %>
+                <input type="hidden" name="regions[]" value={region} />
+              <% end %>
+              <button type="submit" class="btn btn-outline btn-create-alert">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                Utwórz alert z tych kryteriów
+              </button>
+            </form>
+        <% end %>
       <% end %>
     </div>
 
@@ -441,5 +497,152 @@
         allCheckbox.checked = checkedCount === checkboxes.length;
       });
     });
+
+    // Paywall modal functions
+    function showPaywallModal() {
+      document.getElementById('paywallModal').classList.add('visible');
+    }
+
+    function hidePaywallModal() {
+      document.getElementById('paywallModal').classList.remove('visible');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('paywallModal')?.addEventListener('click', function(e) {
+      if (e.target === this) hidePaywallModal();
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') hidePaywallModal();
+    });
   </script>
+  
+<!-- Paywall Modal for Free Users -->
+  <%= if @current_user && @current_user.subscription_plan == "free" do %>
+    <div class="modal-overlay" id="paywallModal">
+      <div class="modal">
+        <button type="button" class="modal-close" onclick="hidePaywallModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div
+          class="modal-icon"
+          style="background: linear-gradient(135deg, #fdf8ed 0%, #f9f0db 100%); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#c9a227"
+            stroke-width="2"
+            style="width: 32px; height: 32px;"
+          >
+            <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z" />
+          </svg>
+        </div>
+        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 12px; text-align: center;">
+          <%= case get_free_user_paywall_reason(@user_alerts, @regions, @order_types) do %>
+            <% :has_alert -> %>
+              Masz już jeden alert
+            <% :multiple_regions -> %>
+              Wybrano wiele regionów
+            <% :multiple_types -> %>
+              Wybrano wiele rodzajów zamówienia
+            <% _ -> %>
+              Odblokuj pełne możliwości
+          <% end %>
+        </h3>
+        <p style="color: var(--text-secondary); margin-bottom: 24px; text-align: center; line-height: 1.6;">
+          <%= case get_free_user_paywall_reason(@user_alerts, @regions, @order_types) do %>
+            <% :has_alert -> %>
+              W planie darmowym możesz mieć tylko jeden alert. Przejdź na Premium, aby tworzyć nieograniczoną liczbę alertów z wieloma kryteriami.
+            <% :multiple_regions -> %>
+              W planie darmowym możesz wybrać tylko jeden region. Przejdź na Premium, aby monitorować przetargi z wielu regionów jednocześnie.
+            <% :multiple_types -> %>
+              W planie darmowym możesz wybrać tylko jeden rodzaj zamówienia. Przejdź na Premium, aby śledzić wszystkie typy przetargów.
+            <% _ -> %>
+              Przejdź na Premium, aby odblokować wszystkie funkcje i tworzyć nieograniczone alerty.
+          <% end %>
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <button
+            type="button"
+            class="btn btn-outline"
+            onclick="hidePaywallModal()"
+            style="padding: 12px 24px;"
+          >
+            Anuluj
+          </button>
+          <a
+            href="/dashboard/subscription/new"
+            class="btn btn-primary"
+            style="padding: 12px 24px; background: linear-gradient(135deg, #c9a227 0%, #b8922a 100%);"
+          >
+            Wykup Premium
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(10, 22, 40, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .modal-overlay.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        max-width: 420px;
+        width: 90%;
+        position: relative;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 20px 40px rgba(10, 22, 40, 0.2);
+      }
+
+      .modal-overlay.visible .modal {
+        transform: translateY(0);
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+      }
+
+      .modal-close:hover {
+        color: var(--text-primary);
+      }
+
+      .modal-close svg {
+        width: 20px;
+        height: 20px;
+      }
+    </style>
+  <% end %>
 </Layouts.site>

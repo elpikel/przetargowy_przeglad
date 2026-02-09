@@ -12,13 +12,7 @@
     <div class="auth-card">
       <div class="auth-header">
         <h1>Utwórz konto</h1>
-        <p>Zacznij otrzymywać spersonalizowane przetargi</p>
-        <div class="plan-badge">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z" />
-          </svg>
-          Plan Darmowy
-        </div>
+        <p>Załóż konto, aby zapisywać alerty i otrzymywać powiadomienia o przetargach</p>
       </div>
 
       <.form :let={f} for={@changeset} action={~p"/register"} method="post">
@@ -80,109 +74,6 @@
             <p :for={{msg, _opts} <- f[:password_confirmation].errors} class="form-error">
               {msg}
             </p>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <div class="form-section-title">Preferencje przetargów</div>
-
-          <div class="form-group">
-            <label for={f[:tender_category].id} class="form-label">
-              Rodzaj zamówienia <span class="required">*</span>
-            </label>
-            <select
-              id={f[:tender_category].id}
-              name={f[:tender_category].name}
-              class={"form-select #{if f[:tender_category].errors != [], do: "error"}"}
-            >
-              <option value="">Wybierz rodzaj zamówienia</option>
-              <option value="Dostawy" selected={f[:tender_category].value == "Dostawy"}>
-                Dostawy
-              </option>
-              <option value="Usługi" selected={f[:tender_category].value == "Usługi"}>
-                Usługi
-              </option>
-              <option
-                value="Roboty budowlane"
-                selected={f[:tender_category].value == "Roboty budowlane"}
-              >
-                Roboty budowlane
-              </option>
-            </select>
-            <p class="form-hint">W planie darmowym możesz wybrać jeden rodzaj zamówienia</p>
-            <p :for={{msg, _opts} <- f[:tender_category].errors} class="form-error">{msg}</p>
-          </div>
-
-          <div class="form-group">
-            <label for={f[:region].id} class="form-label">
-              Region <span class="required">*</span>
-            </label>
-            <select
-              id={f[:region].id}
-              name={f[:region].name}
-              class={"form-select #{if f[:region].errors != [], do: "error"}"}
-            >
-              <option value="">Wybierz województwo</option>
-              <option value="dolnoslaskie" selected={f[:region].value == "dolnoslaskie"}>
-                Dolnośląskie
-              </option>
-              <option
-                value="kujawsko-pomorskie"
-                selected={f[:region].value == "kujawsko-pomorskie"}
-              >
-                Kujawsko-pomorskie
-              </option>
-              <option value="lubelskie" selected={f[:region].value == "lubelskie"}>
-                Lubelskie
-              </option>
-              <option value="lubuskie" selected={f[:region].value == "lubuskie"}>
-                Lubuskie
-              </option>
-              <option value="lodzkie" selected={f[:region].value == "lodzkie"}>
-                Łódzkie
-              </option>
-              <option value="malopolskie" selected={f[:region].value == "malopolskie"}>
-                Małopolskie
-              </option>
-              <option value="mazowieckie" selected={f[:region].value == "mazowieckie"}>
-                Mazowieckie
-              </option>
-              <option value="opolskie" selected={f[:region].value == "opolskie"}>
-                Opolskie
-              </option>
-              <option value="podkarpackie" selected={f[:region].value == "podkarpackie"}>
-                Podkarpackie
-              </option>
-              <option value="podlaskie" selected={f[:region].value == "podlaskie"}>
-                Podlaskie
-              </option>
-              <option value="pomorskie" selected={f[:region].value == "pomorskie"}>
-                Pomorskie
-              </option>
-              <option value="slaskie" selected={f[:region].value == "slaskie"}>
-                Śląskie
-              </option>
-              <option value="swietokrzyskie" selected={f[:region].value == "swietokrzyskie"}>
-                Świętokrzyskie
-              </option>
-              <option
-                value="warminsko-mazurskie"
-                selected={f[:region].value == "warminsko-mazurskie"}
-              >
-                Warmińsko-mazurskie
-              </option>
-              <option value="wielkopolskie" selected={f[:region].value == "wielkopolskie"}>
-                Wielkopolskie
-              </option>
-              <option
-                value="zachodniopomorskie"
-                selected={f[:region].value == "zachodniopomorskie"}
-              >
-                Zachodniopomorskie
-              </option>
-            </select>
-            <p class="form-hint">W planie darmowym możesz wybrać jeden region</p>
-            <p :for={{msg, _opts} <- f[:region].errors} class="form-error">{msg}</p>
           </div>
         </div>
 

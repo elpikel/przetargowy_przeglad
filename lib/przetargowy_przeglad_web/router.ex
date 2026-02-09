@@ -40,6 +40,9 @@ defmodule PrzetargowyPrzegladWeb.Router do
   scope "/", PrzetargowyPrzegladWeb do
     pipe_through [:browser, :require_auth]
 
+    # Alert creation from tender search (for free users)
+    post "/tenders/create-alert", TenderController, :create_alert
+
     get "/dashboard", DashboardController, :show_dashboard
     post "/dashboard/alerts", DashboardController, :update_alert
     post "/dashboard/alerts/new", DashboardController, :create_alert
