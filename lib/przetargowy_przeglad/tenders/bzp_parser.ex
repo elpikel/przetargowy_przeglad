@@ -38,7 +38,8 @@ defmodule PrzetargowyPrzeglad.Tenders.BzpParser do
           data_ogloszenia: String.t() | nil,
           numer_referencyjny: String.t() | nil,
           oferty_czesciowe: boolean() | nil,
-          zabezpieczenie: boolean() | nil
+          zabezpieczenie: boolean() | nil,
+          evaluation_criteria: String.t() | nil
         }
 
   @doc """
@@ -91,7 +92,8 @@ defmodule PrzetargowyPrzeglad.Tenders.BzpParser do
       data_ogloszenia: extract_span_value(doc, "2.7."),
       numer_referencyjny: extract_span_value(doc, "4.1.2."),
       oferty_czesciowe: extract_boolean(doc, "4.1.8."),
-      zabezpieczenie: extract_boolean(doc, "6.5.")
+      zabezpieczenie: extract_boolean(doc, "6.5."),
+      evaluation_criteria: extract_evaluation_criteria(doc)
     }
   end
 
@@ -240,6 +242,113 @@ defmodule PrzetargowyPrzeglad.Tenders.BzpParser do
       text -> text
     end
   end
+
+  # ---------------------------------------------------------------------------
+  # Evaluation criteria
+  # Extracts evaluation criteria from different sections based on notice type:
+  # - CompetitionNotice: Section 3.7 "Informacja o obiektywnych wymaganiach"
+  # - AgreementIntentionNotice: Section 4.2 "Uzasadnienie faktyczne i prawne"
+  # ---------------------------------------------------------------------------
+
+  defp extract_evaluation_criteria(doc) do
+    # Try CompetitionNotice section first (3.7 - objective requirements)
+    # Only match if it's "Informacja o obiektywnych wymaganiach"
+    case extract_section_with_header_match(doc, "3.7.)", "obiektywnych wymaganiach") do
+      text when is_binary(text) and text != "" ->
+        text
+
+      _ ->
+        # Try AgreementIntentionNotice section (4.2 - legal justification)
+        # Only match if it's "Uzasadnienie faktyczne i prawne"
+        case extract_section_with_header_match(doc, "4.2.)", "Uzasadnienie faktyczne") do
+          text when is_binary(text) and text != "" ->
+            text
+
+          _ ->
+            nil
+        end
+    end
+  end
+
+  # Extracts text content after a section header that matches both prefix and keyword
+  defp extract_section_with_header_match(doc, section_prefix, header_keyword) do
+    main_elements = Floki.find(doc, "main")
+
+    main =
+      case main_elements do
+        [] -> doc
+        [m | _] -> m
+      end
+
+    children = get_children(main)
+    extract_text_after_section_with_match(children, section_prefix, header_keyword)
+  end
+
+  # Get children from a Floki element, handling different structures
+  defp get_children({_tag, _attrs, children}), do: children
+  defp get_children([{_tag, _attrs, children} | _]), do: children
+  defp get_children(_), do: []
+
+  # Walk through children looking for the section with matching header, then collect text until next heading
+  defp extract_text_after_section_with_match(children, section_prefix, header_keyword) do
+    children
+    |> Enum.reduce({:searching, []}, fn child, {state, acc} ->
+      case state do
+        :searching ->
+          # Check if this is an h3 with our section prefix AND contains the keyword
+          if is_h3_with_prefix_and_keyword?(child, section_prefix, header_keyword) do
+            {:collecting, []}
+          else
+            {:searching, []}
+          end
+
+        :collecting ->
+          cond do
+            is_heading?(child) ->
+              {:done, acc}
+
+            true ->
+              text = extract_node_text(child) |> String.trim()
+
+              if text != "" do
+                {:collecting, acc ++ [text]}
+              else
+                {:collecting, acc}
+              end
+          end
+
+        :done ->
+          {:done, acc}
+      end
+    end)
+    |> case do
+      {:collecting, parts} -> parts |> Enum.join(" ") |> clean_text()
+      {:done, parts} -> parts |> Enum.join(" ") |> clean_text()
+      _ -> nil
+    end
+  end
+
+  defp is_h3_with_prefix_and_keyword?({tag, _attrs, _children} = el, prefix, keyword)
+       when tag in ["h3", "H3"] do
+    text = Floki.text(el)
+    String.contains?(text, prefix) and String.contains?(text, keyword)
+  end
+
+  defp is_h3_with_prefix_and_keyword?(_, _, _), do: false
+
+  defp is_heading?({tag, _attrs, _children}) when tag in ["h2", "h3", "H2", "H3"], do: true
+  defp is_heading?(_), do: false
+
+  # Extract text from a node (handles both text nodes and elements)
+  defp extract_node_text(text) when is_binary(text), do: text
+
+  defp extract_node_text({:comment, _}), do: ""
+
+  defp extract_node_text({_tag, _attrs, _children} = el) do
+    Floki.text(el)
+  end
+
+  defp extract_node_text(_), do: ""
 
   # ---------------------------------------------------------------------------
   # CPV codes

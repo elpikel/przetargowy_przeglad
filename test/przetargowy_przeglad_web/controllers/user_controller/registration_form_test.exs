@@ -8,8 +8,6 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
       email: "test@example.com",
       password: "password123",
       password_confirmation: "password123",
-      tender_category: "Dostawy",
-      region: "mazowieckie",
       terms: true
     }
 
@@ -26,8 +24,6 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
       assert "to pole jest wymagane" in errors.email || "can't be blank" in errors.email
       assert "to pole jest wymagane" in errors.password || "can't be blank" in errors.password
       assert "to pole jest wymagane" in errors.password_confirmation || "can't be blank" in errors.password_confirmation
-      assert "to pole jest wymagane" in errors.tender_category || "can't be blank" in errors.tender_category
-      assert "to pole jest wymagane" in errors.region || "can't be blank" in errors.region
       # Terms has a custom error message
       assert "musisz zaakceptować regulamin" in errors.terms || "to pole jest wymagane" in errors.terms
     end
@@ -64,33 +60,6 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
       assert "hasła nie są identyczne" in errors_on(changeset).password_confirmation
     end
 
-    test "validates tender_category is from valid list" do
-      valid_categories = ["Dostawy", "Usługi", "Roboty budowlane"]
-
-      for category <- valid_categories do
-        changeset = RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :tender_category, category))
-        assert changeset.valid?
-      end
-
-      invalid_changeset =
-        RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :tender_category, "invalid"))
-
-      assert "nieprawidłowy rodzaj zamówienia" in errors_on(invalid_changeset).tender_category
-    end
-
-    test "validates region is from valid list" do
-      valid_regions =
-        ~w(dolnoslaskie kujawsko-pomorskie lubelskie lubuskie lodzkie malopolskie mazowieckie opolskie podkarpackie podlaskie pomorskie slaskie swietokrzyskie warminsko-mazurskie wielkopolskie zachodniopomorskie)
-
-      for region <- valid_regions do
-        changeset = RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :region, region))
-        assert changeset.valid?
-      end
-
-      invalid_changeset = RegistrationForm.changeset(%RegistrationForm{}, Map.put(@valid_attrs, :region, "invalid"))
-      assert "nieprawidłowy region" in errors_on(invalid_changeset).region
-    end
-
     test "validates terms acceptance" do
       attrs_false = Map.put(@valid_attrs, :terms, false)
       changeset_false = RegistrationForm.changeset(%RegistrationForm{}, attrs_false)
@@ -111,32 +80,7 @@ defmodule PrzetargowyPrzegladWeb.UserController.RegistrationFormTest do
       assert changeset.valid?
       assert Ecto.Changeset.get_field(changeset, :email) == "test@example.com"
       assert Ecto.Changeset.get_field(changeset, :password) == "password123"
-      assert Ecto.Changeset.get_field(changeset, :tender_category) == "Dostawy"
-      assert Ecto.Changeset.get_field(changeset, :region) == "mazowieckie"
       assert Ecto.Changeset.get_field(changeset, :terms) == true
-    end
-
-    test "keyword field is optional" do
-      # Valid without keyword
-      changeset_without = RegistrationForm.changeset(%RegistrationForm{}, @valid_attrs)
-      assert changeset_without.valid?
-      assert Ecto.Changeset.get_field(changeset_without, :keyword) == nil
-
-      # Valid with keyword
-      attrs_with_keyword = Map.put(@valid_attrs, :keyword, "oprogramowanie")
-      changeset_with = RegistrationForm.changeset(%RegistrationForm{}, attrs_with_keyword)
-      assert changeset_with.valid?
-      assert Ecto.Changeset.get_field(changeset_with, :keyword) == "oprogramowanie"
-    end
-
-    test "accepts various keyword values" do
-      keywords = ["meble", "remont", "oprogramowanie", "usługi IT", ""]
-
-      for keyword <- keywords do
-        attrs = Map.put(@valid_attrs, :keyword, keyword)
-        changeset = RegistrationForm.changeset(%RegistrationForm{}, attrs)
-        assert changeset.valid?
-      end
     end
   end
 end

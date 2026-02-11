@@ -176,7 +176,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertEmail do
         do: ~s(<span class="notice-value">#{format_value(notice.estimated_value)} PLN</span>),
         else: ""
 
-    bzp_link = "https://ezamowienia.gov.pl/mp-client/search/list/#{notice.tender_id}"
+    tender_link = "https://przetargowyprzeglad.pl/tenders/#{notice.object_id}"
 
     """
     <div class="notice">
@@ -188,7 +188,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertEmail do
       <span class="notice-deadline">Termin: #{deadline}</span>
       #{value_html}
       <br />
-      <a href="#{bzp_link}" class="notice-link">Zobacz szczegóły →</a>
+      <a href="#{tender_link}" class="notice-link">Zobacz szczegóły →</a>
     </div>
     """
   end
@@ -215,7 +215,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertEmail do
   defp notice_text(notice) do
     deadline = format_date(notice.submitting_offers_date)
     value_text = if notice.estimated_value, do: "Wartość: #{format_value(notice.estimated_value)} PLN\n", else: ""
-    bzp_link = "https://ezamowienia.gov.pl/mo-public-board/notice/#{notice.bzp_number}"
+    tender_link = "https://przetargowyprzeglad.pl/tenders/#{notice.object_id}"
 
     """
     #{truncate(notice.order_object, 200)}
@@ -224,7 +224,7 @@ defmodule PrzetargowyPrzeglad.Accounts.AlertEmail do
     Miejsce: #{notice.organization_city}
     Termin składania ofert: #{deadline}
     #{value_text}
-    Link: #{bzp_link}
+    Link: #{tender_link}
     """
   end
 

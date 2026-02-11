@@ -86,6 +86,7 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNotice do
     field :organization_regon, :string
     field :organization_street, :string
     field :organization_postal_code, :string
+    field :evaluation_criteria, :string
 
     embeds_many :contractors, PrzetargowyPrzeglad.Tenders.Contractor
     embeds_many :contractors_contract_details, PrzetargowyPrzeglad.Tenders.ContractDetails
@@ -141,7 +142,8 @@ defmodule PrzetargowyPrzeglad.Tenders.TenderNotice do
       :organization_www,
       :organization_regon,
       :organization_street,
-      :organization_postal_code
+      :organization_postal_code,
+      :evaluation_criteria
     ])
     |> cast_embed(:contractors)
     |> cast_embed(:contractors_contract_details)

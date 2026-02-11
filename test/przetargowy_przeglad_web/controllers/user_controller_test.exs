@@ -14,8 +14,6 @@ defmodule PrzetargowyPrzegladWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Utwórz konto"
       assert html_response(conn, 200) =~ "Adres e-mail"
       assert html_response(conn, 200) =~ "Hasło"
-      assert html_response(conn, 200) =~ "Rodzaj zamówienia"
-      assert html_response(conn, 200) =~ "Region"
     end
   end
 
@@ -24,8 +22,6 @@ defmodule PrzetargowyPrzegladWeb.UserControllerTest do
       "email" => "test@example.com",
       "password" => "password123",
       "password_confirmation" => "password123",
-      "tender_category" => "Dostawy",
-      "region" => "mazowieckie",
       "terms" => "true"
     }
 
@@ -110,9 +106,7 @@ defmodule PrzetargowyPrzegladWeb.UserControllerTest do
       {:ok, %{user: user}} =
         Accounts.register_user(%{
           email: "test@example.com",
-          password: "password123",
-          tender_category: "Dostawy",
-          region: "mazowieckie"
+          password: "password123"
         })
 
       %{conn: conn, user: user}
@@ -145,9 +139,7 @@ defmodule PrzetargowyPrzegladWeb.UserControllerTest do
       {:ok, %{user: user}} =
         Accounts.register_user(%{
           email: "delete-test@example.com",
-          password: "password123",
-          tender_category: "Dostawy",
-          region: "mazowieckie"
+          password: "password123"
         })
 
       {:ok, verified_user} = Accounts.verify_user_email(user.email_verification_token)

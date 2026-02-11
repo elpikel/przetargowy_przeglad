@@ -13,8 +13,8 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
       region: "mazowieckie"
     }
 
-    test "creates user and alert with valid data" do
-      assert {:ok, %{user: user, alert: alert}} = Accounts.register_user(@valid_attrs)
+    test "creates user with valid data" do
+      assert {:ok, %{user: user}} = Accounts.register_user(@valid_attrs)
 
       assert user.email == "test@example.com"
       assert user.email_verified == false
@@ -22,10 +22,6 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
       assert user.subscription_plan == "free"
       # Password should be hashed
       refute user.password == "password123"
-
-      assert alert.user_id == user.id
-      assert alert.rules[:tender_category] == "Dostawy" || alert.rules["tender_category"] == "Dostawy"
-      assert alert.rules[:region] == "mazowieckie" || alert.rules["region"] == "mazowieckie"
     end
 
     test "sends verification email" do
@@ -144,15 +140,20 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
 
   describe "list_user_alerts/1" do
     setup do
-      {:ok, %{user: user, alert: alert}} =
+      {:ok, %{user: user}} =
         Accounts.register_user(%{
           email: "test@example.com",
-          password: "password123",
-          tender_category: "Dostawy",
-          region: "mazowieckie"
+          password: "password123"
         })
 
       Accounts.verify_user_email(user.email_verification_token)
+
+      # Create an alert for the user
+      {:ok, alert} =
+        Accounts.create_alert(%{
+          user_id: user.id,
+          rules: %{tender_category: "Dostawy", region: "mazowieckie"}
+        })
 
       %{user: user, alert: alert}
     end
@@ -167,15 +168,8 @@ defmodule PrzetargowyPrzeglad.AccountsTest do
       {:ok, %{user: other_user}} =
         Accounts.register_user(%{
           email: "other@example.com",
-          password: "password123",
-          tender_category: "Dostawy",
-          region: "malopolskie"
+          password: "password123"
         })
-
-      # Delete the auto-created alert
-      other_user
-      |> Accounts.list_user_alerts()
-      |> Enum.each(&Accounts.delete_alert/1)
 
       alerts = Accounts.list_user_alerts(other_user)
       assert alerts == []

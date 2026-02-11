@@ -177,7 +177,8 @@ defmodule PrzetargowyPrzeglad.Tenders do
           organization_www: parsed.zamawiajacy[:www],
           organization_regon: parsed.zamawiajacy[:regon],
           organization_street: parsed.zamawiajacy[:ulica],
-          organization_postal_code: parsed.zamawiajacy[:kod_pocztowy]
+          organization_postal_code: parsed.zamawiajacy[:kod_pocztowy],
+          evaluation_criteria: parsed.evaluation_criteria
         })
 
       {:error, reason} ->
@@ -208,7 +209,8 @@ defmodule PrzetargowyPrzeglad.Tenders do
           "organization_www" => parsed.zamawiajacy[:www],
           "organization_regon" => parsed.zamawiajacy[:regon],
           "organization_street" => parsed.zamawiajacy[:ulica],
-          "organization_postal_code" => parsed.zamawiajacy[:kod_pocztowy]
+          "organization_postal_code" => parsed.zamawiajacy[:kod_pocztowy],
+          "evaluation_criteria" => parsed.evaluation_criteria
         })
 
       {:error, reason} ->
