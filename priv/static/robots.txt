@@ -2,6 +2,9 @@
 User-agent: *
 Allow: /
 Allow: /tenders
+Allow: /przetargi
+Allow: /reports
+Allow: /raporty
 
 # Disallow private and admin areas
 Disallow: /dashboard

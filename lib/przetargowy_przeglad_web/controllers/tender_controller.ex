@@ -6,7 +6,9 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
 
   plug :put_layout, false
   plug :put_root_layout, false
-  plug PrzetargowyPrzegladWeb.Plugs.OptionalAuth when action in [:index, :show]
+  plug PrzetargowyPrzegladWeb.Plugs.OptionalAuth when action in [:index, :show, :region]
+
+  @valid_regions ~w(dolnoslaskie kujawsko-pomorskie lubelskie lubuskie lodzkie malopolskie mazowieckie opolskie podkarpackie podlaskie pomorskie slaskie swietokrzyskie warminsko-mazurskie wielkopolskie zachodniopomorskie)
 
   def index(conn, params) do
     page = parse_page(params["page"])
@@ -92,6 +94,92 @@ defmodule PrzetargowyPrzegladWeb.TenderController do
         |> assign(:noindex, is_expired)
         |> render(:show, tender: tender, is_expired: is_expired)
     end
+  end
+
+  @doc """
+  Regional landing page with SEO-friendly clean URL.
+  /przetargi/:region -> renders tenders filtered by region
+  """
+  def region(conn, %{"region" => region} = params) do
+    if region in @valid_regions do
+      page = parse_page(params["page"])
+      current_user = conn.assigns[:current_user]
+
+      search_opts = [
+        query: params["q"],
+        regions: [region],
+        order_types: params["order_types"] || [],
+        page: page,
+        per_page: 20
+      ]
+
+      result = Tenders.search_tender_notices(search_opts)
+
+      user_alerts =
+        if current_user do
+          PrzetargowyPrzeglad.Accounts.list_user_alerts(current_user)
+        else
+          []
+        end
+
+      region_name = get_region_name(region)
+      page_suffix = if page > 1, do: " - Strona #{page}", else: ""
+
+      page_title = "Przetargi publiczne #{region_name}#{page_suffix} | Przetargowy Przegląd"
+
+      page_description =
+        "Aktualne przetargi publiczne w województwie #{region_name}. " <>
+          "Przeglądaj #{result.total_count} ogłoszeń o zamówieniach publicznych. " <>
+          "Baza przetargów aktualizowana codziennie."
+
+      canonical_url = build_region_canonical_url(conn, region, params)
+
+      structured_data = build_region_breadcrumb_data(region, region_name)
+
+      conn
+      |> assign(:page_title, page_title)
+      |> assign(:page_description, page_description)
+      |> assign(:canonical_url, canonical_url)
+      |> assign(:structured_data, structured_data)
+      |> render(:index,
+        notices: result.notices,
+        total_count: result.total_count,
+        page: result.page,
+        total_pages: result.total_pages,
+        query: params["q"] || "",
+        regions: [region],
+        order_types: params["order_types"] || [],
+        current_user: current_user,
+        user_alerts: user_alerts
+      )
+    else
+      conn
+      |> put_status(:not_found)
+      |> put_view(html: PrzetargowyPrzegladWeb.ErrorHTML)
+      |> render(:"404")
+    end
+  end
+
+  defp build_region_canonical_url(conn, region, params) do
+    base_url = "https://#{conn.host}/przetargi/#{region}"
+
+    page = params["page"]
+
+    if page && page != "1" do
+      "#{base_url}?page=#{page}"
+    else
+      base_url
+    end
+  end
+
+  defp build_region_breadcrumb_data(region, region_name) do
+    items = [
+      {"Strona główna", "https://przetargowyprzeglad.pl/"},
+      {"Przetargi", "https://przetargowyprzeglad.pl/tenders"},
+      {"Przetargi #{region_name}", "https://przetargowyprzeglad.pl/przetargi/#{region}"}
+    ]
+
+    PrzetargowyPrzegladWeb.SEO.structured_data_breadcrumb(items)
   end
 
   defp build_page_title(params, page, total_count) do

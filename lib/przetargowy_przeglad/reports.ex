@@ -57,6 +57,50 @@ defmodule PrzetargowyPrzeglad.Reports do
   end
 
   @doc """
+  Lists tender reports filtered by region with pagination.
+
+  ## Options
+
+    * `:region` - Region code (required)
+    * `:page` - Page number (default: 1)
+    * `:per_page` - Results per page (default: 12)
+
+  ## Returns
+
+  A map with:
+    * `:reports` - List of reports
+    * `:total_count` - Total number of reports
+    * `:page` - Current page
+    * `:per_page` - Results per page
+    * `:total_pages` - Total number of pages
+
+  """
+  def list_tender_reports_by_region(region, opts \\ []) do
+    page = Keyword.get(opts, :page, 1)
+    per_page = Keyword.get(opts, :per_page, 12)
+    offset = (page - 1) * per_page
+
+    base_query = from(r in TenderReport, where: r.region == ^region)
+
+    total_count = base_query |> select([r], count(r.id)) |> Repo.one()
+
+    reports =
+      base_query
+      |> order_by([r], desc: r.report_month, asc: r.order_type)
+      |> limit(^per_page)
+      |> offset(^offset)
+      |> Repo.all()
+
+    %{
+      reports: reports,
+      total_count: total_count,
+      page: page,
+      per_page: per_page,
+      total_pages: max(ceil(total_count / per_page), 1)
+    }
+  end
+
+  @doc """
   Gets a tender report by slug.
 
   ## Examples

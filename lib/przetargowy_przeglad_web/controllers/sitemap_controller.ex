@@ -18,13 +18,46 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
       %{loc: "#{base_url}/reports", changefreq: "weekly", priority: "0.9"},
       %{loc: "#{base_url}/pricing", changefreq: "weekly", priority: "0.8"},
 
-      # Common search pages
-      %{loc: "#{base_url}/tenders?regions[]=mazowieckie", changefreq: "daily", priority: "0.7"},
-      %{loc: "#{base_url}/tenders?regions[]=malopolskie", changefreq: "daily", priority: "0.7"},
-      %{loc: "#{base_url}/tenders?regions[]=wielkopolskie", changefreq: "daily", priority: "0.7"},
+      # Regional pages - all 16 voivodeships
+      %{loc: "#{base_url}/przetargi/dolnoslaskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/kujawsko-pomorskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/lubelskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/lubuskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/lodzkie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/malopolskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/mazowieckie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/opolskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/podkarpackie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/podlaskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/pomorskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/slaskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/swietokrzyskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/warminsko-mazurskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/wielkopolskie", changefreq: "daily", priority: "0.8"},
+      %{loc: "#{base_url}/przetargi/zachodniopomorskie", changefreq: "daily", priority: "0.8"},
+
+      # Order type pages
       %{loc: "#{base_url}/tenders?order_types[]=Delivery", changefreq: "daily", priority: "0.7"},
       %{loc: "#{base_url}/tenders?order_types[]=Services", changefreq: "daily", priority: "0.7"},
-      %{loc: "#{base_url}/tenders?order_types[]=Works", changefreq: "daily", priority: "0.7"}
+      %{loc: "#{base_url}/tenders?order_types[]=Works", changefreq: "daily", priority: "0.7"},
+
+      # Regional report pages
+      %{loc: "#{base_url}/raporty/dolnoslaskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/kujawsko-pomorskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/lubelskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/lubuskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/lodzkie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/malopolskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/mazowieckie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/opolskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/podkarpackie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/podlaskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/pomorskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/slaskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/swietokrzyskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/warminsko-mazurskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/wielkopolskie", changefreq: "monthly", priority: "0.7"},
+      %{loc: "#{base_url}/raporty/zachodniopomorskie", changefreq: "monthly", priority: "0.7"}
     ]
 
     # Get active tenders (non-expired, ContractNotice type only)

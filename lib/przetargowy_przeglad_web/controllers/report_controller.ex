@@ -10,6 +10,8 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
   plug :put_root_layout, false
   plug PrzetargowyPrzegladWeb.Plugs.OptionalAuth
 
+  @valid_regions ~w(dolnoslaskie kujawsko-pomorskie lubelskie lubuskie lodzkie malopolskie mazowieckie opolskie podkarpackie podlaskie pomorskie slaskie swietokrzyskie warminsko-mazurskie wielkopolskie zachodniopomorskie)
+
   def index(conn, params) do
     page = parse_page(params["page"])
 
@@ -91,6 +93,80 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
         |> assign(:structured_data, structured_data)
         |> render(:show, report: report)
     end
+  end
+
+  @doc """
+  Regional reports landing page with SEO-friendly clean URL.
+  /raporty/:region -> renders reports filtered by region
+  """
+  def region(conn, %{"region" => region} = params) do
+    if region in @valid_regions do
+      page = parse_page(params["page"])
+
+      search_opts = [
+        page: page,
+        per_page: 12
+      ]
+
+      result = Reports.list_tender_reports_by_region(region, search_opts)
+
+      region_name = PrzetargowyPrzegladWeb.ReportHTML.format_region_name(region)
+      page_suffix = if page > 1, do: " - Strona #{page}", else: ""
+
+      page_title = "Raporty przetargów #{region_name}#{page_suffix} | Przetargowy Przegląd"
+
+      page_description =
+        "Comiesięczne raporty analityczne przetargów publicznych w województwie #{region_name}. " <>
+          "Statystyki, trendy i analiza rynku zamówień publicznych w regionie."
+
+      canonical_url = build_region_canonical_url(conn, region, params)
+
+      structured_data = build_region_breadcrumb_data(region, region_name)
+
+      conn
+      |> assign(:page_title, page_title)
+      |> assign(:page_description, page_description)
+      |> assign(:canonical_url, canonical_url)
+      |> assign(:og_image, url(~p"/images/reports/summary.svg"))
+      |> assign(:og_type, "website")
+      |> assign(:keywords, "raporty przetargów #{region_name}, zamówienia publiczne #{region_name}, analiza przetargów #{region_name}")
+      |> assign(:structured_data, structured_data)
+      |> assign(:region, region)
+      |> assign(:region_name, region_name)
+      |> render(:index,
+        reports: result.reports,
+        total_count: result.total_count,
+        page: result.page,
+        total_pages: result.total_pages
+      )
+    else
+      conn
+      |> put_status(:not_found)
+      |> put_view(html: PrzetargowyPrzegladWeb.ErrorHTML)
+      |> render(:"404")
+    end
+  end
+
+  defp build_region_canonical_url(conn, region, params) do
+    base_url = "https://#{conn.host}/raporty/#{region}"
+
+    page = params["page"]
+
+    if page && page != "1" do
+      "#{base_url}?page=#{page}"
+    else
+      base_url
+    end
+  end
+
+  defp build_region_breadcrumb_data(region, region_name) do
+    items = [
+      {"Strona główna", "https://przetargowyprzeglad.pl/"},
+      {"Raporty", "https://przetargowyprzeglad.pl/reports"},
+      {"Raporty #{region_name}", "https://przetargowyprzeglad.pl/raporty/#{region}"}
+    ]
+
+    PrzetargowyPrzegladWeb.SEO.structured_data_breadcrumb(items)
   end
 
   # Private Functions
