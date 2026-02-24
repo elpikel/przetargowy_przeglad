@@ -32,7 +32,7 @@ defmodule PrzetargowyPrzegladWeb.TenderHTML do
 
     params = URI.encode_query(base_params ++ region_params ++ type_params)
 
-    "/tenders?#{params}"
+    "/przetargi?#{params}"
   end
 
   def region_options do
@@ -197,6 +197,6 @@ defmodule PrzetargowyPrzegladWeb.TenderHTML do
 
     params = URI.encode_query(base_params ++ region_params ++ type_params ++ alert_param)
 
-    "/tenders?#{params}"
+    "/przetargi?#{params}"
   end
 end

@@ -1,7 +1,7 @@
 defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
   use PrzetargowyPrzegladWeb.ConnCase, async: true
 
-  describe "GET /tenders" do
+  describe "GET /przetargi" do
     test "renders search page", %{conn: conn} do
       conn = get(conn, ~p"/przetargi")
       assert html_response(conn, 200) =~ "Wyszukaj przetargi"
@@ -406,7 +406,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
   end
 
-  describe "GET /tenders/:id" do
+  describe "GET /przetargi/:id" do
     test "renders tender detail page for valid bzp_number", %{conn: conn} do
       tender =
         insert(:tender_notice, %{

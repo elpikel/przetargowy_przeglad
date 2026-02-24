@@ -111,7 +111,7 @@ defmodule PrzetargowyPrzegladWeb.SEO do
       },
       "availableChannel" => %{
         "@type" => "ServiceChannel",
-        "serviceUrl" => "https://przetargowyprzeglad.pl/tenders"
+        "serviceUrl" => "https://przetargowyprzeglad.pl/przetargi"
       }
     }
   end
