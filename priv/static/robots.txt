@@ -1,9 +1,7 @@
 # Allow all crawlers to index public content
 User-agent: *
 Allow: /
-Allow: /tenders
 Allow: /przetargi
-Allow: /reports
 Allow: /raporty
 
 # Disallow private and admin areas

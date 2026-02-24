@@ -120,17 +120,17 @@ defmodule PrzetargowyPrzegladWeb.ReportHTML do
   ## Examples
 
       iex> build_url(2, nil)
-      "/reports?page=2"
+      "/raporty?page=2"
 
       iex> build_url(1, nil)
-      "/reports"
+      "/raporty"
 
       iex> build_url(2, "pomorskie")
       "/raporty/pomorskie?page=2"
   """
   def build_url(page, region \\ nil)
-  def build_url(1, nil), do: "/reports"
-  def build_url(page, nil), do: "/reports?page=#{page}"
+  def build_url(1, nil), do: "/raporty"
+  def build_url(page, nil), do: "/raporty?page=#{page}"
   def build_url(1, region), do: "/raporty/#{region}"
   def build_url(page, region), do: "/raporty/#{region}?page=#{page}"
 

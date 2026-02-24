@@ -14,8 +14,8 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
     static_urls = [
       # Static pages
       %{loc: "#{base_url}/", changefreq: "daily", priority: "1.0"},
-      %{loc: "#{base_url}/tenders", changefreq: "hourly", priority: "0.9"},
-      %{loc: "#{base_url}/reports", changefreq: "weekly", priority: "0.9"},
+      %{loc: "#{base_url}/przetargi", changefreq: "hourly", priority: "0.9"},
+      %{loc: "#{base_url}/raporty", changefreq: "weekly", priority: "0.9"},
 
       # Regional tender pages - all 16 voivodeships
       %{loc: "#{base_url}/przetargi/dolnoslaskie", changefreq: "daily", priority: "0.8"},
@@ -60,7 +60,7 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
     tender_urls =
       Enum.map(active_tenders, fn tender ->
         # Use Phoenix's url helper for proper encoding
-        tender_url = url(~p"/tenders/#{tender.object_id}")
+        tender_url = url(~p"/przetargi/#{tender.object_id}")
 
         %{
           loc: tender_url,
@@ -75,7 +75,7 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
 
     report_urls =
       Enum.map(reports, fn report ->
-        report_url = url(~p"/reports/#{report.slug}")
+        report_url = url(~p"/raporty/#{report.slug}")
 
         %{
           loc: report_url,

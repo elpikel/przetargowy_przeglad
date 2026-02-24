@@ -21,7 +21,7 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
 
       <.page_header current_user={@current_user}>
         <:nav>
-          <a href="/tenders">Przetargi</a>
+          <a href="/przetargi">Przetargi</a>
           <a href="#cennik">Cennik</a>
         </:nav>
       </.page_header>
@@ -75,8 +75,8 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
           <%= if length(@nav) > 0 do %>
             {render_slot(@nav)}
           <% else %>
-            <a href="/tenders">Przetargi</a>
-            <a href="/reports">Raporty</a>
+            <a href="/przetargi">Przetargi</a>
+            <a href="/raporty">Raporty</a>
           <% end %>
         </nav>
 
@@ -117,8 +117,8 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
           <%= if length(@nav) > 0 do %>
             {render_slot(@nav)}
           <% else %>
-            <a href="/tenders">Przetargi</a>
-            <a href="/reports">Raporty</a>
+            <a href="/przetargi">Przetargi</a>
+            <a href="/raporty">Raporty</a>
           <% end %>
         </div>
       </div>
@@ -473,8 +473,8 @@ defmodule PrzetargowyPrzegladWeb.SiteComponents do
           <div class="footer-links">
             <h4>Produkt</h4>
             <ul>
-              <li><a href="/tenders">Przetargi</a></li>
-              <li><a href="/reports">Raporty</a></li>
+              <li><a href="/przetargi">Przetargi</a></li>
+              <li><a href="/raporty">Raporty</a></li>
               <li><a href="/#jak-dziala">Jak to działa</a></li>
               <li><a href="/#cennik">Cennik</a></li>
             </ul>

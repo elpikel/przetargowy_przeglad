@@ -31,19 +31,17 @@ defmodule PrzetargowyPrzegladWeb.Router do
     post "/register", UserController, :create_user
     get "/registration-success", UserController, :registration_success
     get "/verify-email", UserController, :verify_email
-    get "/tenders", TenderController, :index
-    get "/tenders/:id", TenderController, :show
-    get "/przetargi/:region", TenderController, :region
-    get "/reports", ReportController, :index
-    get "/reports/:slug", ReportController, :show
-    get "/raporty/:region", ReportController, :region
+    get "/przetargi", TenderController, :index
+    get "/przetargi/:id", TenderController, :show
+    get "/raporty", ReportController, :index
+    get "/raporty/:slug", ReportController, :show
   end
 
   scope "/", PrzetargowyPrzegladWeb do
     pipe_through [:browser, :require_auth]
 
     # Alert creation from tender search (for free users)
-    post "/tenders/create-alert", TenderController, :create_alert
+    post "/przetargi/create-alert", TenderController, :create_alert
 
     get "/dashboard", DashboardController, :show_dashboard
     post "/dashboard/alerts", DashboardController, :update_alert

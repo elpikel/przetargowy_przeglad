@@ -25,7 +25,7 @@ defmodule PrzetargowyPrzegladWeb.Layouts do
   # Example:
   #   <Layouts.site flash={@flash} current_user={@current_user} page_title="Home">
   #     <:nav>
-  #       <a href="/tenders">Przetargi</a>
+  #       <a href="/przetargi">Przetargi</a>
   #     </:nav>
   #     <main>Content here</main>
   #   </Layouts.site>

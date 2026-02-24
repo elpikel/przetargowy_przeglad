@@ -6,8 +6,8 @@
   show_footer={false}
 >
   <:nav>
-    <a href="/tenders">Przetargi</a>
-    <a href="/reports">Raporty</a>
+    <a href="/przetargi">Przetargi</a>
+    <a href="/raporty">Raporty</a>
   </:nav>
   <:page_meta>
     <meta name="description" content={@page_description} />
@@ -23,7 +23,7 @@
     </div>
 
     <section class="search-section">
-      <form class="search-form" method="get" action="/tenders" id="search-form">
+      <form class="search-form" method="get" action="/przetargi" id="search-form">
         <%= if @current_user && @current_user.subscription_plan == "paid" && @user_alerts != [] do %>
           <div class="form-group form-group-full alert-selector-wrapper">
             <label class="form-label">
@@ -196,7 +196,7 @@
           <% @current_user.subscription_plan == "free" -> %>
             <%= if can_create_free_alert?(@user_alerts, @regions, @order_types) do %>
               <!-- Free user within limits: can create alert -->
-              <form method="post" action="/tenders/create-alert" class="alert-form">
+              <form method="post" action="/przetargi/create-alert" class="alert-form">
                 <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
                 <input
                   type="hidden"
@@ -277,7 +277,7 @@
       <div class="tender-list">
         <%= for notice <- @notices do %>
           <article class="tender-card">
-            <a href={~p"/tenders/#{notice.object_id}"} class="tender-card-link">
+            <a href={~p"/przetargi/#{notice.object_id}"} class="tender-card-link">
               <h2 class="tender-title">{truncate_text(notice.order_object, 200)}</h2>
             </a>
             <div class="tender-meta">
@@ -316,7 +316,7 @@
                 <% end %>
               </div>
               <div class="tender-footer-links">
-                <a href={~p"/tenders/#{notice.object_id}"} class="tender-link">
+                <a href={~p"/przetargi/#{notice.object_id}"} class="tender-link">
                   Zobacz szczegóły
                 </a>
               </div>

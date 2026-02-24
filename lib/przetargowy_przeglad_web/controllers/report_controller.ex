@@ -37,7 +37,10 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
     |> assign(:canonical_url, canonical_url)
     |> assign(:og_image, url(~p"/images/reports/summary.svg"))
     |> assign(:og_type, "website")
-    |> assign(:keywords, "raporty przetargów, zamówienia publiczne, analiza przetargów, statystyki przetargów")
+    |> assign(
+      :keywords,
+      "raporty przetargów, zamówienia publiczne, analiza przetargów, statystyki przetargów"
+    )
     |> render(:index,
       reports: result.reports,
       total_count: result.total_count,
@@ -46,7 +49,60 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
     )
   end
 
-  def show(conn, %{"slug" => slug}) do
+  def show(conn, %{"slug" => slug} = params) do
+    # Check if slug is a valid region - if so, show regional reports
+    if slug in @valid_regions do
+      show_region(conn, slug, params)
+    else
+      show_report(conn, slug)
+    end
+  end
+
+  defp show_region(conn, region, params) do
+    page = parse_page(params["page"])
+
+    search_opts = [
+      page: page,
+      per_page: 12
+    ]
+
+    result = Reports.list_tender_reports_by_region(region, search_opts)
+
+    region_name = PrzetargowyPrzegladWeb.ReportHTML.format_region_name(region)
+    page_suffix = if page > 1, do: " - Strona #{page}", else: ""
+
+    page_title = "Raporty przetargów #{region_name}#{page_suffix} | Przetargowy Przegląd"
+
+    page_description =
+      "Comiesięczne raporty analityczne przetargów publicznych w województwie #{region_name}. " <>
+        "Statystyki, trendy i analiza rynku zamówień publicznych w regionie."
+
+    canonical_url = build_region_canonical_url(conn, region, params)
+
+    structured_data = build_region_breadcrumb_data(region, region_name)
+
+    conn
+    |> assign(:page_title, page_title)
+    |> assign(:page_description, page_description)
+    |> assign(:canonical_url, canonical_url)
+    |> assign(:og_image, url(~p"/images/reports/summary.svg"))
+    |> assign(:og_type, "website")
+    |> assign(
+      :keywords,
+      "raporty przetargów #{region_name}, zamówienia publiczne #{region_name}, analiza przetargów #{region_name}"
+    )
+    |> assign(:structured_data, structured_data)
+    |> assign(:region, region)
+    |> assign(:region_name, region_name)
+    |> render(:index,
+      reports: result.reports,
+      total_count: result.total_count,
+      page: result.page,
+      total_pages: result.total_pages
+    )
+  end
+
+  defp show_report(conn, slug) do
     case Reports.get_report_by_slug(slug) do
       nil ->
         conn
@@ -95,58 +151,6 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
     end
   end
 
-  @doc """
-  Regional reports landing page with SEO-friendly clean URL.
-  /raporty/:region -> renders reports filtered by region
-  """
-  def region(conn, %{"region" => region} = params) do
-    if region in @valid_regions do
-      page = parse_page(params["page"])
-
-      search_opts = [
-        page: page,
-        per_page: 12
-      ]
-
-      result = Reports.list_tender_reports_by_region(region, search_opts)
-
-      region_name = PrzetargowyPrzegladWeb.ReportHTML.format_region_name(region)
-      page_suffix = if page > 1, do: " - Strona #{page}", else: ""
-
-      page_title = "Raporty przetargów #{region_name}#{page_suffix} | Przetargowy Przegląd"
-
-      page_description =
-        "Comiesięczne raporty analityczne przetargów publicznych w województwie #{region_name}. " <>
-          "Statystyki, trendy i analiza rynku zamówień publicznych w regionie."
-
-      canonical_url = build_region_canonical_url(conn, region, params)
-
-      structured_data = build_region_breadcrumb_data(region, region_name)
-
-      conn
-      |> assign(:page_title, page_title)
-      |> assign(:page_description, page_description)
-      |> assign(:canonical_url, canonical_url)
-      |> assign(:og_image, url(~p"/images/reports/summary.svg"))
-      |> assign(:og_type, "website")
-      |> assign(:keywords, "raporty przetargów #{region_name}, zamówienia publiczne #{region_name}, analiza przetargów #{region_name}")
-      |> assign(:structured_data, structured_data)
-      |> assign(:region, region)
-      |> assign(:region_name, region_name)
-      |> render(:index,
-        reports: result.reports,
-        total_count: result.total_count,
-        page: result.page,
-        total_pages: result.total_pages
-      )
-    else
-      conn
-      |> put_status(:not_found)
-      |> put_view(html: PrzetargowyPrzegladWeb.ErrorHTML)
-      |> render(:"404")
-    end
-  end
-
   defp build_region_canonical_url(conn, region, params) do
     base_url = "https://#{conn.host}/raporty/#{region}"
 
@@ -162,7 +166,7 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
   defp build_region_breadcrumb_data(region, region_name) do
     items = [
       {"Strona główna", "https://przetargowyprzeglad.pl/"},
-      {"Raporty", "https://przetargowyprzeglad.pl/reports"},
+      {"Raporty", "https://przetargowyprzeglad.pl/raporty"},
       {"Raporty #{region_name}", "https://przetargowyprzeglad.pl/raporty/#{region}"}
     ]
 
@@ -187,15 +191,15 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
   defp build_page_title(page), do: "Raporty przetargów - Strona #{page} | Przetargowy Przegląd"
 
   defp build_canonical_url(_conn, 1) do
-    url(~p"/reports")
+    url(~p"/raporty")
   end
 
   defp build_canonical_url(_conn, page) when is_integer(page) do
-    url(~p"/reports?page=#{page}")
+    url(~p"/raporty?page=#{page}")
   end
 
   defp build_canonical_url(_conn, slug) when is_binary(slug) do
-    url(~p"/reports/#{slug}")
+    url(~p"/raporty/#{slug}")
   end
 
   defp build_structured_data(report, canonical_url) do
@@ -204,8 +208,10 @@ defmodule PrzetargowyPrzegladWeb.ReportController do
       "@type" => "Report",
       "headline" => report.title,
       "description" => report.meta_description,
-      "datePublished" => report.inserted_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601(),
-      "dateModified" => report.updated_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601(),
+      "datePublished" =>
+        report.inserted_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601(),
+      "dateModified" =>
+        report.updated_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601(),
       "author" => %{
         "@type" => "Organization",
         "name" => "Przetargowy Przegląd",

@@ -3,13 +3,13 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
 
   describe "GET /tenders" do
     test "renders search page", %{conn: conn} do
-      conn = get(conn, ~p"/tenders")
+      conn = get(conn, ~p"/przetargi")
       assert html_response(conn, 200) =~ "Wyszukaj przetargi"
       assert html_response(conn, 200) =~ "Szukaj"
     end
 
     test "shows empty state when no results", %{conn: conn} do
-      conn = get(conn, ~p"/tenders")
+      conn = get(conn, ~p"/przetargi")
       assert html_response(conn, 200) =~ "Brak wyników"
     end
 
@@ -24,7 +24,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       )
 
-      conn = get(conn, ~p"/tenders")
+      conn = get(conn, ~p"/przetargi")
       response = html_response(conn, 200)
 
       assert response =~ "Dostawa sprzętu komputerowego"
@@ -53,7 +53,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      conn = get(conn, ~p"/tenders?q=komputerów")
+      conn = get(conn, ~p"/przetargi?q=komputerów")
       response = html_response(conn, 200)
 
       assert response =~ "Dostawa komputerów"
@@ -82,7 +82,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       })
 
       query_string = URI.encode_query([{"regions[]", "mazowieckie"}])
-      conn = get(conn, "/tenders?" <> query_string)
+      conn = get(conn, "/przetargi?" <> query_string)
       response = html_response(conn, 200)
 
       assert response =~ "Dostawa do Warszawy"
@@ -111,7 +111,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       })
 
       query_string = URI.encode_query([{"order_types[]", "Delivery"}])
-      conn = get(conn, "/tenders?" <> query_string)
+      conn = get(conn, "/przetargi?" <> query_string)
       response = html_response(conn, 200)
 
       assert response =~ "Dostawa materiałów"
@@ -139,7 +139,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
       })
 
-      conn = get(conn, ~p"/tenders")
+      conn = get(conn, ~p"/przetargi")
       response = html_response(conn, 200)
 
       assert response =~ "Ogłoszenie o zamówieniu"
@@ -167,7 +167,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         submitting_offers_date: DateTime.add(DateTime.utc_now(), -1, :day)
       })
 
-      conn = get(conn, ~p"/tenders")
+      conn = get(conn, ~p"/przetargi")
       response = html_response(conn, 200)
 
       assert response =~ "Aktualny przetarg"
@@ -187,13 +187,13 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
         })
       end
 
-      conn = get(conn, ~p"/tenders")
+      conn = get(conn, ~p"/przetargi")
       response = html_response(conn, 200)
 
       assert response =~ "Strona 1 z 2"
       assert response =~ "Następna"
 
-      conn = get(conn, ~p"/tenders?page=2")
+      conn = get(conn, ~p"/przetargi?page=2")
       response = html_response(conn, 200)
 
       assert response =~ "Strona 2 z 2"
@@ -233,7 +233,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
 
       # Use proper query string encoding for arrays
       query_string = URI.encode_query([{"regions[]", "mazowieckie"}, {"regions[]", "malopolskie"}])
-      conn = get(conn, "/tenders?" <> query_string)
+      conn = get(conn, "/przetargi?" <> query_string)
       response = html_response(conn, 200)
 
       assert response =~ "Przetarg mazowiecki"
@@ -274,7 +274,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
 
       # Use proper query string encoding for arrays
       query_string = URI.encode_query([{"order_types[]", "Delivery"}, {"order_types[]", "Services"}])
-      conn = get(conn, "/tenders?" <> query_string)
+      conn = get(conn, "/przetargi?" <> query_string)
       response = html_response(conn, 200)
 
       # Should include the filtered results
@@ -297,7 +297,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       })
 
       query_string = URI.encode_query([{"regions[]", ""}])
-      conn = get(conn, "/tenders?" <> query_string)
+      conn = get(conn, "/przetargi?" <> query_string)
       response = html_response(conn, 200)
 
       assert response =~ "Test przetarg"
@@ -315,7 +315,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       })
 
       query_string = URI.encode_query([{"order_types[]", ""}])
-      conn = get(conn, "/tenders?" <> query_string)
+      conn = get(conn, "/przetargi?" <> query_string)
       response = html_response(conn, 200)
 
       assert response =~ "Test przetarg"
@@ -353,7 +353,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       })
 
       query_string = URI.encode_query([{"q", "komputerów"}, {"regions[]", "mazowieckie"}, {"order_types[]", "Delivery"}])
-      conn = get(conn, "/tenders?" <> query_string)
+      conn = get(conn, "/przetargi?" <> query_string)
       response = html_response(conn, 200)
 
       assert response =~ "Dostawa komputerów do Warszawy"
@@ -385,21 +385,21 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "does not show alert selector for unauthenticated users", %{conn: conn} do
-      conn = get(conn, ~p"/tenders")
+      conn = get(conn, ~p"/przetargi")
       response = html_response(conn, 200)
 
       refute response =~ "Zastosuj filtry z zapisanego alertu"
     end
 
     test "does not show alert selector for free users", %{free_conn: conn} do
-      conn = get(conn, ~p"/tenders")
+      conn = get(conn, ~p"/przetargi")
       response = html_response(conn, 200)
 
       refute response =~ "Zastosuj filtry z zapisanego alertu"
     end
 
     test "shows alert selector for paid users", %{premium_conn: conn} do
-      conn = get(conn, ~p"/tenders")
+      conn = get(conn, ~p"/przetargi")
       response = html_response(conn, 200)
 
       assert response =~ "Zastosuj filtry z zapisanego alertu"
@@ -428,7 +428,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
       assert found_tender.bzp_number == tender.bzp_number
 
       # Call controller action directly instead of via HTTP
-      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      conn = get(conn, ~p"/przetargi/#{tender.object_id}")
       response = html_response(conn, 200)
 
       assert response =~ "Dostawa sprzętu komputerowego"
@@ -438,7 +438,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
     end
 
     test "returns 404 for non-existent tender", %{conn: conn} do
-      conn = get(conn, ~p"/tenders/2024-BZP-99999999")
+      conn = get(conn, ~p"/przetargi/2024-BZP-99999999")
       assert html_response(conn, 404)
     end
 
@@ -449,7 +449,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
           submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
         })
 
-      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      conn = get(conn, ~p"/przetargi/#{tender.object_id}")
       response = html_response(conn, 200)
 
       assert response =~ "Aktywny"
@@ -463,7 +463,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
           submitting_offers_date: DateTime.add(DateTime.utc_now(), -1, :day)
         })
 
-      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      conn = get(conn, ~p"/przetargi/#{tender.object_id}")
       response = html_response(conn, 200)
 
       assert response =~ "Termin minął"
@@ -478,7 +478,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
           submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
         })
 
-      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      conn = get(conn, ~p"/przetargi/#{tender.object_id}")
       response = html_response(conn, 200)
 
       assert response =~ ~s(<meta name="description")
@@ -493,7 +493,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
           submitting_offers_date: DateTime.add(DateTime.utc_now(), -1, :day)
         })
 
-      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      conn = get(conn, ~p"/przetargi/#{tender.object_id}")
       response = html_response(conn, 200)
 
       assert response =~ ~s(<meta name="robots" content="noindex, follow")
@@ -506,7 +506,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
           submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
         })
 
-      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      conn = get(conn, ~p"/przetargi/#{tender.object_id}")
       response = html_response(conn, 200)
 
       refute response =~ ~s(<meta name="robots" content="noindex)
@@ -526,7 +526,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
           submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
         })
 
-      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      conn = get(conn, ~p"/przetargi/#{tender.object_id}")
       response = html_response(conn, 200)
 
       assert response =~ "Dostawa komputerów"
@@ -545,7 +545,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
           submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
         })
 
-      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      conn = get(conn, ~p"/przetargi/#{tender.object_id}")
       response = html_response(conn, 200)
 
       assert response =~ "Strona główna"
@@ -561,7 +561,7 @@ defmodule PrzetargowyPrzegladWeb.TenderControllerTest do
           submitting_offers_date: DateTime.add(DateTime.utc_now(), 7, :day)
         })
 
-      conn = get(conn, ~p"/tenders/#{tender.object_id}")
+      conn = get(conn, ~p"/przetargi/#{tender.object_id}")
       response = html_response(conn, 200)
 
       assert response =~ "ezamowienia.gov.pl"
