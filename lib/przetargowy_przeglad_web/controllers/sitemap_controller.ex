@@ -16,9 +16,8 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
       %{loc: "#{base_url}/", changefreq: "daily", priority: "1.0"},
       %{loc: "#{base_url}/tenders", changefreq: "hourly", priority: "0.9"},
       %{loc: "#{base_url}/reports", changefreq: "weekly", priority: "0.9"},
-      %{loc: "#{base_url}/pricing", changefreq: "weekly", priority: "0.8"},
 
-      # Regional pages - all 16 voivodeships
+      # Regional tender pages - all 16 voivodeships
       %{loc: "#{base_url}/przetargi/dolnoslaskie", changefreq: "daily", priority: "0.8"},
       %{loc: "#{base_url}/przetargi/kujawsko-pomorskie", changefreq: "daily", priority: "0.8"},
       %{loc: "#{base_url}/przetargi/lubelskie", changefreq: "daily", priority: "0.8"},
@@ -35,11 +34,6 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
       %{loc: "#{base_url}/przetargi/warminsko-mazurskie", changefreq: "daily", priority: "0.8"},
       %{loc: "#{base_url}/przetargi/wielkopolskie", changefreq: "daily", priority: "0.8"},
       %{loc: "#{base_url}/przetargi/zachodniopomorskie", changefreq: "daily", priority: "0.8"},
-
-      # Order type pages
-      %{loc: "#{base_url}/tenders?order_types[]=Delivery", changefreq: "daily", priority: "0.7"},
-      %{loc: "#{base_url}/tenders?order_types[]=Services", changefreq: "daily", priority: "0.7"},
-      %{loc: "#{base_url}/tenders?order_types[]=Works", changefreq: "daily", priority: "0.7"},
 
       # Regional report pages
       %{loc: "#{base_url}/raporty/dolnoslaskie", changefreq: "monthly", priority: "0.7"},
