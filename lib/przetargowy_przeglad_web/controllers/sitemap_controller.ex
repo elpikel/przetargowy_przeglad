@@ -102,7 +102,6 @@ defmodule PrzetargowyPrzegladWeb.SitemapController do
         where: t.notice_type == "ContractNotice",
         where: t.submitting_offers_date > ^now,
         order_by: [desc: t.publication_date],
-        limit: 1000,
         select: %{object_id: t.object_id, inserted_at: t.inserted_at, updated_at: t.updated_at}
       )
     )
